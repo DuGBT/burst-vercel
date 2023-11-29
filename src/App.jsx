@@ -226,7 +226,6 @@ function Layout({ children }) {
           </Paper>
         </Box>
       </Box>
-      <Wallet />
     </div>
   );
 }
