@@ -8,24 +8,7 @@ import Tab from "@mui/material/Tab";
 import Button from "@mui/material/Button";
 import { styled } from "@mui/material";
 import { useConnectWallet } from "@web3-onboard/react";
-
-// import Stake from "./Stake";
-import Wallet from "./Wallet";
-function TabPanel(props) {
-  const { children, value, index, ...other } = props;
-
-  return (
-    <div
-      role="tabpanel"
-      hidden={value !== index}
-      id={`vertical-tabpanel-${index}`}
-      aria-labelledby={`vertical-tab-${index}`}
-      {...other}
-    >
-      {value === index && <Box sx={{ p: 3 }}>{children}</Box>}
-    </div>
-  );
-}
+import { Link, useParams } from "react-router-dom";
 
 function Layout({ children }) {
   const [count, setCount] = useState(0);
@@ -43,8 +26,9 @@ function Layout({ children }) {
     "&:focus": {
       outline: "none",
     },
-    "&.MuiButtonBase-root.Mui-selected": {
-      color: "yellow",
+    "&.MuiButtonBase-root": {
+      opacity: "1",
+      // color: "yellow",
     },
   });
 
@@ -76,52 +60,55 @@ function Layout({ children }) {
         <Box sx={{ background: "#000", height: 200, p: 0 }}>
           <Stack direction={"row"} justifyContent={"space-between"}>
             <StyledTabs value={value} onChange={handleChange} centered>
-              <StyledTab
-                onClick={() => {
-                  if (window.location.pathname !== "/stake")
-                    window.location.href = "/stake";
-                }}
-                label="Stake"
-                disableTouchRipple
-                sx={{
-                  border: "none",
-                  fontWeight: "700",
-                  fontSize: "16px",
-                  textTransform: "none",
-                  color: "#929292",
-                }}
-              />
-              <StyledTab
-                onClick={() => {
-                  if (window.location.pathname !== "/claim")
-                    window.location.href = "/claim";
-                }}
-                label="Claim"
-                disableTouchRipple
-                sx={{
-                  border: "none",
-                  color: "#929292",
+              <Link to={"/stake"}>
+                <StyledTab
+                  label="Stake"
+                  disableTouchRipple
+                  sx={{
+                    border: "none",
+                    fontWeight: "700",
+                    fontSize: "16px",
+                    textTransform: "none",
+                    color:
+                      window.location.pathname === "/stake"
+                        ? "yellow"
+                        : "#929292",
+                  }}
+                />
+              </Link>
+              <Link to={"/claim"}>
+                <StyledTab
+                  label="Claim"
+                  disableTouchRipple
+                  sx={{
+                    border: "none",
+                    color:
+                      window.location.pathname === "/claim"
+                        ? "yellow"
+                        : "#929292",
 
-                  fontWeight: "700",
-                  fontSize: "16px",
-                  textTransform: "none",
-                }}
-              />
-              <StyledTab
-                onClick={() => {
-                  if (window.location.pathname !== "/lock")
-                    window.location.href = "/lock";
-                }}
-                label="Lock"
-                disableTouchRipple
-                sx={{
-                  border: "none",
-                  color: "#929292",
-                  fontWeight: "700",
-                  fontSize: "16px",
-                  textTransform: "none",
-                }}
-              />
+                    fontWeight: "700",
+                    fontSize: "16px",
+                    textTransform: "none",
+                  }}
+                />
+              </Link>
+              <Link to={"/lock"}>
+                <StyledTab
+                  label="Lock"
+                  disableTouchRipple
+                  sx={{
+                    border: "none",
+                    color:
+                      window.location.pathname === "/lock"
+                        ? "yellow"
+                        : "#929292",
+                    fontWeight: "700",
+                    fontSize: "16px",
+                    textTransform: "none",
+                  }}
+                />
+              </Link>
             </StyledTabs>
             <YellowButton
               sx={{
