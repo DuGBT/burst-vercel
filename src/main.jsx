@@ -6,6 +6,41 @@ import "./index.css";
 import Stake from "./Stake.jsx";
 import Claim from "./Claim.jsx";
 import Lock from "./Lock";
+import {
+  useConnectWallet,
+  Web3OnboardProvider,
+  init,
+} from "@web3-onboard/react";
+import injectedModule from "@web3-onboard/injected-wallets";
+const INFURA_KEY = "b0caabe4b0bc4153a499536aa88a053d";
+
+const injected = injectedModule();
+
+const wallets = [injected];
+
+const chains = [
+  {
+    id: "0x1",
+    token: "ETH",
+    label: "Ethereum Mainnet",
+    rpcUrl: `https://mainnet.infura.io/v3/${INFURA_KEY}`,
+  },
+  {
+    id: "0x5",
+    token: "ETH",
+    label: "Goerli",
+    rpcUrl: `https://goerli.infura.io/v3/${INFURA_KEY}`,
+  },
+];
+
+const web3Onboard = init({
+  connect: {
+    autoConnectAllPreviousWallet: true,
+  },
+  wallets,
+  chains,
+  //   appMetadata,
+});
 const router = createBrowserRouter([
   {
     path: "/",
@@ -26,6 +61,8 @@ const router = createBrowserRouter([
 ]);
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
-    <RouterProvider router={router} />
+    <Web3OnboardProvider web3Onboard={web3Onboard}>
+      <RouterProvider router={router} />
+    </Web3OnboardProvider>
   </React.StrictMode>
 );

@@ -9,6 +9,7 @@ const StyledInput = styled(TextField)({
   "& .MuiInputBase-input": {
     padding: "10px",
     paddingTop: "8px",
+    border: "1px solid #C3D4A54D",
   },
 });
 function HeadInfoItem({ head, content }) {
@@ -65,7 +66,7 @@ const Lock = () => {
         alignContent={"baseline"}
       >
         <Box width={400} position={"relative"} marginTop={5}>
-          <Box position={"absolute"} top={-30} right={0}>
+          <Box position={"absolute"} top={-30} right={0} color={"yellow"}>
             Avaliable : 0 CRV
           </Box>
           <StyledInput
@@ -77,7 +78,12 @@ const Lock = () => {
           />
         </Box>
         <Button
-          sx={{ marginX: "8px", height: "41px" }}
+          sx={{
+            marginX: "8px",
+            height: "41px",
+            background: "yellow",
+            color: "#000",
+          }}
           variant="contained"
           disabled
         >
