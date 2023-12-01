@@ -6,6 +6,10 @@
   font-family: "Rajdhani Bold";
   src: url("/fonts/Rajdhani/Rajdhani-Bold.ttf");
 }
+@font-face {
+  font-family: "Rajdhani SemiBold";
+  src: url("/fonts/Rajdhani/Rajdhani-SemiBold.ttf");
+}
 
 #root {
   background-color: #000;

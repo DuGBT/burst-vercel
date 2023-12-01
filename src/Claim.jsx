@@ -20,13 +20,18 @@ function HeadInfoItem({ head, content }) {
       <Stack>
         <Box
           sx={{ opacity: 0.5 }}
-          fontSize={13}
+          fontSize={15}
           fontWeight={500}
           color={"#fff"}
         >
           {head}
         </Box>
-        <Box fontSize={17} fontWeight={700} color={"#fff"}>
+        <Box
+          sx={{ fontFamily: "Rajdhani SemiBold" }}
+          fontSize={17}
+          fontWeight={700}
+          color={"#fff"}
+        >
           {content}
         </Box>
       </Stack>
