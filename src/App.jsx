@@ -155,7 +155,7 @@ function Layout({ children }) {
                   textShadow: "0px 0px 6px #FCFC03CC",
                 }}
               >
-                $1,000.78
+                $0
               </Box>
             </Box>
             <Box
@@ -183,7 +183,7 @@ function Layout({ children }) {
                   textShadow: "0px 0px 6px #FCFC03CC",
                 }}
               >
-                $123,456.78
+                $0
               </Box>
             </Box>
           </Stack>

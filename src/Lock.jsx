@@ -148,7 +148,6 @@ const Lock = () => {
       console.log(error);
     }
   };
-  console.log(allowance, lockValue);
   return (
     <Layout>
       <Box backgroundColor={"rgb(42, 42, 42)"} height={100} padding={"10px"}>
@@ -188,7 +187,7 @@ const Lock = () => {
             Avaliable : {userBalance} Burst
           </Box>
           <StyledInput
-            value={lockValue}
+            value={lockValue === 0 ? "" : lockValue}
             onChange={(e) => {
               setLockValue(e.target.value);
               console.log(typeof e.target.value);

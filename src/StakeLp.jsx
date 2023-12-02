@@ -13,7 +13,8 @@ import { blurDepositAbi } from "./abi/blur-depositer";
 import { WblurStakeAbi } from "./abi/wblur-staking";
 import { useConnectWallet } from "@web3-onboard/react";
 import * as ethers from "ethers";
-import StakeLP from "./StakeLp";
+import blur from "./assets/blur.jpg";
+import burst from "./assets/BURST_Icon_Black.png";
 const StyledInput = styled(TextField)({
   "& .MuiInputBase-input": {
     padding: "10px",
@@ -33,6 +34,10 @@ const YellowButton = styled(Button)({
 });
 const BlackButton = styled(Button)({
   "&.MuiButton-root": { background: "#000" },
+});
+
+const DisabledButton = styled(Button)({
+  "&.MuiButton-root": { background: "#92929233" },
 });
 
 function HeadInfoItem({ head, content }) {
@@ -87,6 +92,50 @@ const StyledTab = styled(Tab)({
   },
 });
 
+const Header = () => {
+  return (
+    <Box padding={2} sx={{ background: "rgb(42,42,42)" }}>
+      <Stack direction={"row"} textAlign={"left"}>
+        <Box sx={{ flexGrow: 1.6, flex: "1 1 0px" }}>Pool</Box>
+        <Box sx={{ flex: "1 1 0px" }}>Claimable</Box>
+        <Box sx={{ flex: "1 1 0px" }}>vapr</Box>
+        <Box sx={{ flex: "1 1 0px" }}>My deposits</Box>
+        <Box sx={{ flex: "1 1 0px" }}>TVL</Box>
+      </Stack>
+      <Stack
+        sx={{ fontFamily: "Rajdhani SemiBold" }}
+        fontSize={17}
+        fontWeight={700}
+        color={"#fff"}
+        direction={"row"}
+        textAlign={"left"}
+      >
+        <Box sx={{ flexGrow: 1.6, flex: "1 1 0px" }}>
+          <Stack direction={"row"} position={"relative"}>
+            <Box>
+              <img style={{ height: "26px", borderRadius: "50%" }} src={blur} />
+              <img
+                style={{
+                  height: "26px",
+                  borderRadius: "50%",
+                  position: "absolute",
+                  left: "20px",
+                }}
+                src={burst}
+              />
+            </Box>
+            <Box sx={{ marginLeft: "30px" }}>Blur+WBlur</Box>
+          </Stack>
+        </Box>
+        <Box sx={{ flex: "1 1 0px" }}>0</Box>
+        <Box sx={{ flex: "1 1 0px" }}>0</Box>
+        <Box sx={{ flex: "1 1 0px" }}>0</Box>
+        <Box sx={{ flex: "1 1 0px" }}>0</Box>
+      </Stack>
+    </Box>
+  );
+};
+
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
 
@@ -101,8 +150,7 @@ function TabPanel(props) {
     </div>
   );
 }
-
-const Stake = () => {
+const StakeLP = () => {
   const [{ wallet, connecting }, connect, disconnect] = useConnectWallet();
   const [value, setValue] = useState(0);
   const [convertAndStakeValue, setConvertAndStakevalueValue] = useState(0);
@@ -127,17 +175,17 @@ const Stake = () => {
         const provider = new ethers.providers.Web3Provider(wallet.provider);
         const signer = await provider.getSigner();
         const Contract = new ethers.Contract(
-          "0xBC27067AbcCb83962e8DcbC393132E482e85E2C7",
+          "0xEa542D518Ce4E6633Bbf697b089ecDEfe0A97dA6",
           erc20TokenAbi,
           provider
         );
         const WblurContract = new ethers.Contract(
-          "0x72cebe61e70142b4b4720087abb723182e4ca6e8",
+          "0xEa542D518Ce4E6633Bbf697b089ecDEfe0A97dA6",
           erc20TokenAbi,
           provider
         );
         const stakeContract = new ethers.Contract(
-          "0x56f9E3de66600ca09F2568c11a5F2D1E793C0ef2",
+          "0x3eEaE34A7Db2B5F04eFF48249EE640dc3F581a7f",
           WblurStakeAbi,
           ethersProvider
         );
@@ -153,15 +201,15 @@ const Stake = () => {
     Connect();
   }, [wallet]);
 
-  const getBalance = async () => {
-    try {
-      const res = await erc20Contract.balanceOf(wallet.accounts[0].address);
-      const res2 = await erc20Contract.decimals();
-      setUserBalance(Number(BigInt(res._hex) / 10n ** BigInt(res2)));
-    } catch (error) {
-      console.log(error);
-    }
-  };
+  //   const getBalance = async () => {
+  //     try {
+  //       const res = await erc20Contract.balanceOf(wallet.accounts[0].address);
+  //       const res2 = await erc20Contract.decimals();
+  //       setUserBalance(Number(BigInt(res._hex) / 10n ** BigInt(res2)));
+  //     } catch (error) {
+  //       console.log(error);
+  //     }
+  //   };
   const getWblurBalance = async () => {
     try {
       const res = await wBlurErc20Contract.balanceOf(
@@ -173,24 +221,24 @@ const Stake = () => {
       console.log(error);
     }
   };
-  const approve = async () => {
-    try {
-      const res2 = await erc20Contract.decimals();
+  //   const approve = async () => {
+  //     try {
+  //       const res2 = await erc20Contract.decimals();
 
-      const res = await erc20Contract.approve(
-        "0x4e74c4c76625d1A3f2f2285651A15580023762E6",
-        BigInt(userBalance) * 10n ** BigInt(res2)
-      );
-      console.log(res);
-    } catch (error) {
-      console.log(error);
-    }
-  };
+  //       const res = await erc20Contract.approve(
+  //         "0x3eEaE34A7Db2B5F04eFF48249EE640dc3F581a7f",
+  //         BigInt(userBalance * 10 ** res2)
+  //       );
+  //       console.log(res);
+  //     } catch (error) {
+  //       console.log(error);
+  //     }
+  //   };
   const approveForStake = async () => {
     try {
       const res2 = await wBlurErc20Contract.decimals();
       const res = await wBlurErc20Contract.approve(
-        "0x56f9E3de66600ca09F2568c11a5F2D1E793C0ef2",
+        "0x3eEaE34A7Db2B5F04eFF48249EE640dc3F581a7f",
         BigInt(userWblurBalance) * 10n ** BigInt(res2)
       );
       console.log(res);
@@ -198,25 +246,25 @@ const Stake = () => {
       console.log(error);
     }
   };
-  const checkApprove = async () => {
-    try {
-      const res = await erc20Contract.allowance(
-        wallet.accounts[0].address,
-        "0x4e74c4c76625d1A3f2f2285651A15580023762E6"
-      );
-      setBlurAllowance(Number(BigInt(res._hex) / 10n ** 18n));
-      console.log("allowance", Number(BigInt(res._hex) / 10n ** 18n));
-      if (res == 0) {
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  };
+  //   const checkApprove = async () => {
+  //     try {
+  //       const res = await erc20Contract.allowance(
+  //         wallet.accounts[0].address,
+  //         "0x4e74c4c76625d1A3f2f2285651A15580023762E6"
+  //       );
+  //       setBlurAllowance(Number(BigInt(res._hex) / 10n ** 18n));
+  //       console.log("allowance", Number(BigInt(res._hex) / 10n ** 18n));
+  //       if (res == 0) {
+  //       }
+  //     } catch (error) {
+  //       console.log(error);
+  //     }
+  //   };
   const checkApproveForStake = async () => {
     try {
       const res = await wBlurErc20Contract.allowance(
         wallet.accounts[0].address,
-        "0x56f9E3de66600ca09F2568c11a5F2D1E793C0ef2"
+        "0x3eEaE34A7Db2B5F04eFF48249EE640dc3F581a7f"
       );
       setWBlurAllowance(Number(BigInt(res._hex) / 10n ** 18n));
       if (res == 0) {
@@ -227,6 +275,7 @@ const Stake = () => {
   };
 
   const checkStakeBalance = async () => {
+    console.log(stakeContract, wallet.accounts[0].address);
     try {
       const res = await stakeContract.balanceOf(wallet.accounts[0].address);
       console.log(res, "stake value", Number(BigInt(res._hex) / 10n ** 18n));
@@ -240,12 +289,12 @@ const Stake = () => {
     if (stakeContract) checkStakeBalance();
   }, [stakeContract]);
 
-  useEffect(() => {
-    if (erc20Contract) {
-      checkApprove();
-      getBalance();
-    }
-  }, [erc20Contract]);
+  //   useEffect(() => {
+  //     if (erc20Contract) {
+  //       checkApprove();
+  //       getBalance();
+  //     }
+  //   }, [erc20Contract]);
   useEffect(() => {
     if (wBlurErc20Contract) {
       getWblurBalance();
@@ -257,20 +306,12 @@ const Stake = () => {
     console.log(e.target);
   };
   return (
-    <Layout>
-      <Box backgroundColor={"rgb(42, 42, 42)"} height={100} padding={"10px"}>
-        <Stack
-          direction={"row"}
-          justifyContent={"space-between"}
-          textAlign={"left"}
-        >
-          <HeadInfo head={"All Claimable"} content={"$0"} />
-          <HeadInfo head={"My vApr"} content={"0%"} />
-          <HeadInfo head={"Max vApr"} content={"19%"} />
-          <HeadInfo head={"My cvxCRV staked"} content={"0  cvxCrv = $0"} />
-          <HeadInfo head={"TVL"} content={"$130m"} />
-        </Stack>
+    <Box sx={{ paddingBottom: "200px" }}>
+      <Box marginTop={10} textAlign={"left"}>
+        Stake Curve LP Tokens
       </Box>
+      <Header />
+
       <StyledTabs value={value} onChange={handleChange}>
         <StyledTab
           label="CONVERT/STAKE"
@@ -304,20 +345,7 @@ const Stake = () => {
       </StyledTabs>
       <TabPanel value={value} index={0}>
         <Box>
-          <Box sx={{ fontWeight: "500", textAlign: "left" }}>
-            Transform your $BLUR into wBLUR. When you stake wBLUR, you gain the
-            standard points associated with Blur staking, including the future
-            $BLUR and $BLAST airdrops. In addition, you receive $BURST tokens.
-          </Box>
-          <Box sx={{ fontWeight: "500", textAlign: "left" }}>
-            WARNING: The process of changing BLUR into wBLUR cannot be reversed.
-            While it's possible to stake and unstake wBLUR tokens, reconverting
-            them into $BLUR is not an option. Nonetheless, secondary markets are
-            available where wBLUR can be traded for BLUR, though the exchange
-            rates may vary. It is possible to convert wBLUR back to BLUR if a
-            DAO vote passes in favor of this action.
-          </Box>
-          <Stack
+          {/* <Stack
             direction={"row"}
             alignItems={"flex-end"}
             alignContent={"baseline"}
@@ -326,32 +354,15 @@ const Stake = () => {
               <Box position={"absolute"} top={-30} right={0} color={"yellow"}>
                 Avaliable : {userBalance}
               </Box>
-              <Box position={"absolute"} top={6} right={10} zIndex={100}>
-                <Button
-                  onClick={() => {
-                    setConvertAndStakevalueValue(userBalance);
-                  }}
-                  sx={{
-                    height: "30px",
-                    width: "40px",
-                    padding: 0,
-                    minWidth: "30px",
-                    background: "#C3D4A54D",
-                    color: "#c3d4a5",
-                  }}
-                >
-                  Max
-                </Button>
-              </Box>
               <StyledInput
-                value={convertAndStakeValue === 0 ? "" : convertAndStakeValue}
+                value={convertAndStakeValue}
                 onChange={(e) => {
                   setConvertAndStakevalueValue(e.target.value);
                 }}
                 sx={{ width: "100%" }}
               />
             </Box>
-            {blurAllowance > 0 && convertAndStakeValue <= blurAllowance && (
+            {blurAllowance > 0 && convertAndStakeValue < blurAllowance && (
               <BlackButton
                 sx={{
                   marginX: "8px",
@@ -408,8 +419,8 @@ const Stake = () => {
             >
               Convert & Stake
             </YellowButton>
-          </Stack>
-          <Stack
+          </Stack> */}
+          {/* <Stack
             direction={"row"}
             alignItems={"flex-end"}
             alignContent={"baseline"}
@@ -418,25 +429,8 @@ const Stake = () => {
               <Box position={"absolute"} top={-30} right={0} color={"yellow"}>
                 Avaliable : {userBalance}
               </Box>
-              <Box position={"absolute"} top={6} right={10} zIndex={100}>
-                <Button
-                  onClick={() => {
-                    setConvertValue(userBalance);
-                  }}
-                  sx={{
-                    height: "30px",
-                    width: "40px",
-                    padding: 0,
-                    minWidth: "30px",
-                    background: "#C3D4A54D",
-                    color: "#c3d4a5",
-                  }}
-                >
-                  Max
-                </Button>
-              </Box>
               <StyledInput
-                value={convertValue === 0 ? "" : convertValue}
+                value={convertValue}
                 onChange={(e) => {
                   setConvertValue(e.target.value);
                 }}
@@ -444,7 +438,7 @@ const Stake = () => {
               />
             </Box>
 
-            {blurAllowance > 0 && convertValue <= blurAllowance && (
+            {blurAllowance > 0 && convertValue < blurAllowance && (
               <BlackButton
                 sx={{
                   marginX: "8px",
@@ -499,7 +493,7 @@ const Stake = () => {
             >
               Convert
             </YellowButton>
-          </Stack>
+          </Stack> */}
           <Stack
             direction={"row"}
             alignItems={"flex-end"}
@@ -571,7 +565,7 @@ const Stake = () => {
                 try {
                   const signer = await ethersProvider.getSigner();
                   const stakeContract = new ethers.Contract(
-                    "0x56f9E3de66600ca09F2568c11a5F2D1E793C0ef2",
+                    "0x3eEaE34A7Db2B5F04eFF48249EE640dc3F581a7f",
                     WblurStakeAbi,
                     ethersProvider
                   );
@@ -601,9 +595,25 @@ const Stake = () => {
             <Box position={"absolute"} top={-30} right={0} color={"yellow"}>
               staked : {stakeValue}
             </Box>
-
+            <Box position={"absolute"} top={6} right={10} zIndex={100}>
+              <Button
+                onClick={() => {
+                  setUnstakeValue(stakeValue);
+                }}
+                sx={{
+                  height: "30px",
+                  width: "40px",
+                  padding: 0,
+                  minWidth: "30px",
+                  background: "#C3D4A54D",
+                  color: "#c3d4a5",
+                }}
+              >
+                Max
+              </Button>
+            </Box>
             <StyledInput
-              value={unstakeValue === 0 ? "" : convertAndStakeValue}
+              value={unstakeValue === 0 ? "" : unstakeValue}
               onChange={(e) => {
                 setUnstakeValue(e.target.value);
               }}
@@ -631,8 +641,7 @@ const Stake = () => {
           </YellowButton>
         </Stack>
       </TabPanel>
-      <StakeLP />
-    </Layout>
+    </Box>
   );
 };
-export default Stake;
+export default StakeLP;
