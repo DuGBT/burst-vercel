@@ -360,6 +360,21 @@ const Stake = () => {
             setValue(1);
           }}
         />
+        <StyledTab
+          label="INFO"
+          sx={{
+            border: "none",
+            color: value === 2 ? "yellow" : "#929292",
+            fontFamily: "Rajdhani SemiBold",
+
+            fontWeight: "600",
+            fontSize: "16px",
+            textTransform: "none",
+          }}
+          onClick={() => {
+            setValue(2);
+          }}
+        />
       </StyledTabs>
       <TabPanel value={value} index={0}>
         <Box>
@@ -846,6 +861,73 @@ const Stake = () => {
           >
             UNSTAKE
           </YellowButton>
+        </Stack>
+      </TabPanel>
+      <TabPanel value={value} index={2}>
+        <Stack>
+          <Stack
+            direction={"row"}
+            alignItems={"flex-end"}
+            alignContent={"baseline"}
+          >
+            <Box
+              sx={{ marginRight: "50px", width: "300px", textAlign: "left" }}
+            >
+              Wblur Token Address
+            </Box>
+            <Box>
+              <a
+                style={{ color: "yellow" }}
+                href={
+                  "https://goerli.etherscan.io/address/0x72CebE61e70142b4B4720087aBb723182e4ca6e8"
+                }
+              >
+                0x72CebE61e70142b4B4720087aBb723182e4ca6e8
+              </a>
+            </Box>
+          </Stack>
+          <Stack
+            direction={"row"}
+            alignItems={"flex-end"}
+            alignContent={"baseline"}
+          >
+            <Box
+              sx={{ marginRight: "50px", width: "300px", textAlign: "left" }}
+            >
+              blur depositer
+            </Box>
+            <Box>
+              <a
+                style={{ color: "yellow" }}
+                href={
+                  "https://goerli.etherscan.io/address/0x4e74c4c76625d1A3f2f2285651A15580023762E6"
+                }
+              >
+                0x4e74c4c76625d1A3f2f2285651A15580023762E6
+              </a>
+            </Box>
+          </Stack>
+          <Stack
+            direction={"row"}
+            alignItems={"flex-end"}
+            alignContent={"baseline"}
+          >
+            <Box
+              sx={{ marginRight: "50px", width: "300px", textAlign: "left" }}
+            >
+              wBlur staking contract
+            </Box>
+            <Box>
+              <a
+                style={{ color: "yellow" }}
+                href={
+                  "https://goerli.etherscan.io/address/0x56f9E3de66600ca09F2568c11a5F2D1E793C0ef2"
+                }
+              >
+                0x56f9E3de66600ca09F2568c11a5F2D1E793C0ef2
+              </a>
+            </Box>
+          </Stack>
         </Stack>
       </TabPanel>
       <StakeLP />
