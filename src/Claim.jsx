@@ -104,83 +104,60 @@ const Claim = () => {
 
   return (
     <Layout>
-      <StyledAccordion sx={{ background: "rgb(42, 42, 42)", color: "#fff" }}>
-        <AccordionSummary
-          expandIcon={<ExpandMoreIcon />}
-          aria-controls="panel1a-content"
-          id="panel1a-header"
+      <Stack
+        width={"100%"}
+        direction={"row"}
+        textAlign={"left"}
+        justifyContent={"space-between"}
+        marginBottom={"40px"}
+        padding={2}
+        sx={{ background: "rgb(42,42,42)" }}
+      >
+        <Box sx={{ fontSize: "17px", fontWeight: 700 }}>Stake Wblur</Box>
+        <HeadInfo head={"Claimable (USD value)"} content={earnValue} />
+        <HeadInfo head={"vApr"} content={"0.43%"} />
+        <YellowButton
+          sx={{
+            marginX: "8px",
+            height: "41px",
+            color: "#000",
+          }}
+          onClick={async () => {
+            try {
+              const res = await contract.getReward();
+              console.log(res);
+            } catch (error) {
+              console.log(error);
+            }
+          }}
+          variant="contained"
         >
-          <Stack
-            width={"100%"}
-            direction={"row"}
-            textAlign={"left"}
-            justifyContent={"space-between"}
-          >
-            <Box sx={{ fontSize: "17px", fontWeight: 700 }}>Stake Wblur</Box>
-            <HeadInfo head={"Claimable (USD value)"} content={earnValue} />
-            <HeadInfo head={"vApr"} content={"0.43%"} />
-            <YellowButton
-              sx={{
-                marginX: "8px",
-                height: "41px",
-                color: "#000",
-              }}
-              onClick={async () => {
-                try {
-                  const res = await contract.getReward();
-                  console.log(res);
-                } catch (error) {
-                  console.log(error);
-                }
-              }}
-              variant="contained"
-            >
-              Claim
-            </YellowButton>
-          </Stack>
-        </AccordionSummary>
-        <AccordionDetails>
-          <Typography>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse
-            malesuada lacus ex, sit amet blandit leo lobortis eget.
-          </Typography>
-        </AccordionDetails>
-      </StyledAccordion>
-      <StyledAccordion sx={{ background: "rgb(42, 42, 42)", color: "#fff" }}>
-        <AccordionSummary
-          expandIcon={<ExpandMoreIcon />}
-          aria-controls="panel2a-content"
-          id="panel2a-header"
+          Claim
+        </YellowButton>
+      </Stack>
+      <Stack
+        width={"100%"}
+        direction={"row"}
+        textAlign={"left"}
+        justifyContent={"space-between"}
+        padding={2}
+        sx={{ background: "rgb(42,42,42)" }}
+      >
+        <Box sx={{ fontSize: "17px", fontWeight: 700 }}>Lock Burst</Box>
+        <HeadInfo head={"Claimable (USD value)"} content={"$0"} />
+        <HeadInfo head={"vApr"} content={"0.43%"} />
+        <WhiteDisabledButton
+          disabled
+          sx={{
+            marginX: "8px",
+            height: "41px",
+            background: "#eee",
+          }}
+          variant="contained"
         >
-          <Stack
-            width={"100%"}
-            direction={"row"}
-            textAlign={"left"}
-            justifyContent={"space-between"}
-          >
-            <Box sx={{ fontSize: "17px", fontWeight: 700 }}>Lock Burst</Box>
-            <HeadInfo head={"Claimable (USD value)"} content={"$0"} />
-            <HeadInfo head={"vApr"} content={"0.43%"} />
-            <WhiteDisabledButton
-              disabled
-              sx={{
-                marginX: "8px",
-                height: "41px",
-                background: "#eee",
-              }}
-              variant="contained"
-            >
-              Claim
-            </WhiteDisabledButton>
-          </Stack>
-        </AccordionSummary>
-        <AccordionDetails>
-          <Typography>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse
-            malesuada lacus ex, sit amet blandit leo lobortis eget.
-          </Typography>
-        </AccordionDetails>
-      </StyledAccordion>
+          Claim
+        </WhiteDisabledButton>
+      </Stack>
     </Layout>
   );
 };

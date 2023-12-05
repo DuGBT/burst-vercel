@@ -14,6 +14,8 @@ import { WblurStakeAbi } from "./abi/wblur-staking";
 import { useConnectWallet } from "@web3-onboard/react";
 import * as ethers from "ethers";
 import StakeLP from "./StakeLp";
+import wBlurIcon from "./assets/wrapBlur_4.png";
+
 const StyledInput = styled(TextField)({
   "& .MuiInputBase-input": {
     padding: "10px",
@@ -29,11 +31,25 @@ const StyledInput = styled(TextField)({
   },
 });
 const YellowButton = styled(Button)({
-  "&.MuiButton-root": { background: "yellow !important" },
+  "&.MuiButton-root": { background: "yellow !important", width: "200px" },
 });
+
 const BlackButton = styled(Button)({
-  "&.MuiButton-root": { background: "#000" },
+  "&.MuiButton-root": { background: "#000", width: "200px" },
 });
+const GreyButton = styled(Button)({
+  "&.MuiButton-root": {
+    background: "rgba(146, 146, 146, 0.2)",
+    width: "200px",
+  },
+});
+
+const FunctionButton = (props) => {
+  const { burstColor, children } = props;
+  if (burstColor === "yellow") {
+    return <YellowButton {...props}>{children}</YellowButton>;
+  } else return <GreyButton {...props}>{children}</GreyButton>;
+};
 
 function HeadInfoItem({ head, content }) {
   return (
@@ -48,8 +64,8 @@ function HeadInfoItem({ head, content }) {
           {head}
         </Box>
         <Box
-          sx={{ fontFamily: "Rajdhani SemiBold" }}
-          fontSize={17}
+          sx={{ fontFamily: "Rajdhani Bold" }}
+          fontSize={18}
           fontWeight={700}
           color={"#fff"}
         >
@@ -59,9 +75,17 @@ function HeadInfoItem({ head, content }) {
     </Box>
   );
 }
-function HeadInfo({ head, content }) {
+function HeadInfo({ head, content, noBorder }) {
   return (
-    <Box>
+    <Box
+      display={"flex"}
+      justifyContent={"center"}
+      sx={{
+        borderRight: noBorder ? "none" : "1px solid #727272",
+        flex: "1 1 0px",
+        maxWidth: "200px",
+      }}
+    >
       <HeadInfoItem head={head} content={content}></HeadInfoItem>
     </Box>
   );
@@ -256,19 +280,54 @@ const Stake = () => {
   const handleChange = (e) => {
     console.log(e.target);
   };
+  const convertAndStakeApproved = !!(
+    wallet &&
+    blurAllowance > 0 &&
+    convertAndStakeValue <= blurAllowance
+  );
+  const convertApproved = !!(
+    wallet &&
+    blurAllowance > 0 &&
+    convertValue <= blurAllowance
+  );
+  const stakeApproved = !!(
+    wallet &&
+    WblurAllowance > 0 &&
+    stakeInputValue <= WblurAllowance
+  );
+  console.log(convertAndStakeValue, blurAllowance);
   return (
     <Layout>
-      <Box backgroundColor={"rgb(42, 42, 42)"} height={100} padding={"10px"}>
+      <Box
+        sx={{
+          borderTop: "1px solid #727272",
+          borderBottom: "1px solid #727272",
+        }}
+        height={100}
+        padding={"10px"}
+      >
         <Stack
           direction={"row"}
           justifyContent={"space-between"}
           textAlign={"left"}
+          height={"100%"}
+          alignItems={"center"}
         >
+          <HeadInfo
+            head={""}
+            content={
+              <img
+                src={wBlurIcon}
+                style={{ height: "32px", width: "32px" }}
+              ></img>
+            }
+          ></HeadInfo>
+
           <HeadInfo head={"All Claimable"} content={"$0"} />
           <HeadInfo head={"My vApr"} content={"0%"} />
-          <HeadInfo head={"Max vApr"} content={"19%"} />
+          <HeadInfo head={"Max vApr"} content={"0%"} />
           <HeadInfo head={"My cvxCRV staked"} content={"0  cvxCrv = $0"} />
-          <HeadInfo head={"TVL"} content={"$130m"} />
+          <HeadInfo head={"TVL"} content={"$0"} noBorder />
         </Stack>
       </Box>
       <StyledTabs value={value} onChange={handleChange}>
@@ -351,63 +410,116 @@ const Stake = () => {
                 sx={{ width: "100%" }}
               />
             </Box>
-            {blurAllowance > 0 && convertAndStakeValue <= blurAllowance && (
-              <BlackButton
+            <Box>
+              <Stack direction={"row"} justifyContent={"center"}>
+                <Box
+                  sx={{
+                    marginBottom: "6px",
+                    width: "20px",
+                    height: "20px",
+                    lineHeight: "20px",
+                    textAlign: "center",
+                    borderRadius: "50%",
+                    color: convertApproved ? "#929292" : "#000",
+                    background: !wallet ? "rgba(146, 146, 146, 0.2)" : "yellow",
+                  }}
+                >
+                  1
+                </Box>
+              </Stack>
+              {convertAndStakeApproved && (
+                <BlackButton
+                  sx={{
+                    marginX: "8px",
+                    height: "41px",
+                    color: "yellow !important",
+                    border: "1px solid yellow",
+                  }}
+                  variant="contained"
+                  disabled
+                  onClick={() => {}}
+                >
+                  Approved
+                </BlackButton>
+              )}
+              {!convertAndStakeApproved && (
+                <FunctionButton
+                  burstColor={wallet ? "yellow" : "black"}
+                  sx={{
+                    marginX: "8px",
+                    height: "41px",
+                    color: "#000",
+                  }}
+                  variant="contained"
+                  onClick={() => {
+                    approve();
+                  }}
+                >
+                  Approve
+                </FunctionButton>
+              )}
+            </Box>
+            <Box position={"relative"}>
+              <Box
+                position={"absolute"}
                 sx={{
-                  marginX: "8px",
-                  height: "41px",
-                  color: "yellow",
-                  border: "1px solid yellow",
+                  top: "10px",
+                  transform: "translate(-50%,-50%)",
+                  height: "2px",
+                  width: "92%",
+                  background: !convertAndStakeApproved
+                    ? "rgba(146, 146, 146, 0.2)"
+                    : "yellow",
                 }}
-                variant="contained"
-                onClick={() => {
-                  //   approve();
-                }}
-              >
-                Approved
-              </BlackButton>
-            )}
-            {(blurAllowance === 0 || convertAndStakeValue > blurAllowance) && (
-              <YellowButton
-                sx={{
-                  marginX: "8px",
-                  height: "41px",
-                  color: "#000",
-                }}
-                variant="contained"
-                onClick={() => {
-                  approve();
-                }}
-              >
-                Approve
-              </YellowButton>
-            )}
-            <YellowButton
-              sx={{ marginX: "8px", height: "41px", color: "#000" }}
-              variant="contained"
-              //   disabled
-              onClick={async () => {
-                try {
-                  const signer = await ethersProvider.getSigner();
-                  const Contract = new ethers.Contract(
-                    "0x4e74c4c76625d1A3f2f2285651A15580023762E6",
-                    blurDepositAbi,
-                    ethersProvider
-                  );
-                  const connectedContract = Contract.connect(signer);
-
-                  const res = await connectedContract.deposit(
-                    BigInt(convertAndStakeValue) * 10n ** 18n,
-                    "0x56f9E3de66600ca09F2568c11a5F2D1E793C0ef2"
-                  );
-                  console.log(res);
-                } catch (error) {
-                  console.log(error);
+              ></Box>
+              <Stack direction={"row"} justifyContent={"center"}>
+                <Box
+                  sx={{
+                    marginBottom: "6px",
+                    width: "20px",
+                    height: "20px",
+                    lineHeight: "20px",
+                    textAlign: "center",
+                    borderRadius: "50%",
+                    color: convertAndStakeApproved ? "#929292" : "#000",
+                    background: !convertAndStakeApproved
+                      ? "rgba(146, 146, 146, 0.2)"
+                      : "yellow",
+                  }}
+                >
+                  2
+                </Box>
+              </Stack>
+              <FunctionButton
+                burstColor={
+                  wallet && convertAndStakeApproved ? "yellow" : "black"
                 }
-              }}
-            >
-              Convert & Stake
-            </YellowButton>
+                sx={{ marginX: "8px", height: "41px", color: "#000" }}
+                variant="contained"
+                //   disabled
+                onClick={async () => {
+                  try {
+                    const signer = await ethersProvider.getSigner();
+                    const Contract = new ethers.Contract(
+                      "0x4e74c4c76625d1A3f2f2285651A15580023762E6",
+                      blurDepositAbi,
+                      ethersProvider
+                    );
+                    const connectedContract = Contract.connect(signer);
+
+                    const res = await connectedContract.deposit(
+                      BigInt(convertAndStakeValue) * 10n ** 18n,
+                      "0x56f9E3de66600ca09F2568c11a5F2D1E793C0ef2"
+                    );
+                    console.log(res);
+                  } catch (error) {
+                    console.log(error);
+                  }
+                }}
+              >
+                Convert & Stake
+              </FunctionButton>
+            </Box>
           </Stack>
           <Stack
             direction={"row"}
@@ -443,62 +555,114 @@ const Stake = () => {
                 sx={{ width: "100%" }}
               />
             </Box>
-
-            {blurAllowance > 0 && convertValue <= blurAllowance && (
-              <BlackButton
+            <Box>
+              <Stack direction={"row"} justifyContent={"center"}>
+                <Box
+                  sx={{
+                    marginBottom: "6px",
+                    width: "20px",
+                    height: "20px",
+                    lineHeight: "20px",
+                    textAlign: "center",
+                    borderRadius: "50%",
+                    color: convertApproved ? "#929292" : "#000",
+                    background: !wallet ? "rgba(146, 146, 146, 0.2)" : "yellow",
+                  }}
+                >
+                  1
+                </Box>
+              </Stack>
+              {convertApproved && (
+                <BlackButton
+                  sx={{
+                    marginX: "8px",
+                    height: "41px",
+                    color: "yellow !important",
+                    border: "1px solid yellow",
+                  }}
+                  variant="contained"
+                  disabled
+                  onClick={() => {}}
+                >
+                  Approved
+                </BlackButton>
+              )}
+              {!convertApproved && (
+                <FunctionButton
+                  burstColor={wallet ? "yellow" : "black"}
+                  sx={{
+                    marginX: "8px",
+                    height: "41px",
+                    color: "#000",
+                  }}
+                  variant="contained"
+                  onClick={() => {
+                    approve();
+                  }}
+                >
+                  Approve
+                </FunctionButton>
+              )}
+            </Box>
+            <Box position={"relative"}>
+              <Box
+                position={"absolute"}
                 sx={{
-                  marginX: "8px",
-                  height: "41px",
-                  color: "yellow",
-                  border: "1px solid yellow",
+                  top: "10px",
+                  transform: "translate(-50%,-50%)",
+                  height: "2px",
+                  width: "92%",
+                  background: !convertApproved
+                    ? "rgba(146, 146, 146, 0.2)"
+                    : "yellow",
                 }}
+              ></Box>
+              <Stack direction={"row"} justifyContent={"center"}>
+                <Box
+                  sx={{
+                    marginBottom: "6px",
+                    width: "20px",
+                    height: "20px",
+                    lineHeight: "20px",
+                    textAlign: "center",
+                    borderRadius: "50%",
+                    color: convertApproved ? "#929292" : "#000",
+                    background: !convertApproved
+                      ? "rgba(146, 146, 146, 0.2)"
+                      : "yellow",
+                  }}
+                >
+                  2
+                </Box>
+              </Stack>
+              <FunctionButton
+                burstColor={wallet && convertApproved ? "yellow" : "black"}
+                sx={{ marginX: "8px", height: "41px", color: "#000" }}
                 variant="contained"
-                onClick={() => {}}
-              >
-                Approved
-              </BlackButton>
-            )}
-            {(blurAllowance === 0 || convertValue > blurAllowance) && (
-              <YellowButton
-                sx={{
-                  marginX: "8px",
-                  height: "41px",
-                  color: "#000",
-                }}
-                variant="contained"
-                onClick={() => {
-                  approve();
-                }}
-              >
-                Approve
-              </YellowButton>
-            )}
-            <YellowButton
-              sx={{ marginX: "8px", height: "41px", color: "#000" }}
-              variant="contained"
-              //   disabled
-              onClick={async () => {
-                try {
-                  const signer = await ethersProvider.getSigner();
-                  const Contract = new ethers.Contract(
-                    "0x4e74c4c76625d1A3f2f2285651A15580023762E6",
-                    blurDepositAbi,
-                    ethersProvider
-                  );
-                  const connectedContract = Contract.connect(signer);
+                //   disabled
+                onClick={async () => {
+                  try {
+                    const signer = await ethersProvider.getSigner();
+                    const Contract = new ethers.Contract(
+                      "0x4e74c4c76625d1A3f2f2285651A15580023762E6",
+                      blurDepositAbi,
+                      ethersProvider
+                    );
+                    const connectedContract = Contract.connect(signer);
 
-                  const res = await connectedContract.deposit(
-                    BigInt(convertValue) * 10n ** 18n,
-                    "0x0000000000000000000000000000000000000000"
-                  );
-                  console.log(res);
-                } catch (error) {
-                  console.log(error);
-                }
-              }}
-            >
-              Convert
-            </YellowButton>
+                    const res = await connectedContract.deposit(
+                      BigInt(convertValue) * 10n ** 18n,
+                      "0x0000000000000000000000000000000000000000"
+                    );
+                    console.log(res);
+                  } catch (error) {
+                    console.log(error);
+                  }
+                }}
+              >
+                Convert
+              </FunctionButton>
+            </Box>
           </Stack>
           <Stack
             direction={"row"}
@@ -534,60 +698,113 @@ const Stake = () => {
                 sx={{ width: "100%" }}
               />
             </Box>
-            {WblurAllowance > 0 && stakeInputValue <= WblurAllowance && (
-              <BlackButton
+            <Box>
+              <Stack direction={"row"} justifyContent={"center"}>
+                <Box
+                  sx={{
+                    marginBottom: "6px",
+                    width: "20px",
+                    height: "20px",
+                    lineHeight: "20px",
+                    textAlign: "center",
+                    borderRadius: "50%",
+                    color: stakeApproved ? "#929292" : "#000",
+                    background: !wallet ? "rgba(146, 146, 146, 0.2)" : "yellow",
+                  }}
+                >
+                  1
+                </Box>
+              </Stack>
+              {stakeApproved && (
+                <BlackButton
+                  sx={{
+                    marginX: "8px",
+                    height: "41px",
+                    color: "yellow !important",
+                    border: "1px solid yellow",
+                  }}
+                  variant="contained"
+                  disabled
+                  onClick={() => {}}
+                >
+                  Approved
+                </BlackButton>
+              )}
+              {!stakeApproved && (
+                <FunctionButton
+                  burstColor={wallet ? "yellow" : "black"}
+                  sx={{
+                    marginX: "8px",
+                    height: "41px",
+                    color: "#000",
+                  }}
+                  variant="contained"
+                  onClick={() => {
+                    approveForStake();
+                  }}
+                >
+                  Approve
+                </FunctionButton>
+              )}
+            </Box>
+            <Box position={"relative"}>
+              <Box
+                position={"absolute"}
                 sx={{
-                  marginX: "8px",
-                  height: "41px",
-                  color: "yellow",
-                  border: "1px solid yellow",
+                  top: "10px",
+                  transform: "translate(-50%,-50%)",
+                  height: "2px",
+                  width: "92%",
+                  background: !stakeApproved
+                    ? "rgba(146, 146, 146, 0.2)"
+                    : "yellow",
                 }}
+              ></Box>
+              <Stack direction={"row"} justifyContent={"center"}>
+                <Box
+                  sx={{
+                    marginBottom: "6px",
+                    width: "20px",
+                    height: "20px",
+                    lineHeight: "20px",
+                    textAlign: "center",
+                    borderRadius: "50%",
+                    color: stakeApproved ? "#929292" : "#000",
+                    background: !stakeApproved
+                      ? "rgba(146, 146, 146, 0.2)"
+                      : "yellow",
+                  }}
+                >
+                  2
+                </Box>
+              </Stack>
+              <FunctionButton
+                burstColor={wallet && stakeApproved ? "yellow" : "black"}
+                sx={{ marginX: "8px", height: "41px", color: "#000" }}
                 variant="contained"
-                onClick={() => {}}
-              >
-                Approved
-              </BlackButton>
-            )}
-            {(WblurAllowance === 0 || stakeInputValue > WblurAllowance) && (
-              <YellowButton
-                sx={{
-                  marginX: "8px",
-                  height: "41px",
-                  color: "#000",
-                }}
-                variant="contained"
-                onClick={() => {
-                  approveForStake();
-                }}
-              >
-                Approve
-              </YellowButton>
-            )}
-            <YellowButton
-              sx={{ marginX: "8px", height: "41px", color: "#000" }}
-              variant="contained"
-              //   disabled
-              onClick={async () => {
-                try {
-                  const signer = await ethersProvider.getSigner();
-                  const stakeContract = new ethers.Contract(
-                    "0x56f9E3de66600ca09F2568c11a5F2D1E793C0ef2",
-                    WblurStakeAbi,
-                    ethersProvider
-                  );
-                  const connectedContract = stakeContract.connect(signer);
+                //   disabled
+                onClick={async () => {
+                  try {
+                    const signer = await ethersProvider.getSigner();
+                    const stakeContract = new ethers.Contract(
+                      "0x56f9E3de66600ca09F2568c11a5F2D1E793C0ef2",
+                      WblurStakeAbi,
+                      ethersProvider
+                    );
+                    const connectedContract = stakeContract.connect(signer);
 
-                  const res = await connectedContract.stake(
-                    BigInt(stakeInputValue) * 10n ** 18n
-                  );
-                  console.log(res);
-                } catch (error) {
-                  console.log(error);
-                }
-              }}
-            >
-              Stake
-            </YellowButton>
+                    const res = await connectedContract.stake(
+                      BigInt(stakeInputValue) * 10n ** 18n
+                    );
+                    console.log(res);
+                  } catch (error) {
+                    console.log(error);
+                  }
+                }}
+              >
+                Stake
+              </FunctionButton>
+            </Box>
           </Stack>
         </Box>
       </TabPanel>

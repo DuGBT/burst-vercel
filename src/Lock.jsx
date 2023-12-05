@@ -10,12 +10,28 @@ import { erc20TokenAbi } from "./abi/erc20token";
 import { LockerAbi } from "./abi/burst-locker";
 import { useConnectWallet } from "@web3-onboard/react";
 import * as ethers from "ethers";
+import wBlurIcon from "./assets/wrapBlur_4.png";
+
 const YellowButton = styled(Button)({
-  "&.MuiButton-root": { background: "yellow !important" },
+  "&.MuiButton-root": { background: "yellow !important", width: "200px" },
 });
+
 const BlackButton = styled(Button)({
-  "&.MuiButton-root": { background: "#000" },
+  "&.MuiButton-root": { background: "#000", width: "200px" },
 });
+const GreyButton = styled(Button)({
+  "&.MuiButton-root": {
+    background: "rgba(146, 146, 146, 0.2)",
+    width: "200px",
+  },
+});
+
+const FunctionButton = (props) => {
+  const { burstColor, children } = props;
+  if (burstColor === "yellow") {
+    return <YellowButton {...props}>{children}</YellowButton>;
+  } else return <GreyButton {...props}>{children}</GreyButton>;
+};
 const StyledInput = styled(TextField)({
   "& .MuiInputBase-input": {
     padding: "10px",
@@ -54,9 +70,17 @@ function HeadInfoItem({ head, content }) {
     </Box>
   );
 }
-function HeadInfo({ head, content }) {
+function HeadInfo({ head, content, noBorder }) {
   return (
-    <Box>
+    <Box
+      display={"flex"}
+      justifyContent={"center"}
+      sx={{
+        borderRight: noBorder ? "none" : "1px solid #727272",
+        flex: "1 1 0px",
+        maxWidth: "200px",
+      }}
+    >
       <HeadInfoItem head={head} content={content}></HeadInfoItem>
     </Box>
   );
@@ -148,19 +172,40 @@ const Lock = () => {
       console.log(error);
     }
   };
+  const approved = wallet && allowance > 0 && lockValue < allowance;
+
   return (
     <Layout>
-      <Box backgroundColor={"rgb(42, 42, 42)"} height={100} padding={"10px"}>
+      <Box
+        sx={{
+          borderTop: "1px solid #727272",
+          borderBottom: "1px solid #727272",
+        }}
+        height={100}
+        padding={"10px"}
+      >
         <Stack
           direction={"row"}
           justifyContent={"space-between"}
           textAlign={"left"}
+          height={"100%"}
+          alignItems={"center"}
         >
+          <HeadInfo
+            head={""}
+            content={
+              <img
+                src={wBlurIcon}
+                style={{ height: "32px", width: "32px" }}
+              ></img>
+            }
+          ></HeadInfo>
+
           <HeadInfo head={"All Claimable"} content={"$0"} />
           <HeadInfo head={"My vApr"} content={"0%"} />
-          <HeadInfo head={"Max vApr"} content={"19%"} />
+          <HeadInfo head={"Max vApr"} content={"0%"} />
           <HeadInfo head={"My cvxCRV staked"} content={"0  cvxCrv = $0"} />
-          <HeadInfo head={"TVL"} content={"$130m"} />
+          <HeadInfo head={"TVL"} content={"$0"} noBorder />
         </Stack>
       </Box>
       <Box textAlign={"left"}>
@@ -195,44 +240,94 @@ const Lock = () => {
             sx={{ width: "100%" }}
           />
         </Box>
-        {allowance > 0 && lockValue < allowance && (
-          <BlackButton
+        <Box>
+          <Stack direction={"row"} justifyContent={"center"}>
+            <Box
+              sx={{
+                marginBottom: "6px",
+                width: "20px",
+                height: "20px",
+                lineHeight: "20px",
+                textAlign: "center",
+                borderRadius: "50%",
+                color: approved ? "#929292" : "#000",
+                background: !wallet ? "rgba(146, 146, 146, 0.2)" : "yellow",
+              }}
+            >
+              1
+            </Box>
+          </Stack>
+          {approved && (
+            <BlackButton
+              sx={{
+                marginX: "8px",
+                height: "41px",
+                color: "yellow !important",
+                border: "1px solid yellow",
+              }}
+              variant="contained"
+              disabled
+              onClick={() => {}}
+            >
+              Approved
+            </BlackButton>
+          )}
+          {!approved && (
+            <FunctionButton
+              burstColor={wallet ? "yellow" : "black"}
+              sx={{
+                marginX: "8px",
+                height: "41px",
+                color: "#000",
+              }}
+              variant="contained"
+              onClick={() => {
+                approve();
+              }}
+            >
+              Approve
+            </FunctionButton>
+          )}
+        </Box>
+        <Box position={"relative"}>
+          <Box
+            position={"absolute"}
             sx={{
-              marginX: "8px",
-              height: "41px",
-              color: "yellow",
-              border: "1px solid yellow",
+              top: "10px",
+              transform: "translate(-50%,-50%)",
+              height: "2px",
+              width: "92%",
+              background: !approved ? "rgba(146, 146, 146, 0.2)" : "yellow",
             }}
+          ></Box>
+          <Stack direction={"row"} justifyContent={"center"}>
+            <Box
+              sx={{
+                marginBottom: "6px",
+                width: "20px",
+                height: "20px",
+                lineHeight: "20px",
+                textAlign: "center",
+                borderRadius: "50%",
+                color: approved ? "#929292" : "#000",
+                background: !approved ? "rgba(146, 146, 146, 0.2)" : "yellow",
+              }}
+            >
+              2
+            </Box>
+          </Stack>
+          <FunctionButton
+            burstColor={wallet && approved ? "yellow" : "black"}
+            sx={{ marginX: "8px", height: "41px", color: "#000" }}
             variant="contained"
-            onClick={() => {}}
-          >
-            Approved
-          </BlackButton>
-        )}
-        {(allowance === 0 || lockValue > allowance) && (
-          <YellowButton
-            sx={{
-              marginX: "8px",
-              height: "41px",
-              color: "#000",
-            }}
-            variant="contained"
+            //   disabled
             onClick={() => {
-              approve();
+              lock();
             }}
           >
-            Approve
-          </YellowButton>
-        )}
-        <YellowButton
-          sx={{ marginX: "8px", height: "41px", color: "#000" }}
-          variant="contained"
-          onClick={() => {
-            lock();
-          }}
-        >
-          lock Burst
-        </YellowButton>
+            Lock
+          </FunctionButton>
+        </Box>
       </Stack>
     </Layout>
   );

@@ -9,7 +9,7 @@ import Button from "@mui/material/Button";
 import { styled } from "@mui/material";
 import { useConnectWallet } from "@web3-onboard/react";
 import { Link, useParams } from "react-router-dom";
-
+import BurstLogo from "./assets/BURST_Logo_Yellow.png";
 function Layout({ children }) {
   const [count, setCount] = useState(0);
   const [value, setValue] = useState(0);
@@ -57,8 +57,38 @@ function Layout({ children }) {
   return (
     <div>
       <div className="header">
-        <Box sx={{ background: "#000", height: 200, p: 0 }}>
-          <Stack direction={"row"} justifyContent={"space-between"}>
+        <Box
+          sx={{
+            background: "#000",
+            height: 200,
+            p: 0,
+            position: "relative",
+          }}
+        >
+          <Box sx={{ position: "absolute", left: "-100px", top: "0" }}>
+            <img src={BurstLogo} style={{ width: "300px" }} />
+          </Box>
+          <YellowButton
+            sx={{
+              background: "yellow",
+              fontFamily: "Rajdhani Bold",
+              color: "#000",
+              position: "absolute",
+              right: "0",
+              top: "0",
+            }}
+            onClick={() => {
+              wallet ? disconnect(wallet) : connect();
+            }}
+          >
+            {wallet
+              ? `${wallet.accounts[0].address.slice(
+                  0,
+                  6
+                )}...${wallet.accounts[0].address.slice(-4)}`
+              : "Connect Wallet"}
+          </YellowButton>
+          <Stack width={"100%"} direction={"row"} justifyContent={"center"}>
             <StyledTabs value={value} onChange={handleChange} centered>
               <Link to={"/stake"}>
                 <StyledTab
@@ -70,7 +100,8 @@ function Layout({ children }) {
                     fontSize: "16px",
                     textTransform: "none",
                     color:
-                      window.location.pathname === "/stake"
+                      window.location.pathname === "/stake" ||
+                      window.location.pathname === ""
                         ? "yellow"
                         : "#929292",
                   }}
@@ -110,23 +141,6 @@ function Layout({ children }) {
                 />
               </Link>
             </StyledTabs>
-            <YellowButton
-              sx={{
-                background: "yellow",
-                fontFamily: "Rajdhani Bold",
-                color: "#000",
-              }}
-              onClick={() => {
-                wallet ? disconnect(wallet) : connect();
-              }}
-            >
-              {wallet
-                ? `${wallet.accounts[0].address.slice(
-                    0,
-                    6
-                  )}...${wallet.accounts[0].address.slice(-4)}`
-                : "Connect Wallet"}
-            </YellowButton>
           </Stack>
           <Stack direction={"row"} justifyContent={"center"}>
             <Box
