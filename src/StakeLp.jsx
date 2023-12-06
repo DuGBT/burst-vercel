@@ -257,20 +257,6 @@ const StakeLP = () => {
       console.log(error);
     }
   };
-  //   const checkApprove = async () => {
-  //     try {
-  //       const res = await erc20Contract.allowance(
-  //         wallet.accounts[0].address,
-  //         "0x4e74c4c76625d1A3f2f2285651A15580023762E6"
-  //       );
-  //       setBlurAllowance(Number(BigInt(res._hex) / 10n ** 18n));
-  //       console.log("allowance", Number(BigInt(res._hex) / 10n ** 18n));
-  //       if (res == 0) {
-  //       }
-  //     } catch (error) {
-  //       console.log(error);
-  //     }
-  //   };
   const checkApproveForStake = async () => {
     try {
       const res = await wBlurErc20Contract.allowance(
@@ -286,10 +272,9 @@ const StakeLP = () => {
   };
 
   const checkStakeBalance = async () => {
-    console.log(stakeContract, wallet.accounts[0].address);
     try {
       const res = await stakeContract.balanceOf(wallet.accounts[0].address);
-      console.log(res, "stake value", Number(BigInt(res._hex) / 10n ** 18n));
+
       setStakeValue(Number(BigInt(res._hex) / 10n ** 18n));
     } catch (error) {
       console.log(error);
@@ -314,7 +299,7 @@ const StakeLP = () => {
   }, [wBlurErc20Contract]);
 
   const handleChange = (e) => {
-    console.log(e.target);
+    // console.log(e.target);
   };
   const stakeApproved = !!(
     wallet &&

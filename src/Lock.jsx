@@ -235,7 +235,6 @@ const Lock = () => {
             value={lockValue === 0 ? "" : lockValue}
             onChange={(e) => {
               setLockValue(e.target.value);
-              console.log(typeof e.target.value);
             }}
             sx={{ width: "100%" }}
           />

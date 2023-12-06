@@ -10,32 +10,45 @@ import { styled } from "@mui/material";
 import { useConnectWallet } from "@web3-onboard/react";
 import { Link, useParams } from "react-router-dom";
 import BurstLogo from "./assets/BURST_Logo_Yellow.png";
+import * as ethers from "ethers";
+import { erc20TokenAbi } from "./abi/erc20token";
+import { WblurStakeAbi } from "./abi/wblur-staking";
+import { getTokenPrice } from "./api";
+import { LockerAbi } from "./abi/burst-locker";
+
+const StyledTabs = styled(Tabs)({
+  "& .MuiTabs-indicator": {
+    display: "none",
+    transition: "none",
+  },
+});
+
+const StyledTab = styled(Tab)({
+  "&:focus": {
+    outline: "none",
+  },
+  "&.MuiButtonBase-root": {
+    opacity: "1",
+    // color: "yellow",
+  },
+});
+
+const YellowButton = styled(Button)({
+  "&.MuiButton-root": { background: "yellow !important" },
+});
+
 function Layout({ children }) {
-  const [count, setCount] = useState(0);
   const [value, setValue] = useState(0);
   const [{ wallet, connecting }, connect, disconnect] = useConnectWallet();
-
-  const StyledTabs = styled(Tabs)({
-    "& .MuiTabs-indicator": {
-      display: "none",
-      transition: "none",
-    },
-  });
-
-  const StyledTab = styled(Tab)({
-    "&:focus": {
-      outline: "none",
-    },
-    "&.MuiButtonBase-root": {
-      opacity: "1",
-      // color: "yellow",
-    },
-  });
-
-  const YellowButton = styled(Button)({
-    "&.MuiButton-root": { background: "yellow !important" },
-  });
-
+  const [stakeContract, setStakeContract] = useState();
+  const [stakeLPContract, setStakeLPContract] = useState();
+  const [ethersProvider, setProvider] = useState();
+  const [erc20Contract, setErc20Contract] = useState();
+  const [wBlurErc20Contract, setWBlurErc20Contract] = useState();
+  const [lockContract, setLockContract] = useState();
+  const [totalDepositValue, setTotalDepositValue] = useState(0);
+  const [totalClaimableValue, setTotalClaimableValue] = useState(0);
+  const [tokenPrice, setTokenPrice] = useState();
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
@@ -53,6 +66,253 @@ function Layout({ children }) {
       setValue(2);
     }
   }, []);
+  useEffect(() => {
+    async function getPrice() {
+      try {
+        const res = await getTokenPrice();
+        console.log(res);
+        Object.keys(res).forEach((key) => {
+          res[key.toLowerCase()] = res[key];
+        });
+        setTokenPrice(res);
+      } catch (error) {
+        console.log(error);
+      }
+    }
+    getPrice();
+  }, []);
+
+  useEffect(() => {
+    async function Connect() {
+      if (wallet) {
+        const provider = new ethers.providers.Web3Provider(wallet.provider);
+        const signer = await provider.getSigner();
+        const Contract = new ethers.Contract(
+          "0xBC27067AbcCb83962e8DcbC393132E482e85E2C7",
+          erc20TokenAbi,
+          provider
+        );
+        const WblurContract = new ethers.Contract(
+          "0x72cebe61e70142b4b4720087abb723182e4ca6e8",
+          erc20TokenAbi,
+          provider
+        );
+        const stakeContract = new ethers.Contract(
+          "0x56f9E3de66600ca09F2568c11a5F2D1E793C0ef2",
+          WblurStakeAbi,
+          provider
+        );
+        const stakeLPContract = new ethers.Contract(
+          "0x3eEaE34A7Db2B5F04eFF48249EE640dc3F581a7f",
+          WblurStakeAbi,
+          provider
+        );
+        const LockContract = new ethers.Contract(
+          "0x8aEE0D7dd5024bF6430d30D4eAD90f8903e724A9",
+          LockerAbi,
+          provider
+        );
+        const connectedStakeContract = stakeContract.connect(signer);
+        const connectedContract = Contract.connect(signer);
+        const connectedWBlurContract = WblurContract.connect(signer);
+        const connectedStakeLPContract = stakeLPContract.connect(signer);
+        setErc20Contract(connectedContract);
+        setWBlurErc20Contract(connectedWBlurContract);
+        setStakeContract(connectedStakeContract);
+        setStakeLPContract(connectedStakeLPContract);
+        setLockContract(LockContract.connect(signer));
+
+        setProvider(provider);
+      }
+    }
+    Connect();
+  }, [wallet]);
+
+  useEffect(() => {
+    async function getTotalDeposit() {
+      if (wallet && tokenPrice) {
+        const address = wallet.accounts[0].address;
+        try {
+          const stakedWblurRes = await stakeContract.balanceOf(address);
+          console.log(
+            Number(BigInt(stakedWblurRes._hex) / 10n ** 18n),
+            "deposit"
+          );
+          const stakedWblurCount = Number(
+            BigInt(stakedWblurRes._hex) / 10n ** 18n
+          );
+          const stakedWblurValue =
+            stakedWblurCount *
+            tokenPrice[
+              "0x72CebE61e70142b4B4720087aBb723182e4ca6e8".toLowerCase()
+            ];
+          console.log(stakedWblurValue);
+
+          const stakedLPRes = await stakeLPContract.balanceOf(address);
+          console.log(Number(BigInt(stakedLPRes._hex) / 10n ** 18n), "deposit");
+          const stakedLPCount = Number(BigInt(stakedLPRes._hex) / 10n ** 18n);
+          const stakedLPValue =
+            stakedLPCount *
+              tokenPrice[
+                "0xEa542D518Ce4E6633Bbf697b089ecDEfe0A97dA6".toLowerCase()
+              ] || 0;
+          console.log(stakedLPValue);
+
+          const lockRes = await lockContract.lockedBalanceOf(address);
+          console.log(Number(BigInt(lockRes._hex) / 10n ** 18n), "deposit");
+          const lockCount = Number(BigInt(lockRes._hex) / 10n ** 18n);
+          const lockValue =
+            lockCount *
+            tokenPrice[
+              "0x0535a470f39dec973c15d2aa6e7f968235f6e1d4".toLowerCase()
+            ];
+          console.log(lockValue);
+
+          setTotalDepositValue(stakedWblurValue + stakedLPValue + lockValue);
+        } catch (error) {
+          console.log(error);
+        }
+      }
+    }
+    getTotalDeposit();
+  }, [wallet, stakeContract, tokenPrice, stakeLPContract, lockContract]);
+
+  useEffect(() => {
+    async function getExtraTotalClaimable() {
+      if (wallet && tokenPrice) {
+        const address = wallet.accounts[0].address;
+        try {
+          const stakedWblurRes = await stakeContract.extraRewardsLength();
+          console.log(Number(BigInt(stakedWblurRes._hex)), "extra");
+
+          const stakedWblurExtraRewardsLength = Number(
+            BigInt(stakedWblurRes._hex)
+          );
+          let stakedWblurExtraTotalValue = 0;
+          for (let i = 0; i < stakedWblurExtraRewardsLength; i++) {
+            const rewardContractAddress = await stakeContract.extraRewards(i);
+            const rewardContract = new ethers.Contract(
+              rewardContractAddress,
+              WblurStakeAbi,
+              ethersProvider
+            );
+            const signer = ethersProvider.getSigner();
+            const connectedRewardContract = rewardContract.connect(signer);
+            const extraRewardRes = await connectedRewardContract.earned(
+              address
+            );
+            const extraRewardTokenAddress =
+              await connectedRewardContract.rewardToken();
+            console.log(extraRewardRes, extraRewardTokenAddress);
+            const extraRewardCount = Number(
+              BigInt(extraRewardRes._hex) / 10n ** 18n
+            );
+            const extraRewardValue =
+              extraRewardCount * tokenPrice[extraRewardTokenAddress];
+            console.log(extraRewardValue, "extra reward");
+            stakedWblurExtraTotalValue += extraRewardValue || 0;
+          }
+          const stakedLPRes = await stakeLPContract.extraRewardsLength();
+          console.log(
+            Number(BigInt(stakedLPRes._hex)),
+            "extra LP",
+            stakedLPRes
+          );
+
+          const stakedLPExtraRewardsLength = Number(BigInt(stakedLPRes._hex));
+          let stakedLPExtraTotalValue = 0;
+          for (let i = 0; i < stakedLPExtraRewardsLength; i++) {
+            const rewardContractAddress = await stakeLPContract.extraRewards(i);
+            const rewardContract = new ethers.Contract(
+              rewardContractAddress,
+              WblurStakeAbi,
+              ethersProvider
+            );
+            const signer = ethersProvider.getSigner();
+            const connectedRewardContract = rewardContract.connect(signer);
+            const extraRewardRes = await connectedRewardContract.earned(
+              address
+            );
+            const extraRewardTokenAddress =
+              await connectedRewardContract.rewardToken();
+            console.log(extraRewardRes, extraRewardTokenAddress);
+            const extraRewardCount = Number(
+              BigInt(extraRewardRes._hex) / 10n ** 18n
+            );
+            const extraRewardValue =
+              extraRewardCount * tokenPrice[extraRewardTokenAddress];
+            console.log(extraRewardValue, "extra reward");
+            stakedLPExtraTotalValue += extraRewardValue || 0;
+          }
+          return stakedLPExtraTotalValue + stakedWblurExtraTotalValue;
+        } catch (error) {
+          console.log(error);
+        }
+      }
+    }
+    async function getTotalClaimable() {
+      console.log(wallet && tokenPrice, "claim?");
+      if (wallet && tokenPrice) {
+        const address = wallet.accounts[0].address;
+        try {
+          const stakedWblurRes = await stakeContract.earned(address);
+          console.log(
+            Number(BigInt(stakedWblurRes._hex) / 10n ** 18n),
+            "claimable"
+          );
+          const stakedWblurCount = Number(
+            BigInt(stakedWblurRes._hex) / 10n ** 18n
+          );
+          const stakedWblurValue =
+            stakedWblurCount *
+            tokenPrice[
+              "0x0535a470f39dec973c15d2aa6e7f968235f6e1d4".toLowerCase()
+            ];
+          console.log(stakedWblurValue);
+
+          const stakedLPRes = await stakeLPContract.earned(address);
+          console.log(
+            Number(BigInt(stakedLPRes._hex) / 10n ** 18n),
+            "claimable"
+          );
+          const stakedLPCount = Number(BigInt(stakedLPRes._hex) / 10n ** 18n);
+          const stakedLPValue =
+            stakedLPCount *
+              tokenPrice[
+                "0x0535a470f39dec973c15d2aa6e7f968235f6e1d4".toLowerCase()
+              ] || 0;
+          console.log(stakedLPValue);
+
+          const lockRes = await lockContract.claimableRewards(address);
+          console.log(lockRes, "claimable");
+          const lockClaimableTokens = lockRes.map((res) => {
+            return {
+              address: res[0].toLowerCase(),
+              count: Number(BigInt(res[1]._hex) / 10n ** 18n),
+              value:
+                Number(BigInt(res[1]._hex) / 10n ** 18n) *
+                  tokenPrice[res[0].toLowerCase()] || 0,
+            };
+          });
+          console.log(lockClaimableTokens);
+          // const lockCount =;
+          const lockValue = lockClaimableTokens.reduce((sum, token) => {
+            return sum + token.value;
+          }, 0);
+          console.log(lockValue);
+          const extraValue = await getExtraTotalClaimable();
+          setTotalClaimableValue(
+            lockValue + stakedLPValue + stakedWblurValue + extraValue
+          );
+          console.log(lockValue, stakedLPValue, stakedWblurValue, extraValue),
+            "totalvalue";
+        } catch (error) {
+          console.log(error);
+        }
+      }
+    }
+    getTotalClaimable();
+  }, [wallet, stakeContract, tokenPrice, stakeLPContract, lockContract]);
 
   return (
     <div>
@@ -168,7 +428,7 @@ function Layout({ children }) {
                   textShadow: "0px 0px 6px #FCFC03CC",
                 }}
               >
-                $0
+                {`$${totalClaimableValue.toFixed(2)}`}
               </Box>
             </Box>
             <Box
@@ -196,7 +456,7 @@ function Layout({ children }) {
                   textShadow: "0px 0px 6px #FCFC03CC",
                 }}
               >
-                $0
+                {`$${totalDepositValue.toFixed(2)}`}
               </Box>
             </Box>
           </Stack>

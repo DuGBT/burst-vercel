@@ -2,7 +2,6 @@ import React, { useRef, useEffect, useState } from "react";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import BurstVideo from "./assets/BurstBG.mp4";
-import Layout from "./App";
 import Header from "./Header";
 import { styled } from "@mui/material";
 import LaunchIcon from "./assets/LaunchIcon.svg";
@@ -18,66 +17,6 @@ const YellowButton = styled(Button)({
 });
 const ScrollPagination = () => {
   const containerRef = useRef(null);
-  const [currentPage, setCurrentPage] = useState(1);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      const container = containerRef.current;
-
-      if (container) {
-        const timeout = 50;
-
-        if (container.dataset.scrollTimeout) {
-          clearTimeout(parseInt(container.dataset.scrollTimeout, 10));
-        }
-
-        container.dataset.scrollTimeout = setTimeout(() => {
-          const scrollPosition = container.scrollTop;
-          const visibleHeight = container.clientHeight;
-          const pageHeight = visibleHeight * currentPage;
-
-          if (scrollPosition >= pageHeight - visibleHeight + 15) {
-            if (
-              container.dataset.scrollDirection === "up" &&
-              scrollPosition >= pageHeight - 15
-            ) {
-              return;
-            }
-
-            container.dataset.scrollDirection = "down";
-            setCurrentPage((prevPage) => prevPage + 1);
-          } else if (
-            currentPage > 1 &&
-            scrollPosition < (currentPage - 1) * visibleHeight
-          ) {
-            container.dataset.scrollDirection = "up";
-            setCurrentPage((prevPage) => prevPage - 1);
-          } else {
-            container.dataset.scrollDirection = "";
-          }
-        }, timeout);
-      }
-    };
-
-    const container = containerRef.current;
-    if (container) {
-      container.addEventListener("scroll", handleScroll);
-
-      return () => {
-        container.removeEventListener("scroll", handleScroll);
-      };
-    }
-  }, [currentPage]);
-
-  useEffect(() => {
-    const container = containerRef.current;
-    console.log(container.clientHeight);
-    if (container) {
-      const newScrollTop = (currentPage - 1) * container.clientHeight;
-      container.scrollTo({ top: newScrollTop, behavior: "smooth" });
-    }
-  }, [currentPage]);
-
   return (
     <Box
       id="test"
