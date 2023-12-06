@@ -204,7 +204,7 @@ const Lock = () => {
           <HeadInfo head={"All Claimable"} content={"$0"} />
           <HeadInfo head={"My vApr"} content={"0%"} />
           <HeadInfo head={"Max vApr"} content={"0%"} />
-          <HeadInfo head={"My cvxCRV staked"} content={"0  cvxCrv = $0"} />
+          <HeadInfo head={"My Burst staked"} content={"0  Burst = $0"} />
           <HeadInfo head={"TVL"} content={"$0"} noBorder />
         </Stack>
       </Box>

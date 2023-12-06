@@ -15,6 +15,7 @@ import { useConnectWallet } from "@web3-onboard/react";
 import * as ethers from "ethers";
 import StakeLP from "./StakeLp";
 import wBlurIcon from "./assets/wrapBlur_4.png";
+import blurIcon from "./assets/blur.jpg";
 
 const StyledInput = styled(TextField)({
   "& .MuiInputBase-input": {
@@ -48,7 +49,12 @@ const FunctionButton = (props) => {
   const { burstColor, children } = props;
   if (burstColor === "yellow") {
     return <YellowButton {...props}>{children}</YellowButton>;
-  } else return <GreyButton {...props}>{children}</GreyButton>;
+  } else
+    return (
+      <GreyButton {...props} disabled>
+        {children}
+      </GreyButton>
+    );
 };
 
 function HeadInfoItem({ head, content }) {
@@ -316,17 +322,24 @@ const Stake = () => {
           <HeadInfo
             head={""}
             content={
-              <img
-                src={wBlurIcon}
-                style={{ height: "32px", width: "32px" }}
-              ></img>
+              <Stack
+                direction={"row"}
+                justifyContent={"center"}
+                alignItems={"center"}
+              >
+                <img
+                  src={blurIcon}
+                  style={{ height: "48px", width: "48px" }}
+                ></img>
+                Blur
+              </Stack>
             }
           ></HeadInfo>
 
           <HeadInfo head={"All Claimable"} content={"$0"} />
           <HeadInfo head={"My vApr"} content={"0%"} />
           <HeadInfo head={"Max vApr"} content={"0%"} />
-          <HeadInfo head={"My cvxCRV staked"} content={"0  cvxCrv = $0"} />
+          <HeadInfo head={"My BLUR staked"} content={"0  BLUR = $0"} />
           <HeadInfo head={"TVL"} content={"$0"} noBorder />
         </Stack>
       </Box>
@@ -400,7 +413,13 @@ const Stake = () => {
               <Box position={"absolute"} top={-30} right={0} color={"yellow"}>
                 Avaliable : {userBalance}
               </Box>
-              <Box position={"absolute"} top={6} right={10} zIndex={100}>
+              <Box
+                display={"flex"}
+                position={"absolute"}
+                top={6}
+                right={10}
+                zIndex={100}
+              >
                 <Button
                   onClick={() => {
                     setConvertAndStakevalueValue(userBalance);
@@ -416,6 +435,10 @@ const Stake = () => {
                 >
                   Max
                 </Button>
+                <img
+                  src={blurIcon}
+                  style={{ width: "32px", borderRadius: "50%" }}
+                />
               </Box>
               <StyledInput
                 value={convertAndStakeValue === 0 ? "" : convertAndStakeValue}
@@ -545,10 +568,16 @@ const Stake = () => {
               <Box position={"absolute"} top={-30} right={0} color={"yellow"}>
                 Avaliable : {userBalance}
               </Box>
-              <Box position={"absolute"} top={6} right={10} zIndex={100}>
+              <Box
+                display={"flex"}
+                position={"absolute"}
+                top={6}
+                right={10}
+                zIndex={100}
+              >
                 <Button
                   onClick={() => {
-                    setConvertValue(userBalance);
+                    setConvertAndStakevalueValue(userBalance);
                   }}
                   sx={{
                     height: "30px",
@@ -561,6 +590,10 @@ const Stake = () => {
                 >
                   Max
                 </Button>
+                <img
+                  src={blurIcon}
+                  style={{ width: "32px", borderRadius: "50%" }}
+                />
               </Box>
               <StyledInput
                 value={convertValue === 0 ? "" : convertValue}
@@ -688,10 +721,16 @@ const Stake = () => {
               <Box position={"absolute"} top={-30} right={0} color={"yellow"}>
                 Avaliable : {userWblurBalance}
               </Box>
-              <Box position={"absolute"} top={6} right={10} zIndex={100}>
+              <Box
+                display={"flex"}
+                position={"absolute"}
+                top={6}
+                right={10}
+                zIndex={100}
+              >
                 <Button
                   onClick={() => {
-                    setStakeInputValue(userWblurBalance);
+                    setConvertAndStakevalueValue(userBalance);
                   }}
                   sx={{
                     height: "30px",
@@ -704,6 +743,10 @@ const Stake = () => {
                 >
                   Max
                 </Button>
+                <img
+                  src={blurIcon}
+                  style={{ width: "32px", borderRadius: "50%" }}
+                />
               </Box>
               <StyledInput
                 value={stakeInputValue === 0 ? "" : stakeInputValue}
@@ -873,7 +916,7 @@ const Stake = () => {
             <Box
               sx={{ marginRight: "50px", width: "300px", textAlign: "left" }}
             >
-              Wblur Token Address
+              wBlur Token Address
             </Box>
             <Box>
               <a

@@ -135,7 +135,7 @@ const Header = () => {
                 src={burst}
               />
             </Box>
-            <Box sx={{ marginLeft: "30px" }}>Blur+WBlur</Box>
+            <Box sx={{ marginLeft: "30px" }}>Blur+wBlur</Box>
           </Stack>
         </Box>
         <Box sx={{ flex: "1 1 0px" }}>0</Box>
@@ -519,7 +519,13 @@ const StakeLP = () => {
               <Box position={"absolute"} top={-30} right={0} color={"yellow"}>
                 Avaliable : {userWblurBalance}
               </Box>
-              <Box position={"absolute"} top={6} right={10} zIndex={100}>
+              <Box
+                position={"absolute"}
+                top={6}
+                right={30}
+                zIndex={100}
+                display={"flex"}
+              >
                 <Button
                   onClick={() => {
                     setStakeInputValue(userWblurBalance);
@@ -535,6 +541,21 @@ const StakeLP = () => {
                 >
                   Max
                 </Button>
+                <Box>
+                  <img
+                    style={{ height: "26px", borderRadius: "50%" }}
+                    src={blur}
+                  />
+                  <img
+                    style={{
+                      height: "26px",
+                      borderRadius: "50%",
+                      position: "absolute",
+                      right: "-20px",
+                    }}
+                    src={burst}
+                  />
+                </Box>
               </Box>
               <StyledInput
                 value={stakeInputValue === 0 ? "" : stakeInputValue}
@@ -664,7 +685,13 @@ const StakeLP = () => {
             <Box position={"absolute"} top={-30} right={0} color={"yellow"}>
               staked : {stakeValue}
             </Box>
-            <Box position={"absolute"} top={6} right={10} zIndex={100}>
+            <Box
+              display={"flex"}
+              position={"absolute"}
+              top={6}
+              right={10}
+              zIndex={100}
+            >
               <Button
                 onClick={() => {
                   setUnstakeValue(stakeValue);

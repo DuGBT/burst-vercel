@@ -6,6 +6,7 @@ import "./index.css";
 import Stake from "./Stake.jsx";
 import Claim from "./Claim.jsx";
 import Lock from "./Lock";
+import ScrollPagination from "./Landing.jsx";
 import {
   useConnectWallet,
   Web3OnboardProvider,
@@ -43,10 +44,6 @@ const web3Onboard = init({
 });
 const router = createBrowserRouter([
   {
-    path: "/",
-    element: <Stake />,
-  },
-  {
     path: "/stake",
     element: <Stake />,
   },
@@ -57,6 +54,10 @@ const router = createBrowserRouter([
   {
     path: "/lock",
     element: <Lock />,
+  },
+  {
+    path: "/",
+    element: <ScrollPagination />,
   },
 ]);
 ReactDOM.createRoot(document.getElementById("root")).render(

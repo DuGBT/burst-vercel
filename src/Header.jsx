@@ -10,7 +10,7 @@ import { styled } from "@mui/material";
 import { useConnectWallet } from "@web3-onboard/react";
 import { Link, useParams } from "react-router-dom";
 import BurstLogo from "./assets/BURST_Logo_Yellow.png";
-function Layout({ children }) {
+function Header({ children }) {
   const [count, setCount] = useState(0);
   const [value, setValue] = useState(0);
   const [{ wallet, connecting }, connect, disconnect] = useConnectWallet();
@@ -55,11 +55,11 @@ function Layout({ children }) {
   }, []);
 
   return (
-    <div>
-      <div className="header">
+    <Box sx={{ position: "fixed", width: "100%", zIndex: "100", top: 0 }}>
+      <Box className="header">
         <Box
           sx={{
-            background: "#000",
+            background: "transparent",
             height: 200,
             p: 0,
             position: "relative",
@@ -100,7 +100,8 @@ function Layout({ children }) {
                     fontSize: "16px",
                     textTransform: "none",
                     color:
-                      window.location.pathname === "/stake"
+                      window.location.pathname === "/stake" ||
+                      window.location.pathname === ""
                         ? "yellow"
                         : "#929292",
                   }}
@@ -141,93 +142,10 @@ function Layout({ children }) {
               </Link>
             </StyledTabs>
           </Stack>
-          <Stack direction={"row"} justifyContent={"center"}>
-            <Box
-              minHeight={50}
-              sx={{
-                backgroundColor: "rgba(45, 45, 45, 0.8)",
-                color: "yellow",
-                width: 300,
-                height: 100,
-                borderRadius: 4,
-                m: "10px",
-                paddingTop: "20px",
-              }}
-            >
-              <Box sx={{ fontWeight: 700, fontSize: "16px" }}>
-                Total Claimable
-              </Box>
-              <Box
-                sx={{
-                  // fontFamily: "'Rajdhani'",
-                  fontSize: "36px",
-                  fontWeight: "500",
-                  lineHeight: "46px",
-                  letterSpacing: "0em",
-                  textAlign: "center",
-                  textShadow: "0px 0px 6px #FCFC03CC",
-                }}
-              >
-                $0
-              </Box>
-            </Box>
-            <Box
-              minHeight={50}
-              sx={{
-                backgroundColor: "rgba(45, 45, 45, 0.8)",
-                color: "yellow",
-                width: 300,
-                height: 100,
-                borderRadius: 4,
-                m: "10px",
-                paddingTop: "20px",
-              }}
-            >
-              <Box sx={{ fontWeight: 700, fontSize: "16px" }}>
-                Total Deposit
-              </Box>
-              <Box
-                sx={{
-                  fontSize: "36px",
-                  fontWeight: "500",
-                  lineHeight: "46px",
-                  letterSpacing: "0em",
-                  textAlign: "center",
-                  textShadow: "0px 0px 6px #FCFC03CC",
-                }}
-              >
-                $0
-              </Box>
-            </Box>
-          </Stack>
-        </Box>
-      </div>
-      <Box
-        position={"relative"}
-        // height={800}
-      >
-        <Box
-          position={"absolute"}
-          top={-10}
-          height={72}
-          backgroundColor={"#000"}
-          width={"100%"}
-        ></Box>
-        <Box
-          maxWidth={"1200px"}
-          margin={"0 auto"}
-          position={"relative"}
-          zIndex={1}
-        >
-          <Paper elevation={3} sx={{ height: 600, m: 1, background: "#000" }}>
-            <Box sx={{ width: "100%", bgcolor: "#000", color: "#929292" }}>
-              {children}
-            </Box>
-          </Paper>
         </Box>
       </Box>
-    </div>
+    </Box>
   );
 }
 
-export default Layout;
+export default Header;
