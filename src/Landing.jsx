@@ -9,7 +9,7 @@ import LaunchIcon from "./assets/LaunchIcon.svg";
 import Isolamento from "./assets/Isolamento.svg";
 import Rocket from "./assets/Rocket.svg";
 import Pig from "./assets/Pig.svg";
-import Dots from "./assets/Dots.svg";
+import Dots from "./assets/dots.svg";
 import BurstIconBlack from "./assets/BURST_Icon_Black.png";
 import { Link, useParams } from "react-router-dom";
 
