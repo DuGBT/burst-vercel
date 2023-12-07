@@ -159,6 +159,7 @@ const Claim = () => {
     stakedLPExtraTotalValue,
     stakedWblurExtraTotalValue,
     lockClaimableTokens,
+    tokenPrice,
   } = contextValue;
 
   console.log(contextValue);
@@ -230,8 +231,13 @@ const Claim = () => {
           {poolInfo && stakedWblurExtraRewardInfo && (
             <Box>
               <Stack direction={"row"}>
-                <Box sx={{ marginRight: "10px" }}>{"Burst"}</Box>
-                <Box>{earnedWblurCount || 0}</Box>
+                <Box sx={{ width: "100px", textAlign: "left" }}>{"Burst"}</Box>
+
+                <Box sx={{ textAlign: "left" }}>
+                  {`${earnedWblurCount || 0} ≈ $ ${
+                    earnedWblurValue?.toFixed(2) || 0
+                  }`}
+                </Box>
               </Stack>
               {poolInfo
                 .find((pool) => {
@@ -257,10 +263,19 @@ const Claim = () => {
                         return true;
                     }
                   );
+                  const extraRewardValue =
+                    extraRewardInfo?.amount *
+                    tokenPrice[reward.addr.toLowerCase()];
                   return (
                     <Stack direction={"row"}>
-                      <Box sx={{ marginRight: "10px" }}>{reward.symbol}</Box>
-                      <Box>{extraRewardInfo?.amount || 0}</Box>
+                      <Box sx={{ width: "100px", textAlign: "left" }}>
+                        {reward.symbol}
+                      </Box>
+                      <Box sx={{ textAlign: "left" }}>
+                        {`${extraRewardInfo?.amount || 0} ≈ $ ${
+                          extraRewardValue?.toFixed(2) || 0
+                        }`}
+                      </Box>
                     </Stack>
                   );
                 })}
@@ -341,9 +356,21 @@ const Claim = () => {
                       return true;
                   });
                   return (
+                    // <Stack direction={"row"}>
+                    //   <Box sx={{ marginRight: "10px" }}>{reward.symbol}</Box>
+                    //   <Box>{rewardInfo?.count || 0}</Box>
+                    //   <Box>{rewardInfo?.value?.toFixed(2) || 0}</Box>
+                    // </Stack>
                     <Stack direction={"row"}>
-                      <Box sx={{ marginRight: "10px" }}>{reward.symbol}</Box>
-                      <Box>{rewardInfo?.count || 0}</Box>
+                      <Box sx={{ width: "100px", textAlign: "left" }}>
+                        {reward.symbol}
+                      </Box>
+
+                      <Box sx={{ textAlign: "left" }}>
+                        {`${rewardInfo?.count || 0} ≈ $ ${
+                          rewardInfo?.value?.toFixed(2) || 0
+                        }`}
+                      </Box>
                     </Stack>
                   );
                 })}
@@ -408,8 +435,13 @@ const Claim = () => {
           {poolInfo && stakedLPExtraRewardInfo && (
             <Box>
               <Stack direction={"row"}>
-                <Box sx={{ marginRight: "10px" }}>{"Burst"}</Box>
-                <Box>{earnedLPCount || 0}</Box>
+                <Box sx={{ width: "100px", textAlign: "left" }}>{"Burst"}</Box>
+
+                <Box sx={{ textAlign: "left" }}>
+                  {`${earnedLPCount || 0} ≈ $ ${
+                    earnedLPValue?.toFixed(2) || 0
+                  }`}
+                </Box>
               </Stack>
               {poolInfo
                 .find((pool) => {
