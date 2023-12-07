@@ -13,6 +13,8 @@ import {
   init,
 } from "@web3-onboard/react";
 import injectedModule from "@web3-onboard/injected-wallets";
+import { MyContextProvider } from "./Context";
+
 const INFURA_KEY = "b0caabe4b0bc4153a499536aa88a053d";
 
 const injected = injectedModule();
@@ -60,10 +62,13 @@ const router = createBrowserRouter([
     element: <ScrollPagination />,
   },
 ]);
+
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
     <Web3OnboardProvider web3Onboard={web3Onboard}>
-      <RouterProvider router={router} />
+      <MyContextProvider>
+        <RouterProvider router={router} />
+      </MyContextProvider>
     </Web3OnboardProvider>
   </React.StrictMode>
 );

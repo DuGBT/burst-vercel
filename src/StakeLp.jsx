@@ -14,7 +14,7 @@ import { WblurStakeAbi } from "./abi/wblur-staking";
 import { useConnectWallet } from "@web3-onboard/react";
 import * as ethers from "ethers";
 import blur from "./assets/blur.jpg";
-import burst from "./assets/BURST_Icon_Black.png";
+import wBlurIcon from "./assets/wrapBlur_4.png";
 const StyledInput = styled(TextField)({
   "& .MuiInputBase-input": {
     padding: "10px",
@@ -132,7 +132,7 @@ const Header = () => {
                   position: "absolute",
                   left: "20px",
                 }}
-                src={burst}
+                src={wBlurIcon}
               />
             </Box>
             <Box sx={{ marginLeft: "30px" }}>Blur+wBlur</Box>
@@ -538,7 +538,7 @@ const StakeLP = () => {
                       position: "absolute",
                       right: "-20px",
                     }}
-                    src={burst}
+                    src={wBlurIcon}
                   />
                 </Box>
               </Box>
@@ -671,11 +671,11 @@ const StakeLP = () => {
               staked : {stakeValue}
             </Box>
             <Box
-              display={"flex"}
               position={"absolute"}
               top={6}
-              right={10}
+              right={30}
               zIndex={100}
+              display={"flex"}
             >
               <Button
                 onClick={() => {
@@ -692,6 +692,21 @@ const StakeLP = () => {
               >
                 Max
               </Button>
+              <Box>
+                <img
+                  style={{ height: "26px", borderRadius: "50%" }}
+                  src={blur}
+                />
+                <img
+                  style={{
+                    height: "26px",
+                    borderRadius: "50%",
+                    position: "absolute",
+                    right: "-20px",
+                  }}
+                  src={wBlurIcon}
+                />
+              </Box>
             </Box>
             <StyledInput
               value={unstakeValue === 0 ? "" : unstakeValue}

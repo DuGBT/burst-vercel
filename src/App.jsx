@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import "./App.css";
 import Box from "@mui/material/Box";
 import Paper from "@mui/material/Paper";
@@ -6,6 +6,7 @@ import Stack from "@mui/material/Stack";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 import Button from "@mui/material/Button";
+import { MyContext } from "./Context";
 import { styled } from "@mui/material";
 import { useConnectWallet } from "@web3-onboard/react";
 import { Link, useParams } from "react-router-dom";
@@ -15,7 +16,6 @@ import { erc20TokenAbi } from "./abi/erc20token";
 import { WblurStakeAbi } from "./abi/wblur-staking";
 import { getTokenPrice } from "./api";
 import { LockerAbi } from "./abi/burst-locker";
-
 const StyledTabs = styled(Tabs)({
   "& .MuiTabs-indicator": {
     display: "none",
@@ -38,6 +38,7 @@ const YellowButton = styled(Button)({
 });
 
 function Layout({ children }) {
+  const { contextValue, updateContextValue } = useContext(MyContext);
   const [value, setValue] = useState(0);
   const [{ wallet, connecting }, connect, disconnect] = useConnectWallet();
   const [stakeContract, setStakeContract] = useState();
@@ -70,11 +71,11 @@ function Layout({ children }) {
     async function getPrice() {
       try {
         const res = await getTokenPrice();
-        console.log(res);
         Object.keys(res).forEach((key) => {
           res[key.toLowerCase()] = res[key];
         });
         setTokenPrice(res);
+        updateContextValue({ tokenPrice: res });
       } catch (error) {
         console.log(error);
       }
@@ -166,8 +167,15 @@ function Layout({ children }) {
             tokenPrice[
               "0x0535a470f39dec973c15d2aa6e7f968235f6e1d4".toLowerCase()
             ];
-          console.log(lockValue);
-
+          console.log(lockCount, lockValue, "lock value");
+          updateContextValue({
+            lockCount,
+            lockValue,
+            stakedLPCount,
+            stakedLPValue,
+            stakedWblurCount,
+            stakedWblurValue,
+          });
           setTotalDepositValue(stakedWblurValue + stakedLPValue + lockValue);
         } catch (error) {
           console.log(error);
@@ -244,6 +252,10 @@ function Layout({ children }) {
             console.log(extraRewardValue, "extra reward");
             stakedLPExtraTotalValue += extraRewardValue || 0;
           }
+          updateContextValue({
+            stakedLPExtraTotalValue,
+            stakedWblurExtraTotalValue,
+          });
           return stakedLPExtraTotalValue + stakedWblurExtraTotalValue;
         } catch (error) {
           console.log(error);
@@ -260,28 +272,28 @@ function Layout({ children }) {
             Number(BigInt(stakedWblurRes._hex) / 10n ** 18n),
             "claimable"
           );
-          const stakedWblurCount = Number(
+          const earnedWblurCount = Number(
             BigInt(stakedWblurRes._hex) / 10n ** 18n
           );
-          const stakedWblurValue =
-            stakedWblurCount *
+          const earnedWblurValue =
+            earnedWblurCount *
             tokenPrice[
               "0x0535a470f39dec973c15d2aa6e7f968235f6e1d4".toLowerCase()
             ];
-          console.log(stakedWblurValue);
+          console.log(earnedWblurValue);
 
           const stakedLPRes = await stakeLPContract.earned(address);
           console.log(
             Number(BigInt(stakedLPRes._hex) / 10n ** 18n),
             "claimable"
           );
-          const stakedLPCount = Number(BigInt(stakedLPRes._hex) / 10n ** 18n);
-          const stakedLPValue =
-            stakedLPCount *
+          const earnedLPCount = Number(BigInt(stakedLPRes._hex) / 10n ** 18n);
+          const earnedLPValue =
+            earnedLPCount *
               tokenPrice[
                 "0x0535a470f39dec973c15d2aa6e7f968235f6e1d4".toLowerCase()
               ] || 0;
-          console.log(stakedLPValue);
+          console.log(earnedLPValue);
 
           const lockRes = await lockContract.claimableRewards(address);
           console.log(lockRes, "claimable");
@@ -296,16 +308,19 @@ function Layout({ children }) {
           });
           console.log(lockClaimableTokens);
           // const lockCount =;
-          const lockValue = lockClaimableTokens.reduce((sum, token) => {
+          const lockEarnedValue = lockClaimableTokens.reduce((sum, token) => {
             return sum + token.value;
           }, 0);
-          console.log(lockValue);
+          console.log(lockEarnedValue);
           const extraValue = await getExtraTotalClaimable();
           setTotalClaimableValue(
-            lockValue + stakedLPValue + stakedWblurValue + extraValue
+            lockEarnedValue + earnedLPValue + earnedWblurValue + extraValue
           );
-          console.log(lockValue, stakedLPValue, stakedWblurValue, extraValue),
-            "totalvalue";
+          updateContextValue({
+            lockEarnedValue,
+            earnedLPValue,
+            earnedWblurValue,
+          });
         } catch (error) {
           console.log(error);
         }

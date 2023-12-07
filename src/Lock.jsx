@@ -5,12 +5,14 @@ import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import { styled } from "@mui/material";
 import Layout from "./App";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import { erc20TokenAbi } from "./abi/erc20token";
 import { LockerAbi } from "./abi/burst-locker";
 import { useConnectWallet } from "@web3-onboard/react";
 import * as ethers from "ethers";
-import wBlurIcon from "./assets/wrapBlur_4.png";
+import burstIcon from "./assets/BURST_Icon_Black.png";
+import { getLockInfo } from "./api";
+import { MyContext } from "./Context";
 
 const YellowButton = styled(Button)({
   "&.MuiButton-root": { background: "yellow !important", width: "200px" },
@@ -86,18 +88,34 @@ function HeadInfo({ head, content, noBorder }) {
   );
 }
 const Lock = () => {
+  const { contextValue, updateContextValue } = useContext(MyContext);
   const [lockValue, setLockValue] = useState(0);
+  const [lockInfo, setLockInfo] = useState();
   const [{ wallet, connecting }, connect, disconnect] = useConnectWallet();
   const [erc20Contract, setErc20Contract] = useState();
   const [allowance, setAllowance] = useState(0);
   const [userBalance, setUserBalance] = useState(0);
   const [lockContract, setLockContract] = useState();
+  console.log(contextValue);
   useEffect(() => {
     if (erc20Contract) {
       getBalance();
       checkApprove();
     }
   }, [erc20Contract]);
+
+  useEffect(() => {
+    async function getLockBurstInfo() {
+      try {
+        const res = await getLockInfo();
+        console.log(res);
+        setLockInfo(res);
+      } catch (error) {
+        console.log(error);
+      }
+    }
+    getLockBurstInfo();
+  }, []);
 
   const approve = async () => {
     try {
@@ -173,7 +191,7 @@ const Lock = () => {
     }
   };
   const approved = wallet && allowance > 0 && lockValue < allowance;
-
+  const { lockCount, lockEarnedValue } = contextValue;
   return (
     <Layout>
       <Box
@@ -194,25 +212,51 @@ const Lock = () => {
           <HeadInfo
             head={""}
             content={
-              <img
-                src={wBlurIcon}
-                style={{ height: "32px", width: "32px" }}
-              ></img>
+              <Box
+                display={"flex"}
+                justifyContent={"center"}
+                alignItems={"center"}
+              >
+                <img
+                  src={burstIcon}
+                  style={{ height: "48px", width: "48px", marginTop: "4px" }}
+                ></img>
+                Burst
+              </Box>
             }
           ></HeadInfo>
 
-          <HeadInfo head={"All Claimable"} content={"$0"} />
-          <HeadInfo head={"My vApr"} content={"0%"} />
-          <HeadInfo head={"Max vApr"} content={"0%"} />
-          <HeadInfo head={"My Burst staked"} content={"0  Burst = $0"} />
-          <HeadInfo head={"TVL"} content={"$0"} noBorder />
+          <HeadInfo
+            head={"All Claimable"}
+            content={`$${lockEarnedValue?.toFixed(2) || 0}`}
+          />
+          <HeadInfo
+            head={"My Apr"}
+            content={`${
+              lockEarnedValue
+                ? (
+                    (lockEarnedValue / contextValue?.lockValue / 7) *
+                    365 *
+                    100
+                  ).toFixed(2)
+                : 0
+            }%`}
+          />
+          <HeadInfo head={"Max Apr"} content={`${lockInfo?.max_apr || 0}%`} />
+          <HeadInfo
+            head={"My Burst locked"}
+            content={`${lockCount || 0} Burst = $${
+              contextValue?.lockValue?.toFixed(2) || 0
+            }`}
+          />
+          <HeadInfo head={"TVL"} content={`$${lockInfo?.tvl || 0}`} noBorder />
         </Stack>
       </Box>
       <Box textAlign={"left"}>
         Lock $BURST for a duration of 16 weeks. Lock $BURST grants voting power
         for determining Blur governance votes, as well as influencing Admin
         Proposals on Burst. Additionally, holding locked BURST entitles you to a
-        portion of the platform's fees.{" "}
+        portion of the platform's fees.
         <a
           style={{ cursor: "pointer" }}
           onClick={() => {
@@ -230,6 +274,33 @@ const Lock = () => {
         <Box width={400} position={"relative"} marginTop={5}>
           <Box position={"absolute"} top={-30} right={0} color={"yellow"}>
             Avaliable : {userBalance} Burst
+          </Box>
+          <Box
+            display={"flex"}
+            position={"absolute"}
+            top={6}
+            right={10}
+            zIndex={100}
+          >
+            <Button
+              onClick={() => {
+                setLockValue(userBalance);
+              }}
+              sx={{
+                height: "30px",
+                width: "40px",
+                padding: 0,
+                minWidth: "30px",
+                background: "#C3D4A54D",
+                color: "#c3d4a5",
+              }}
+            >
+              Max
+            </Button>
+            <img
+              src={burstIcon}
+              style={{ width: "32px", borderRadius: "50%" }}
+            />
           </Box>
           <StyledInput
             value={lockValue === 0 ? "" : lockValue}
