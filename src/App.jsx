@@ -135,10 +135,6 @@ function Layout({ children }) {
         const address = wallet.accounts[0].address;
         try {
           const stakedWblurRes = await stakeContract.balanceOf(address);
-          console.log(
-            Number(BigInt(stakedWblurRes._hex) / 10n ** 18n),
-            "deposit"
-          );
           const stakedWblurCount = Number(
             BigInt(stakedWblurRes._hex) / 10n ** 18n
           );
@@ -147,27 +143,22 @@ function Layout({ children }) {
             tokenPrice[
               "0x72CebE61e70142b4B4720087aBb723182e4ca6e8".toLowerCase()
             ];
-          console.log(stakedWblurValue);
 
           const stakedLPRes = await stakeLPContract.balanceOf(address);
-          console.log(Number(BigInt(stakedLPRes._hex) / 10n ** 18n), "deposit");
           const stakedLPCount = Number(BigInt(stakedLPRes._hex) / 10n ** 18n);
           const stakedLPValue =
             stakedLPCount *
               tokenPrice[
                 "0xEa542D518Ce4E6633Bbf697b089ecDEfe0A97dA6".toLowerCase()
               ] || 0;
-          console.log(stakedLPValue);
 
           const lockRes = await lockContract.lockedBalanceOf(address);
-          console.log(Number(BigInt(lockRes._hex) / 10n ** 18n), "deposit");
           const lockCount = Number(BigInt(lockRes._hex) / 10n ** 18n);
           const lockValue =
             lockCount *
             tokenPrice[
               "0x0535a470f39dec973c15d2aa6e7f968235f6e1d4".toLowerCase()
             ];
-          console.log(lockCount, lockValue, "lock value");
           updateContextValue({
             lockCount,
             lockValue,
@@ -191,12 +182,12 @@ function Layout({ children }) {
         const address = wallet.accounts[0].address;
         try {
           const stakedWblurRes = await stakeContract.extraRewardsLength();
-          console.log(Number(BigInt(stakedWblurRes._hex)), "extra");
 
           const stakedWblurExtraRewardsLength = Number(
             BigInt(stakedWblurRes._hex)
           );
           let stakedWblurExtraTotalValue = 0;
+          const stakedWblurExtraRewardInfo = [];
           for (let i = 0; i < stakedWblurExtraRewardsLength; i++) {
             const rewardContractAddress = await stakeContract.extraRewards(i);
             const rewardContract = new ethers.Contract(
@@ -211,23 +202,24 @@ function Layout({ children }) {
             );
             const extraRewardTokenAddress =
               await connectedRewardContract.rewardToken();
-            console.log(extraRewardRes, extraRewardTokenAddress);
             const extraRewardCount = Number(
               BigInt(extraRewardRes._hex) / 10n ** 18n
             );
             const extraRewardValue =
               extraRewardCount * tokenPrice[extraRewardTokenAddress];
-            console.log(extraRewardValue, "extra reward");
             stakedWblurExtraTotalValue += extraRewardValue || 0;
+            stakedWblurExtraRewardInfo.push({
+              tokenAddress: extraRewardTokenAddress,
+              amount: extraRewardCount,
+              value: extraRewardValue,
+            });
           }
+
           const stakedLPRes = await stakeLPContract.extraRewardsLength();
-          console.log(
-            Number(BigInt(stakedLPRes._hex)),
-            "extra LP",
-            stakedLPRes
-          );
 
           const stakedLPExtraRewardsLength = Number(BigInt(stakedLPRes._hex));
+          const stakedLPExtraRewardInfo = [];
+
           let stakedLPExtraTotalValue = 0;
           for (let i = 0; i < stakedLPExtraRewardsLength; i++) {
             const rewardContractAddress = await stakeLPContract.extraRewards(i);
@@ -243,18 +235,24 @@ function Layout({ children }) {
             );
             const extraRewardTokenAddress =
               await connectedRewardContract.rewardToken();
-            console.log(extraRewardRes, extraRewardTokenAddress);
             const extraRewardCount = Number(
               BigInt(extraRewardRes._hex) / 10n ** 18n
             );
+
             const extraRewardValue =
               extraRewardCount * tokenPrice[extraRewardTokenAddress];
-            console.log(extraRewardValue, "extra reward");
             stakedLPExtraTotalValue += extraRewardValue || 0;
+            stakedLPExtraRewardInfo.push({
+              tokenAddress: extraRewardTokenAddress,
+              amount: extraRewardCount,
+              value: extraRewardValue,
+            });
           }
           updateContextValue({
             stakedLPExtraTotalValue,
             stakedWblurExtraTotalValue,
+            stakedWblurExtraRewardInfo,
+            stakedLPExtraRewardInfo,
           });
           return stakedLPExtraTotalValue + stakedWblurExtraTotalValue;
         } catch (error) {
@@ -263,15 +261,11 @@ function Layout({ children }) {
       }
     }
     async function getTotalClaimable() {
-      console.log(wallet && tokenPrice, "claim?");
       if (wallet && tokenPrice) {
         const address = wallet.accounts[0].address;
         try {
           const stakedWblurRes = await stakeContract.earned(address);
-          console.log(
-            Number(BigInt(stakedWblurRes._hex) / 10n ** 18n),
-            "claimable"
-          );
+
           const earnedWblurCount = Number(
             BigInt(stakedWblurRes._hex) / 10n ** 18n
           );
@@ -280,23 +274,18 @@ function Layout({ children }) {
             tokenPrice[
               "0x0535a470f39dec973c15d2aa6e7f968235f6e1d4".toLowerCase()
             ];
-          console.log(earnedWblurValue);
 
           const stakedLPRes = await stakeLPContract.earned(address);
-          console.log(
-            Number(BigInt(stakedLPRes._hex) / 10n ** 18n),
-            "claimable"
-          );
+
           const earnedLPCount = Number(BigInt(stakedLPRes._hex) / 10n ** 18n);
+          console.log(earnedLPCount, "earn lp count");
           const earnedLPValue =
             earnedLPCount *
               tokenPrice[
                 "0x0535a470f39dec973c15d2aa6e7f968235f6e1d4".toLowerCase()
               ] || 0;
-          console.log(earnedLPValue);
 
           const lockRes = await lockContract.claimableRewards(address);
-          console.log(lockRes, "claimable");
           const lockClaimableTokens = lockRes.map((res) => {
             return {
               address: res[0].toLowerCase(),
@@ -306,19 +295,20 @@ function Layout({ children }) {
                   tokenPrice[res[0].toLowerCase()] || 0,
             };
           });
-          console.log(lockClaimableTokens);
-          // const lockCount =;
+          console.log(lockRes);
           const lockEarnedValue = lockClaimableTokens.reduce((sum, token) => {
             return sum + token.value;
           }, 0);
-          console.log(lockEarnedValue);
           const extraValue = await getExtraTotalClaimable();
           setTotalClaimableValue(
             lockEarnedValue + earnedLPValue + earnedWblurValue + extraValue
           );
           updateContextValue({
+            lockClaimableTokens,
             lockEarnedValue,
+            earnedLPCount,
             earnedLPValue,
+            earnedWblurCount,
             earnedWblurValue,
           });
         } catch (error) {
@@ -416,7 +406,11 @@ function Layout({ children }) {
               </Link>
             </StyledTabs>
           </Stack>
-          <Stack direction={"row"} justifyContent={"center"}>
+          <Stack
+            // sx={{ marginTop: "40px" }}
+            direction={"row"}
+            justifyContent={"center"}
+          >
             <Box
               minHeight={50}
               sx={{
@@ -425,7 +419,7 @@ function Layout({ children }) {
                 width: 300,
                 height: 100,
                 borderRadius: 4,
-                m: "10px",
+                m: "30px",
                 paddingTop: "20px",
               }}
             >
@@ -454,7 +448,7 @@ function Layout({ children }) {
                 width: 300,
                 height: 100,
                 borderRadius: 4,
-                m: "10px",
+                m: "30px",
                 paddingTop: "20px",
               }}
             >

@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import Box from "@mui/material/Box";
 import Stack from "@mui/material/Stack";
 import TextField from "@mui/material/TextField";
@@ -7,12 +7,16 @@ import Tab from "@mui/material/Tab";
 
 import Button from "@mui/material/Button";
 import { styled } from "@mui/material";
-import Layout from "./App";
 import { erc20TokenAbi } from "./abi/erc20token";
-import { blurDepositAbi } from "./abi/blur-depositer";
 import { WblurStakeAbi } from "./abi/wblur-staking";
 import { useConnectWallet } from "@web3-onboard/react";
 import * as ethers from "ethers";
+import { MyContext } from "./Context";
+import { getLPPoolInfo } from "./api";
+import convertIconWhite from "./assets/convert-white.svg";
+import convertIcon from "./assets/convert.svg";
+import unstakeIconWhite from "./assets/unstake-white.svg";
+import unstakeIcon from "./assets/unstake.svg";
 import blur from "./assets/blur.jpg";
 import wBlurIcon from "./assets/wrapBlur_4.png";
 const StyledInput = styled(TextField)({
@@ -64,8 +68,8 @@ function HeadInfoItem({ head, content }) {
           {head}
         </Box>
         <Box
-          sx={{ fontFamily: "Rajdhani SemiBold" }}
-          fontSize={17}
+          sx={{ fontFamily: "Rajdhani Bold" }}
+          fontSize={18}
           fontWeight={700}
           color={"#fff"}
         >
@@ -75,9 +79,17 @@ function HeadInfoItem({ head, content }) {
     </Box>
   );
 }
-function HeadInfo({ head, content }) {
+function HeadInfo({ head, content, noBorder }) {
   return (
-    <Box>
+    <Box
+      display={"flex"}
+      justifyContent={"center"}
+      sx={{
+        borderRight: noBorder ? "none" : "1px solid #727272",
+        flex: "1 1 0px",
+        maxWidth: "200px",
+      }}
+    >
       <HeadInfoItem head={head} content={content}></HeadInfoItem>
     </Box>
   );
@@ -95,57 +107,12 @@ const StyledTab = styled(Tab)({
   },
   "&.MuiButtonBase-root": {
     opacity: "1",
-    // color: "yellow",
   },
   "&.MuiButtonBase-root.Mui-selected": {
     opacity: "1",
     color: "yellow",
   },
 });
-
-const Header = () => {
-  return (
-    <Box padding={2} sx={{ background: "rgb(42,42,42)" }}>
-      <Stack direction={"row"} textAlign={"left"}>
-        <Box sx={{ flexGrow: 1.6, flex: "1 1 0px" }}>Pool</Box>
-        <Box sx={{ flex: "1 1 0px" }}>Claimable</Box>
-        <Box sx={{ flex: "1 1 0px" }}>vapr</Box>
-        <Box sx={{ flex: "1 1 0px" }}>My deposits</Box>
-        <Box sx={{ flex: "1 1 0px" }}>TVL</Box>
-      </Stack>
-      <Stack
-        sx={{ fontFamily: "Rajdhani SemiBold" }}
-        fontSize={17}
-        fontWeight={700}
-        color={"#fff"}
-        direction={"row"}
-        textAlign={"left"}
-      >
-        <Box sx={{ flexGrow: 1.6, flex: "1 1 0px" }}>
-          <Stack direction={"row"} position={"relative"}>
-            <Box>
-              <img style={{ height: "26px", borderRadius: "50%" }} src={blur} />
-              <img
-                style={{
-                  height: "26px",
-                  borderRadius: "50%",
-                  position: "absolute",
-                  left: "20px",
-                }}
-                src={wBlurIcon}
-              />
-            </Box>
-            <Box sx={{ marginLeft: "30px" }}>Blur+wBlur</Box>
-          </Stack>
-        </Box>
-        <Box sx={{ flex: "1 1 0px" }}>0</Box>
-        <Box sx={{ flex: "1 1 0px" }}>0</Box>
-        <Box sx={{ flex: "1 1 0px" }}>0</Box>
-        <Box sx={{ flex: "1 1 0px" }}>0</Box>
-      </Stack>
-    </Box>
-  );
-};
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -178,6 +145,99 @@ const StakeLP = () => {
   const [userBalance, setUserBalance] = useState(0);
   const [userWblurBalance, setUserWblurBalance] = useState(0);
   const [unstakeValue, setUnstakeValue] = useState(0);
+  const [LPInfo, setLPINfo] = useState();
+
+  const Header = () => {
+    const { contextValue } = useContext(MyContext);
+    const { earnedLPValue, stakedLPCount, stakedLPValue } = contextValue;
+    return (
+      <Box padding={2} sx={{ background: "rgb(42,42,42)" }}>
+        <Stack
+          direction={"row"}
+          justifyContent={"space-between"}
+          textAlign={"left"}
+          height={"100%"}
+          alignItems={"center"}
+        >
+          <HeadInfo
+            head={""}
+            content={
+              <Stack
+                direction={"row"}
+                justifyContent={"center"}
+                alignItems={"center"}
+              >
+                <Box
+                  position={"relative"}
+                  display={"flex"}
+                  justifyContent={"center"}
+                  alignContent={"center"}
+                >
+                  <img
+                    style={{ height: "26px", borderRadius: "50%" }}
+                    src={blur}
+                  />
+                  <img
+                    style={{
+                      height: "26px",
+                      borderRadius: "50%",
+                      // position: "absolute",
+                      // right: "-20px",
+                    }}
+                    src={wBlurIcon}
+                  />
+                  <Box sx={{ marginLeft: "10px" }}>Blur+wBlur</Box>
+                </Box>
+              </Stack>
+            }
+          ></HeadInfo>
+
+          <HeadInfo
+            head={"All Claimable"}
+            content={`$${earnedLPValue?.toFixed(2) || 0}`}
+          />
+          <HeadInfo
+            head={"My vApr"}
+            content={`${
+              stakedLPValue
+                ? ((earnedLPValue / stakedLPValue / 7) * 365 * 100).toFixed(2)
+                : 0
+            }%`}
+          />
+          <HeadInfo
+            head={"Max vApr"}
+            content={`${LPInfo?.[0]?.max_apr || 0}%`}
+          />
+          <HeadInfo
+            head={"My BLUR staked"}
+            content={`${stakedLPCount || 0} Blur = $${
+              stakedLPValue?.toFixed(2) || 0
+            }`}
+          />
+          <HeadInfo
+            head={"TVL"}
+            content={`$${LPInfo?.[0]?.max_apr || 0}`}
+            noBorder
+          />
+        </Stack>
+      </Box>
+    );
+  };
+  useEffect(() => {
+    async function getLPInfo() {
+      try {
+        const res = await getLPPoolInfo();
+        console.log(res, "lp info");
+        setLPINfo(res);
+      } catch (error) {
+        console.log(error);
+      }
+    }
+    getLPInfo();
+  }, []);
+
+  console.log(LPInfo);
+
   useEffect(() => {
     async function Connect() {
       if (wallet) {
@@ -315,7 +375,12 @@ const StakeLP = () => {
 
       <StyledTabs value={value} onChange={handleChange}>
         <StyledTab
-          label="CONVERT/STAKE"
+          label={
+            <Stack direction={"row"}>
+              <img src={value === 0 ? convertIcon : convertIconWhite} />
+              CONVERT/STAKE
+            </Stack>
+          }
           sx={{
             fontFamily: "Rajdhani SemiBold",
             border: "none",
@@ -329,7 +394,12 @@ const StakeLP = () => {
           }}
         />
         <StyledTab
-          label="UNSTAKE"
+          label={
+            <Stack direction={"row"}>
+              <img src={value === 1 ? unstakeIcon : unstakeIconWhite} />
+              UNSTAKE
+            </Stack>
+          }
           sx={{
             border: "none",
             color: value === 1 ? "yellow" : "#929292",

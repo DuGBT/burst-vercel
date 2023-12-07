@@ -108,7 +108,6 @@ const Lock = () => {
     async function getLockBurstInfo() {
       try {
         const res = await getLockInfo();
-        console.log(res);
         setLockInfo(res);
       } catch (error) {
         console.log(error);

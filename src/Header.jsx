@@ -55,7 +55,7 @@ function Header({ children }) {
   }, []);
 
   return (
-    <Box sx={{ position: "fixed", width: "100%", zIndex: "100", top: 0 }}>
+    <Box sx={{ position: "fixed", width: "100%", zIndex: "1000", top: 0 }}>
       <Box className="header">
         <Box
           sx={{
@@ -63,6 +63,7 @@ function Header({ children }) {
             height: 200,
             p: 0,
             position: "relative",
+            zIndex: "1000",
           }}
         >
           <Box sx={{ position: "absolute", top: "0" }}>

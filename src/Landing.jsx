@@ -1,6 +1,7 @@
 import React, { useRef, useEffect, useState } from "react";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
+import Stack from "@mui/material/Stack";
 import BurstVideo from "./assets/BurstBG.mp4";
 import Header from "./Header";
 import { styled } from "@mui/material";
@@ -11,6 +12,8 @@ import Pig from "./assets/Pig.svg";
 import Dots from "./assets/dots.svg";
 import BurstIconBlack from "./assets/BURST_Icon_Black.png";
 import { Link, useParams } from "react-router-dom";
+import XIcon from "./assets/x.svg";
+import gitbookIcon from "./assets/gitbook.svg";
 
 const YellowButton = styled(Button)({
   "&.MuiButton-root": { background: "yellow !important" },
@@ -22,16 +25,67 @@ const ScrollPagination = () => {
       id="test"
       ref={containerRef}
       sx={{
-        height: "100vh",
+        // height: "100vh",
 
-        overflowY: "auto",
-        scrollBehavior: "smooth",
-        touchAction: "pan-y",
+        // overflowY: "auto",
+        // scrollBehavior: "smooth",
+        // touchAction: "pan-y",
         position: "relative",
       }}
     >
       <Header></Header>
-
+      <Box
+        sx={{
+          position: "absolute",
+          top: 400,
+          zIndex: "2",
+          textAlign: "left",
+          width: "100%",
+          paddingLeft: "10%",
+        }}
+      >
+        <Box
+          sx={{
+            textAlign: "left",
+            width: "620px",
+            wordBreak: "break-word",
+            fontFamily: "Rajdhani SemiBold",
+            fontSize: "80px",
+            lineHeight: "80px",
+            color: "rgba(217, 217, 217, 1)",
+          }}
+        >
+          FARM BLUR POINTS TOGETHER
+        </Box>
+        <Box
+          sx={{
+            textAlign: "left",
+            marginTop: "6px",
+            width: "620px",
+            wordBreak: "break-word",
+            fontFamily: "Rajdhani SemiBold",
+            fontSize: "24px",
+            color: "rgba(195, 212, 165, 1)",
+          }}
+        >
+          STAKE $BLUR, EARN POINTS AND EXTRA YIELDS ($BURST).
+        </Box>
+        <Link to="/stake">
+          <YellowButton
+            sx={{
+              marginTop: "26px",
+              width: "184px",
+              fontFamily: "Rajdhani SemiBold",
+              fontSize: "24px",
+              color: "#000",
+              height: "48px",
+            }}
+          >
+            <img src={LaunchIcon} />
+            Launch APP
+          </YellowButton>
+        </Link>
+      </Box>
       <Box
         sx={{
           maxHeight: "100vh",
@@ -48,59 +102,6 @@ const ScrollPagination = () => {
         >
           <source src={BurstVideo} type="video/mp4" />
         </video>
-
-        <Box
-          sx={{
-            position: "absolute",
-            top: 400,
-            zIndex: "100",
-            textAlign: "left",
-            width: "100%",
-            paddingLeft: "10%",
-          }}
-        >
-          <Box
-            sx={{
-              textAlign: "left",
-              width: "620px",
-              wordBreak: "break-word",
-              fontFamily: "Rajdhani SemiBold",
-              fontSize: "80px",
-              lineHeight: "80px",
-              color: "rgba(217, 217, 217, 1)",
-            }}
-          >
-            FARM BLUR POINTS TOGETHER
-          </Box>
-          <Box
-            sx={{
-              textAlign: "left",
-              marginTop: "6px",
-              width: "620px",
-              wordBreak: "break-word",
-              fontFamily: "Rajdhani SemiBold",
-              fontSize: "24px",
-              color: "rgba(195, 212, 165, 1)",
-            }}
-          >
-            STAKE $BLUR, EARN POINTS AND EXTRA YIELDS ($BURST).
-          </Box>
-          <Link to="/stake">
-            <YellowButton
-              sx={{
-                marginTop: "26px",
-                width: "184px",
-                fontFamily: "Rajdhani SemiBold",
-                fontSize: "24px",
-                color: "#000",
-                height: "48px",
-              }}
-            >
-              <img src={LaunchIcon} />
-              Launch APP
-            </YellowButton>
-          </Link>
-        </Box>
       </Box>
       <Box
         sx={{ height: "100vh", backgroundColor: "#000", position: "relative" }}
@@ -375,6 +376,21 @@ const ScrollPagination = () => {
               {`Locking Burst`}
             </span>
           </Box>
+          <Link to="/stake">
+            <YellowButton
+              sx={{
+                marginTop: "26px",
+                width: "184px",
+                fontFamily: "Rajdhani SemiBold",
+                fontSize: "24px",
+                color: "#000",
+                height: "48px",
+              }}
+            >
+              <img src={LaunchIcon} />
+              Launch APP
+            </YellowButton>
+          </Link>
         </Box>
         <Box
           sx={{
@@ -439,6 +455,19 @@ const ScrollPagination = () => {
             vlBURST (vote-lock BURST) earns a portion of the platform blur
             points + $BURST
           </Box>
+          <Stack
+            sx={{ width: "100%", justifyContent: "center", marginTop: "100px" }}
+            direction={"row"}
+          >
+            <img
+              src={XIcon}
+              style={{ width: "24px", marginRight: "20px", cursor: "pointer" }}
+            />
+            <img
+              src={gitbookIcon}
+              style={{ width: "24px", cursor: "pointer" }}
+            />
+          </Stack>
         </Box>
       </Box>
     </Box>

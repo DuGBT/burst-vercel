@@ -1,5 +1,5 @@
 import Layout from "./App";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import Box from "@mui/material/Box";
 import Stack from "@mui/material/Stack";
 import Accordion from "@mui/material/Accordion";
@@ -10,10 +10,12 @@ import Button from "@mui/material/Button";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { styled } from "@mui/material";
 import { useConnectWallet } from "@web3-onboard/react";
+import { getLockInfo, getClaimPoolInfo } from "./api";
 
 import { WblurStakeAbi } from "./abi/wblur-staking";
+import { LockerAbi } from "./abi/burst-locker";
+import { MyContext } from "./Context";
 import * as ethers from "ethers";
-import { Contrast } from "@mui/icons-material";
 function HeadInfoItem({ head, content }) {
   return (
     <Box>
@@ -38,9 +40,9 @@ function HeadInfoItem({ head, content }) {
     </Box>
   );
 }
-function HeadInfo({ head, content }) {
+function HeadInfo({ head, content, sx }) {
   return (
-    <Box>
+    <Box sx={sx}>
       <HeadInfoItem head={head} content={content}></HeadInfoItem>
     </Box>
   );
@@ -67,10 +69,17 @@ const YellowButton = styled(Button)({
 });
 
 const Claim = () => {
+  const { contextValue, updateContextValue } = useContext(MyContext);
+
   const [{ wallet, connecting }, connect, disconnect] = useConnectWallet();
+  const [lockInfo, setLockInfo] = useState();
+
   const [ethersProvider, setProvider] = useState();
   const [contract, setContract] = useState();
   const [earnValue, setEarnValue] = useState(0);
+  const [lockContract, setLockContract] = useState();
+  const [stakeLPContract, setStakeLPContract] = useState();
+  const [poolInfo, setPoolInfo] = useState();
   useEffect(() => {
     async function Connect() {
       if (wallet) {
@@ -83,7 +92,20 @@ const Claim = () => {
           WblurStakeAbi,
           ethersProvider
         );
+        const LockContract = new ethers.Contract(
+          "0x8aEE0D7dd5024bF6430d30D4eAD90f8903e724A9",
+          LockerAbi,
+          provider
+        );
+        const stakeLPContract = new ethers.Contract(
+          "0x3eEaE34A7Db2B5F04eFF48249EE640dc3F581a7f",
+          WblurStakeAbi,
+          provider
+        );
+        setStakeLPContract(stakeLPContract.connect(signer));
+
         setContract(stakeContract.connect(signer));
+        setLockContract(LockContract.connect(signer));
       }
     }
     Connect();
@@ -92,7 +114,6 @@ const Claim = () => {
   const getEarned = async () => {
     try {
       const res = await contract.earned(wallet.accounts[0].address);
-      console.log(Number(BigInt(res._hex) / 10n ** 18n));
       setEarnValue(Number(BigInt(res._hex) / 10n ** 18n));
     } catch (error) {
       console.log(error);
@@ -101,6 +122,46 @@ const Claim = () => {
   useEffect(() => {
     if (contract) getEarned();
   }, [contract]);
+  useEffect(() => {
+    async function getLockBurstInfo() {
+      try {
+        const res = await getLockInfo();
+        setLockInfo(res);
+      } catch (error) {
+        console.log(error);
+      }
+    }
+    getLockBurstInfo();
+  }, []);
+  useEffect(() => {
+    async function getPoolInfo() {
+      try {
+        const res = await getClaimPoolInfo();
+        setPoolInfo(res);
+      } catch (error) {
+        console.log(error);
+      }
+    }
+    getPoolInfo();
+  }, []);
+
+  const {
+    lockEarnedValue,
+    lockValue,
+    stakedLPValue,
+    earnedLPCount,
+    earnedLPValue,
+    stakedWblurValue,
+    earnedWblurCount,
+    earnedWblurValue,
+    stakedWblurExtraRewardInfo,
+    stakedLPExtraRewardInfo,
+    stakedLPExtraTotalValue,
+    stakedWblurExtraTotalValue,
+    lockClaimableTokens,
+  } = contextValue;
+
+  console.log(contextValue);
 
   return (
     <Layout>
@@ -116,17 +177,37 @@ const Claim = () => {
           aria-controls="panel1a-content"
           id="panel1a-header"
         >
-          <Stack
-            width={"100%"}
-            direction={"row"}
-            textAlign={"left"}
-            justifyContent={"space-between"}
-          >
-            <Box sx={{ fontSize: "17px", fontWeight: 700 }}>Stake Wblur</Box>
-            <HeadInfo head={"Claimable (USD value)"} content={earnValue} />
-            <HeadInfo head={"vApr"} content={"0%"} />
+          <Stack width={"100%"} direction={"row"} textAlign={"left"}>
+            <Box sx={{ fontSize: "17px", fontWeight: 700, flex: "1 1 0px" }}>
+              Stake Wblur
+            </Box>
+            <HeadInfo
+              sx={{ flex: "1 1 0px" }}
+              head={"Claimable (USD value)"}
+              content={`$${
+                (earnedWblurValue + stakedWblurExtraTotalValue)?.toFixed(2) || 0
+              }`}
+            />
+
+            <HeadInfo
+              sx={{ flex: "1 1 0px" }}
+              head={"Apr"}
+              content={`${
+                stakedWblurValue
+                  ? (
+                      ((earnedWblurValue + stakedWblurExtraTotalValue) /
+                        stakedWblurValue /
+                        7) *
+                      365 *
+                      100
+                    ).toFixed(2)
+                  : 0
+              }%`}
+            />
             <YellowButton
               sx={{
+                maxWidth: "120px",
+                flex: "1 1 0px",
                 marginX: "8px",
                 height: "41px",
                 color: "#000",
@@ -146,7 +227,128 @@ const Claim = () => {
           </Stack>
         </AccordionSummary>
         <AccordionDetails>
-          <Typography>...</Typography>
+          {poolInfo && stakedWblurExtraRewardInfo && (
+            <Box>
+              <Stack direction={"row"}>
+                <Box sx={{ marginRight: "10px" }}>{"Burst"}</Box>
+                <Box>{earnedWblurCount || 0}</Box>
+              </Stack>
+              {poolInfo
+                .find((pool) => {
+                  if (
+                    pool.addr.toLowerCase() ===
+                    "0x56f9E3de66600ca09F2568c11a5F2D1E793C0ef2".toLowerCase()
+                  )
+                    return pool;
+                })
+                .reward_list.map((reward) => {
+                  if (
+                    reward.addr.toLowerCase() ===
+                    "0x0535a470f39DEc973C15D2Aa6E7f968235F6e1D4".toLowerCase()
+                  ) {
+                    return <></>;
+                  }
+                  const extraRewardInfo = stakedWblurExtraRewardInfo.find(
+                    (extraReward) => {
+                      if (
+                        extraReward?.tokenAddress?.toLowerCase() ===
+                        reward.addr.toLowerCase()
+                      )
+                        return true;
+                    }
+                  );
+                  return (
+                    <Stack direction={"row"}>
+                      <Box sx={{ marginRight: "10px" }}>{reward.symbol}</Box>
+                      <Box>{extraRewardInfo?.amount || 0}</Box>
+                    </Stack>
+                  );
+                })}
+            </Box>
+          )}
+        </AccordionDetails>
+      </StyledAccordion>
+
+      <StyledAccordion
+        sx={{
+          background: "rgb(42, 42, 42)",
+          color: "#fff",
+          marginBottom: "20px",
+        }}
+      >
+        <AccordionSummary
+          expandIcon={<ExpandMoreIcon />}
+          aria-controls="panel2a-content"
+          id="panel2a-header"
+        >
+          <Stack width={"100%"} direction={"row"} textAlign={"left"}>
+            <Box sx={{ fontSize: "17px", fontWeight: 700, flex: "1 1 0px" }}>
+              Lock Burst
+            </Box>
+            <HeadInfo
+              sx={{ flex: "1 1 0px" }}
+              head={"Claimable (USD value)"}
+              content={`$${lockEarnedValue?.toFixed(2) || 0}`}
+            />
+            <HeadInfo
+              sx={{ flex: "1 1 0px" }}
+              head={"Apr"}
+              content={`${
+                lockEarnedValue
+                  ? ((lockEarnedValue / lockValue / 7) * 365 * 100).toFixed(2)
+                  : 0
+              }%`}
+            />
+            <YellowButton
+              sx={{
+                flex: "1 1 0px",
+                maxWidth: "120px",
+                marginX: "8px",
+                height: "41px",
+                color: "#000",
+              }}
+              onClick={async () => {
+                try {
+                  const res = await lockContract.getReward(
+                    wallet.accounts[0].address
+                  );
+                } catch (error) {
+                  console.log(error);
+                }
+              }}
+              variant="contained"
+            >
+              Claim
+            </YellowButton>
+          </Stack>
+        </AccordionSummary>
+        <AccordionDetails>
+          {poolInfo && lockClaimableTokens && (
+            <Box>
+              {poolInfo
+                .find((pool) => {
+                  if (
+                    pool.addr.toLowerCase() ===
+                    "0x8aEE0D7dd5024bF6430d30D4eAD90f8903e724A9".toLowerCase()
+                  )
+                    return pool;
+                })
+                .reward_list.map((reward) => {
+                  const rewardInfo = lockClaimableTokens.find((token) => {
+                    if (
+                      token.address.toLowerCase() === reward.addr.toLowerCase()
+                    )
+                      return true;
+                  });
+                  return (
+                    <Stack direction={"row"}>
+                      <Box sx={{ marginRight: "10px" }}>{reward.symbol}</Box>
+                      <Box>{rewardInfo?.count || 0}</Box>
+                    </Stack>
+                  );
+                })}
+            </Box>
+          )}
         </AccordionDetails>
       </StyledAccordion>
       <StyledAccordion sx={{ background: "rgb(42, 42, 42)", color: "#fff" }}>
@@ -155,30 +357,93 @@ const Claim = () => {
           aria-controls="panel2a-content"
           id="panel2a-header"
         >
-          <Stack
-            width={"100%"}
-            direction={"row"}
-            textAlign={"left"}
-            justifyContent={"space-between"}
-          >
-            <Box sx={{ fontSize: "17px", fontWeight: 700 }}>Lock Burst</Box>
-            <HeadInfo head={"Claimable (USD value)"} content={"$0"} />
-            <HeadInfo head={"vApr"} content={"0%"} />
-            <WhiteDisabledButton
-              disabled
+          <Stack width={"100%"} direction={"row"} textAlign={"left"}>
+            <Box sx={{ fontSize: "17px", fontWeight: 700, flex: "1 1 0px" }}>
+              Stake LP
+            </Box>
+            <HeadInfo
+              sx={{ flex: "1 1 0px" }}
+              head={"Claimable (USD value)"}
+              content={`$${
+                (earnedLPValue + stakedLPExtraTotalValue)?.toFixed(2) || 0
+              }`}
+            />
+            <HeadInfo
+              sx={{ flex: "1 1 0px" }}
+              head={"Apr"}
+              content={`${
+                stakedLPValue
+                  ? (
+                      ((earnedLPValue + stakedLPExtraTotalValue) /
+                        stakedLPValue /
+                        7) *
+                      365 *
+                      100
+                    ).toFixed(2)
+                  : 0
+              }%`}
+            />
+            <YellowButton
               sx={{
+                flex: "1 1 0px",
+                maxWidth: "120px",
                 marginX: "8px",
                 height: "41px",
-                background: "#eee",
+                color: "#000",
+              }}
+              onClick={async () => {
+                try {
+                  const res = await stakeLPContract.getReward();
+                } catch (error) {
+                  console.log(error);
+                }
               }}
               variant="contained"
             >
               Claim
-            </WhiteDisabledButton>
+            </YellowButton>
           </Stack>
         </AccordionSummary>
         <AccordionDetails>
-          <Typography>...</Typography>
+          {poolInfo && stakedLPExtraRewardInfo && (
+            <Box>
+              <Stack direction={"row"}>
+                <Box sx={{ marginRight: "10px" }}>{"Burst"}</Box>
+                <Box>{earnedLPCount || 0}</Box>
+              </Stack>
+              {poolInfo
+                .find((pool) => {
+                  if (
+                    pool.addr.toLowerCase() ===
+                    "0x3eEaE34A7Db2B5F04eFF48249EE640dc3F581a7f".toLowerCase()
+                  )
+                    return pool;
+                })
+                .reward_list.map((reward) => {
+                  if (
+                    reward.addr.toLowerCase() ===
+                    "0x0535a470f39DEc973C15D2Aa6E7f968235F6e1D4".toLowerCase()
+                  ) {
+                    return <></>;
+                  }
+                  const extraRewardInfo = stakedLPExtraRewardInfo.find(
+                    (extraReward) => {
+                      if (
+                        extraReward?.tokenAddress?.toLowerCase() ===
+                        reward.addr.toLowerCase()
+                      )
+                        return true;
+                    }
+                  );
+                  return (
+                    <Stack direction={"row"}>
+                      <Box sx={{ marginRight: "10px" }}>{reward.symbol}</Box>
+                      <Box>{extraRewardInfo?.amount || 0}</Box>
+                    </Stack>
+                  );
+                })}
+            </Box>
+          )}
         </AccordionDetails>
       </StyledAccordion>
     </Layout>

@@ -18,6 +18,12 @@ import wBlurIcon from "./assets/wrapBlur_4.png";
 import blurIcon from "./assets/blur.jpg";
 import { MyContext } from "./Context";
 import { getStakeWblurInfo } from "./api";
+import convertIconWhite from "./assets/convert-white.svg";
+import convertIcon from "./assets/convert.svg";
+import unstakeIconWhite from "./assets/unstake-white.svg";
+import unstakeIcon from "./assets/unstake.svg";
+import infoIconWhite from "./assets/info-white.svg";
+import infoIcon from "./assets/info.svg";
 
 const StyledInput = styled(TextField)({
   "& .MuiInputBase-input": {
@@ -126,7 +132,7 @@ const YellowSwitch = styled(Switch)({
     //   backgroundColor: alpha(pink[600], theme.palette.action.hoverOpacity),
     // },
   },
-  "& .MUISwitch-track": {
+  "& .MuiSwitch-track": {
     backgroundColor: "yellow",
   },
   "& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track": {
@@ -402,7 +408,12 @@ const Stake = () => {
       </Box>
       <StyledTabs value={value} onChange={handleChange}>
         <StyledTab
-          label="CONVERT/STAKE"
+          label={
+            <Stack direction={"row"}>
+              <img src={value === 0 ? convertIcon : convertIconWhite} />
+              CONVERT/STAKE
+            </Stack>
+          }
           sx={{
             fontFamily: "Rajdhani SemiBold",
             border: "none",
@@ -416,7 +427,12 @@ const Stake = () => {
           }}
         />
         <StyledTab
-          label="UNSTAKE"
+          label={
+            <Stack direction={"row"}>
+              <img src={value === 1 ? unstakeIcon : unstakeIconWhite} />
+              UNSTAKE
+            </Stack>
+          }
           sx={{
             border: "none",
             color: value === 1 ? "yellow" : "#929292",
@@ -431,7 +447,12 @@ const Stake = () => {
           }}
         />
         <StyledTab
-          label="INFO"
+          label={
+            <Stack direction={"row"}>
+              <img src={value === 2 ? infoIcon : infoIconWhite} />
+              INFO
+            </Stack>
+          }
           sx={{
             border: "none",
             color: value === 2 ? "yellow" : "#929292",
