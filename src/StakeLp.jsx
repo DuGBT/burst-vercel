@@ -15,7 +15,7 @@ import { MyContext } from "./Context";
 import { getLPPoolInfo } from "./api";
 import convertIconWhite from "./assets/convert-white.svg";
 import convertIcon from "./assets/convert.svg";
-import unstakeIconWhite from "./assets/unstake-white.svg";
+import unstakeIconWhite from "./assets/Unstake-white.svg";
 import unstakeIcon from "./assets/unstake.svg";
 import blur from "./assets/blur.jpg";
 import wBlurIcon from "./assets/wrapBlur_4.png";
