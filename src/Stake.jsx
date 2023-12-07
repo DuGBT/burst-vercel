@@ -21,7 +21,7 @@ import { getStakeWblurInfo } from "./api";
 import convertIconWhite from "./assets/convert-white.svg";
 import convertIcon from "./assets/convert.svg";
 import unstakeIconWhite from "./assets/Unstake-white.svg";
-import unstakeIcon from "./assets/unstake.svg";
+import unstakeIcon from "./assets/Unstake.svg";
 import infoIconWhite from "./assets/info-white.svg";
 import infoIcon from "./assets/info.svg";
 

@@ -16,7 +16,7 @@ import { getLPPoolInfo } from "./api";
 import convertIconWhite from "./assets/convert-white.svg";
 import convertIcon from "./assets/convert.svg";
 import unstakeIconWhite from "./assets/Unstake-white.svg";
-import unstakeIcon from "./assets/unstake.svg";
+import unstakeIcon from "./assets/Unstake.svg";
 import blur from "./assets/blur.jpg";
 import wBlurIcon from "./assets/wrapBlur_4.png";
 const StyledInput = styled(TextField)({
