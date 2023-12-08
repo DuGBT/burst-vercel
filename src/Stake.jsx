@@ -653,7 +653,15 @@ const Stake = () => {
             </Box>
           </Stack>
           {advanced && (
-            <>
+            <Box sx={{ marginTop: "2rem" }}>
+              <Box
+                sx={{
+                  textAlign: "left",
+                }}
+              >
+                Or separately convert Blur into wBlur with this first form, and
+                stake wBlur with this second form:
+              </Box>
               <Stack
                 direction={"row"}
                 alignItems={"flex-end"}
@@ -973,7 +981,7 @@ const Stake = () => {
                   </FunctionButton>
                 </Box>
               </Stack>
-            </>
+            </Box>
           )}
         </Box>
       </TabPanel>
