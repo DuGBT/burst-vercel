@@ -220,7 +220,7 @@ const StakeLP = () => {
           />
           <HeadInfo
             head={"TVL"}
-            content={`$${LPInfo?.[0]?.max_apr || 0}`}
+            content={`$${LPInfo?.[0]?.tvl?.toFixed(2) || 0}`}
             noBorder
           />
         </Stack>

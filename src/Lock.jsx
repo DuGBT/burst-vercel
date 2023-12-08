@@ -248,7 +248,11 @@ const Lock = () => {
               contextValue?.lockValue?.toFixed(2) || 0
             }`}
           />
-          <HeadInfo head={"TVL"} content={`$${lockInfo?.tvl || 0}`} noBorder />
+          <HeadInfo
+            head={"TVL"}
+            content={`$${lockInfo?.tvl?.toFixed(2) || 0}`}
+            noBorder
+          />
         </Stack>
       </Box>
       <Box textAlign={"left"}>
