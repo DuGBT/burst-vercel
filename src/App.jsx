@@ -99,7 +99,7 @@ function Layout({ children }) {
           provider
         );
         const stakeContract = new ethers.Contract(
-          "0x56f9E3de66600ca09F2568c11a5F2D1E793C0ef2",
+          import.meta.env.VITE_WBLUR_STAKING,
           WblurStakeAbi,
           provider
         );
@@ -109,7 +109,7 @@ function Layout({ children }) {
           provider
         );
         const LockContract = new ethers.Contract(
-          "0x8aEE0D7dd5024bF6430d30D4eAD90f8903e724A9",
+          import.meta.env.VITE_BURST_LOCKER,
           LockerAbi,
           provider
         );

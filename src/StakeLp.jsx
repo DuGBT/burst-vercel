@@ -464,7 +464,7 @@ const StakeLP = () => {
 
                   const res = await connectedContract.deposit(
                     BigInt(convertAndStakeValue) * 10n ** 18n,
-                    "0x56f9E3de66600ca09F2568c11a5F2D1E793C0ef2"
+                    import.meta.env.VITE_WBLUR_STAKING
                   );
                   console.log(res);
                 } catch (error) {

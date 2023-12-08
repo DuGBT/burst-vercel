@@ -196,7 +196,7 @@ const Stake = () => {
           provider
         );
         const stakeContract = new ethers.Contract(
-          "0x56f9E3de66600ca09F2568c11a5F2D1E793C0ef2",
+          import.meta.env.VITE_WBLUR_STAKING,
           WblurStakeAbi,
           ethersProvider
         );
@@ -249,7 +249,7 @@ const Stake = () => {
     try {
       const res2 = await wBlurErc20Contract.decimals();
       const res = await wBlurErc20Contract.approve(
-        "0x56f9E3de66600ca09F2568c11a5F2D1E793C0ef2",
+        import.meta.env.VITE_WBLUR_STAKING,
         BigInt(userWblurBalance) * 10n ** BigInt(res2)
       );
       console.log(res);
@@ -274,7 +274,7 @@ const Stake = () => {
     try {
       const res = await wBlurErc20Contract.allowance(
         wallet.accounts[0].address,
-        "0x56f9E3de66600ca09F2568c11a5F2D1E793C0ef2"
+        import.meta.env.VITE_WBLUR_STAKING
       );
       setWBlurAllowance(Number(BigInt(res._hex) / 10n ** 18n));
       if (res == 0) {
@@ -640,7 +640,7 @@ const Stake = () => {
 
                     const res = await connectedContract.deposit(
                       BigInt(convertAndStakeValue) * 10n ** 18n,
-                      "0x56f9E3de66600ca09F2568c11a5F2D1E793C0ef2"
+                      import.meta.env.VITE_WBLUR_STAKING
                     );
                     console.log(res);
                   } catch (error) {
@@ -962,7 +962,7 @@ const Stake = () => {
                       try {
                         const signer = await ethersProvider.getSigner();
                         const stakeContract = new ethers.Contract(
-                          "0x56f9E3de66600ca09F2568c11a5F2D1E793C0ef2",
+                          import.meta.env.VITE_WBLUR_STAKING,
                           WblurStakeAbi,
                           ethersProvider
                         );
