@@ -685,7 +685,7 @@ const Stake = () => {
                   >
                     <Button
                       onClick={() => {
-                        setConvertAndStakevalueValue(userBalance);
+                        setConvertValue(userBalance);
                       }}
                       sx={{
                         height: "30px",
@@ -845,7 +845,7 @@ const Stake = () => {
                   >
                     <Button
                       onClick={() => {
-                        setConvertAndStakevalueValue(userBalance);
+                        setStakeInputValue(userWblurBalance);
                       }}
                       sx={{
                         height: "30px",
