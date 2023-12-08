@@ -93,7 +93,6 @@ const Claim = () => {
 
   const [ethersProvider, setProvider] = useState();
   const [contract, setContract] = useState();
-  const [earnValue, setEarnValue] = useState(0);
   const [lockContract, setLockContract] = useState();
   const [stakeLPContract, setStakeLPContract] = useState();
   const [poolInfo, setPoolInfo] = useState();
@@ -128,37 +127,26 @@ const Claim = () => {
     Connect();
   }, [wallet]);
 
-  const getEarned = async () => {
+  async function getLockBurstInfo() {
     try {
-      const res = await contract.earned(wallet.accounts[0].address);
-      setEarnValue(Number(BigInt(res._hex) / 10n ** 18n));
+      const res = await getLockInfo();
+      setLockInfo(res);
     } catch (error) {
       console.log(error);
     }
-  };
-  useEffect(() => {
-    if (contract) getEarned();
-  }, [contract]);
-  useEffect(() => {
-    async function getLockBurstInfo() {
-      try {
-        const res = await getLockInfo();
-        setLockInfo(res);
-      } catch (error) {
-        console.log(error);
-      }
+  }
+  async function getPoolInfo() {
+    try {
+      const res = await getClaimPoolInfo();
+      setPoolInfo(res);
+    } catch (error) {
+      console.log(error);
     }
+  }
+  useEffect(() => {
     getLockBurstInfo();
   }, []);
   useEffect(() => {
-    async function getPoolInfo() {
-      try {
-        const res = await getClaimPoolInfo();
-        setPoolInfo(res);
-      } catch (error) {
-        console.log(error);
-      }
-    }
     getPoolInfo();
   }, []);
 
@@ -416,7 +404,7 @@ const Claim = () => {
               sx={{ flex: "1 1 0px" }}
               head={"Apr"}
               content={`${
-                stakedLPValue
+                earnedLPValue
                   ? (
                       ((earnedLPValue + stakedLPExtraTotalValue) /
                         stakedLPValue /

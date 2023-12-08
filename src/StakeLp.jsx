@@ -226,7 +226,9 @@ const StakeLP = () => {
           />
           <HeadInfo
             head={"My deposit"}
-            content={`$${stakedLPValue?.toFixed(2) || 0}`}
+            content={`${stakedLPCount || 0} LP = $${
+              stakedLPValue?.toFixed(2) || 0
+            }`}
           />
           <HeadInfo
             head={"TVL"}
@@ -324,7 +326,7 @@ const StakeLP = () => {
     try {
       const res = await stakeContract.balanceOf(wallet.accounts[0].address);
 
-      setStakeValue(Number(BigInt(res._hex) / 10n ** 18n));
+      setStakeValue(Number(BigInt(res._hex) / 10n ** 16n)) / 100;
     } catch (error) {
       console.log(error);
     }
@@ -405,155 +407,6 @@ const StakeLP = () => {
       </StyledTabs>
       <TabPanel value={value} index={0}>
         <Box>
-          {/* <Stack
-            direction={"row"}
-            alignItems={"flex-end"}
-            alignContent={"baseline"}
-          >
-            <Box width={400} position={"relative"} marginTop={5}>
-              <Box position={"absolute"} top={-30} right={0} color={"yellow"}>
-                Avaliable : {userBalance}
-              </Box>
-              <StyledInput
-                value={convertAndStakeValue}
-                onChange={(e) => {
-                  setConvertAndStakevalueValue(e.target.value);
-                }}
-                sx={{ width: "100%" }}
-              />
-            </Box>
-            {blurAllowance > 0 && convertAndStakeValue < blurAllowance && (
-              <BlackButton
-                sx={{
-                  marginX: "8px",
-                  height: "41px",
-                  color: "yellow",
-                  border: "1px solid yellow",
-                }}
-                variant="contained"
-                onClick={() => {
-                  //   approve();
-                }}
-              >
-                Approved
-              </BlackButton>
-            )}
-            {(blurAllowance === 0 || convertAndStakeValue > blurAllowance) && (
-              <YellowButton
-                sx={{
-                  marginX: "8px",
-                  height: "41px",
-                  color: "#000",
-                }}
-                variant="contained"
-                onClick={() => {
-                  approve();
-                }}
-              >
-                Approve
-              </YellowButton>
-            )}
-            <YellowButton
-              sx={{ marginX: "8px", height: "41px", color: "#000" }}
-              variant="contained"
-              //   disabled
-              onClick={async () => {
-                try {
-                  const signer = await ethersProvider.getSigner();
-                  const Contract = new ethers.Contract(
-                    "0x4e74c4c76625d1A3f2f2285651A15580023762E6",
-                    blurDepositAbi,
-                    ethersProvider
-                  );
-                  const connectedContract = Contract.connect(signer);
-
-                  const res = await connectedContract.deposit(
-                    BigInt(convertAndStakeValue) * 10n ** 18n,
-                    import.meta.env.VITE_WBLUR_STAKING
-                  );
-                  console.log(res);
-                } catch (error) {
-                  console.log(error);
-                }
-              }}
-            >
-              Convert & Stake
-            </YellowButton>
-          </Stack> */}
-          {/* <Stack
-            direction={"row"}
-            alignItems={"flex-end"}
-            alignContent={"baseline"}
-          >
-            <Box width={400} position={"relative"} marginTop={5}>
-              <Box position={"absolute"} top={-30} right={0} color={"yellow"}>
-                Avaliable : {userBalance}
-              </Box>
-              <StyledInput
-                value={convertValue}
-                onChange={(e) => {
-                  setConvertValue(e.target.value);
-                }}
-                sx={{ width: "100%" }}
-              />
-            </Box>
-
-            {blurAllowance > 0 && convertValue < blurAllowance && (
-              <BlackButton
-                sx={{
-                  marginX: "8px",
-                  height: "41px",
-                  color: "yellow",
-                  border: "1px solid yellow",
-                }}
-                variant="contained"
-                onClick={() => {}}
-              >
-                Approved
-              </BlackButton>
-            )}
-            {(blurAllowance === 0 || convertValue > blurAllowance) && (
-              <YellowButton
-                sx={{
-                  marginX: "8px",
-                  height: "41px",
-                  color: "#000",
-                }}
-                variant="contained"
-                onClick={() => {
-                  approve();
-                }}
-              >
-                Approve
-              </YellowButton>
-            )}
-            <YellowButton
-              sx={{ marginX: "8px", height: "41px", color: "#000" }}
-              variant="contained"
-              //   disabled
-              onClick={async () => {
-                try {
-                  const signer = await ethersProvider.getSigner();
-                  const Contract = new ethers.Contract(
-                    "0x4e74c4c76625d1A3f2f2285651A15580023762E6",
-                    blurDepositAbi,
-                    ethersProvider
-                  );
-                  const connectedContract = Contract.connect(signer);
-
-                  const res = await connectedContract.deposit(
-                    BigInt(convertValue) * 10n ** 18n,
-                    "0x0000000000000000000000000000000000000000"
-                  );
-                  console.log(res);
-                } catch (error) {
-                  console.log(error);
-                }
-              }}
-            >
-              Convert
-            </YellowButton>
-          </Stack> */}
           <Stack
             direction={"row"}
             alignItems={"flex-end"}

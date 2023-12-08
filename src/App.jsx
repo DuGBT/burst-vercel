@@ -135,9 +135,8 @@ function Layout({ children }) {
         const address = wallet.accounts[0].address;
         try {
           const stakedWblurRes = await stakeContract.balanceOf(address);
-          const stakedWblurCount = Number(
-            BigInt(stakedWblurRes._hex) / 10n ** 18n
-          );
+          const stakedWblurCount =
+            Number(BigInt(stakedWblurRes._hex) / 10n ** 16n) / 100;
           const stakedWblurValue =
             stakedWblurCount *
             tokenPrice[
@@ -145,7 +144,9 @@ function Layout({ children }) {
             ];
 
           const stakedLPRes = await stakeLPContract.balanceOf(address);
-          const stakedLPCount = Number(BigInt(stakedLPRes._hex) / 10n ** 18n);
+          const stakedLPCount =
+            Number(BigInt(stakedLPRes._hex) / 10n ** 16n) / 100;
+
           const stakedLPValue =
             stakedLPCount *
               tokenPrice[
@@ -153,7 +154,7 @@ function Layout({ children }) {
               ] || 0;
 
           const lockRes = await lockContract.lockedBalanceOf(address);
-          const lockCount = Number(BigInt(lockRes._hex) / 10n ** 18n);
+          const lockCount = Number(BigInt(lockRes._hex) / 10n ** 16n) / 100;
           const lockValue =
             lockCount *
             tokenPrice[
@@ -202,9 +203,8 @@ function Layout({ children }) {
             );
             const extraRewardTokenAddress =
               await connectedRewardContract.rewardToken();
-            const extraRewardCount = Number(
-              BigInt(extraRewardRes._hex) / 10n ** 18n
-            );
+            const extraRewardCount =
+              Number(BigInt(extraRewardRes._hex) / 10n ** 16n) / 100;
             const extraRewardValue =
               extraRewardCount * tokenPrice[extraRewardTokenAddress];
             stakedWblurExtraTotalValue += extraRewardValue || 0;
@@ -235,9 +235,8 @@ function Layout({ children }) {
             );
             const extraRewardTokenAddress =
               await connectedRewardContract.rewardToken();
-            const extraRewardCount = Number(
-              BigInt(extraRewardRes._hex) / 10n ** 18n
-            );
+            const extraRewardCount =
+              Number(BigInt(extraRewardRes._hex) / 10n ** 16n) / 100;
 
             const extraRewardValue =
               extraRewardCount * tokenPrice[extraRewardTokenAddress];
@@ -266,9 +265,8 @@ function Layout({ children }) {
         try {
           const stakedWblurRes = await stakeContract.earned(address);
 
-          const earnedWblurCount = Number(
-            BigInt(stakedWblurRes._hex) / 10n ** 18n
-          );
+          const earnedWblurCount =
+            Number(BigInt(stakedWblurRes._hex) / 10n ** 16n) / 100;
           const earnedWblurValue =
             earnedWblurCount *
             tokenPrice[
@@ -277,7 +275,8 @@ function Layout({ children }) {
 
           const stakedLPRes = await stakeLPContract.earned(address);
 
-          const earnedLPCount = Number(BigInt(stakedLPRes._hex) / 10n ** 18n);
+          const earnedLPCount =
+            Number(BigInt(stakedLPRes._hex) / 10n ** 16n) / 100;
           console.log(earnedLPCount, earnedWblurValue, "earn lp");
           const earnedLPValue =
             earnedLPCount *
@@ -286,16 +285,17 @@ function Layout({ children }) {
               ] || 0;
 
           const lockRes = await lockContract.claimableRewards(address);
+
           const lockClaimableTokens = lockRes.map((res) => {
             return {
               address: res[0].toLowerCase(),
-              count: Number(BigInt(res[1]._hex) / 10n ** 18n),
+              count: Number(BigInt(res[1]._hex) / 10n ** 16n) / 100,
               value:
-                Number(BigInt(res[1]._hex) / 10n ** 18n) *
+                (Number(BigInt(res[1]._hex) / 10n ** 16n) / 100) *
                   tokenPrice[res[0].toLowerCase()] || 0,
             };
           });
-          console.log(lockRes);
+          console.log(lockRes, lockClaimableTokens);
           const lockEarnedValue = lockClaimableTokens.reduce((sum, token) => {
             return sum + token.value;
           }, 0);

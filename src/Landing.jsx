@@ -456,7 +456,12 @@ const ScrollPagination = () => {
             points + $BURST
           </Box>
           <Stack
-            sx={{ width: "100%", justifyContent: "center", marginTop: "100px" }}
+            sx={{
+              width: "100%",
+              justifyContent: "center",
+              marginTop: "100px",
+              marginBottom: "2rem",
+            }}
             direction={"row"}
           >
             <img

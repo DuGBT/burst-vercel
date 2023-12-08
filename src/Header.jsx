@@ -55,7 +55,7 @@ function Header({ children }) {
   }, []);
 
   return (
-    <Box sx={{ position: "fixed", width: "100%", zIndex: "1000", top: 0 }}>
+    <Box sx={{ position: "absolute", width: "100%", zIndex: "1000", top: 0 }}>
       <Box className="header">
         <Box
           sx={{

@@ -140,7 +140,6 @@ const Lock = () => {
         import.meta.env.VITE_BURST_LOCKER
       );
       setAllowance(Number(BigInt(res._hex) / 10n ** 18n));
-      console.log("lock allowance,", Number(BigInt(res._hex) / 10n ** 18n));
       if (res == 0) {
       }
     } catch (error) {
@@ -194,7 +193,7 @@ const Lock = () => {
       console.log(error);
     }
   };
-  const approved = wallet && allowance > 0 && lockValue < allowance;
+  const approved = wallet && allowance > 0 && lockValue <= allowance;
   const { lockCount = 0, lockEarnedValue = 0 } = contextValue;
   return (
     <Layout>
