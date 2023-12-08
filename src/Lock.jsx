@@ -121,7 +121,7 @@ const Lock = () => {
       const res2 = await erc20Contract.decimals();
 
       const res = await erc20Contract.approve(
-        "0x8aEE0D7dd5024bF6430d30D4eAD90f8903e724A9",
+        import.meta.env.VITE_BURST_LOCKER,
         BigInt(userBalance) * 10n ** BigInt(res2)
       );
     } catch (error) {
@@ -132,7 +132,7 @@ const Lock = () => {
     try {
       const res = await erc20Contract.allowance(
         wallet.accounts[0].address,
-        "0x8aEE0D7dd5024bF6430d30D4eAD90f8903e724A9"
+        import.meta.env.VITE_BURST_LOCKER
       );
       setAllowance(Number(BigInt(res._hex) / 10n ** 18n));
       console.log("lock allowance,", Number(BigInt(res._hex) / 10n ** 18n));
@@ -165,7 +165,7 @@ const Lock = () => {
           provider
         );
         const LockContract = new ethers.Contract(
-          "0x8aEE0D7dd5024bF6430d30D4eAD90f8903e724A9",
+          import.meta.env.VITE_BURST_LOCKER,
           LockerAbi,
           provider
         );

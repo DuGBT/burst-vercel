@@ -88,12 +88,12 @@ const Claim = () => {
         const provider = new ethers.providers.Web3Provider(wallet.provider);
         const signer = await provider.getSigner();
         const stakeContract = new ethers.Contract(
-          "0x56f9E3de66600ca09F2568c11a5F2D1E793C0ef2",
+          import.meta.env.VITE_WBLUR_STAKING,
           WblurStakeAbi,
           ethersProvider
         );
         const LockContract = new ethers.Contract(
-          "0x8aEE0D7dd5024bF6430d30D4eAD90f8903e724A9",
+          import.meta.env.VITE_BURST_LOCKER,
           LockerAbi,
           provider
         );
@@ -241,7 +241,7 @@ const Claim = () => {
                 .find((pool) => {
                   if (
                     pool.addr.toLowerCase() ===
-                    "0x56f9E3de66600ca09F2568c11a5F2D1E793C0ef2".toLowerCase()
+                    import.meta.env.VITE_WBLUR_STAKING.toLowerCase()
                   )
                     return pool;
                 })
@@ -342,7 +342,7 @@ const Claim = () => {
                 .find((pool) => {
                   if (
                     pool.addr.toLowerCase() ===
-                    "0x8aEE0D7dd5024bF6430d30D4eAD90f8903e724A9".toLowerCase()
+                    import.meta.env.VITE_BURST_LOCKER.toLowerCase()
                   )
                     return pool;
                 })
