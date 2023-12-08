@@ -299,7 +299,7 @@ const StakeLP = () => {
       const res2 = await wBlurErc20Contract.decimals();
       const res = await wBlurErc20Contract.approve(
         "0x3eEaE34A7Db2B5F04eFF48249EE640dc3F581a7f",
-        BigInt(userWblurBalance) * 10n ** BigInt(res2)
+        BigInt(stakeInputValue) * 10n ** BigInt(res2)
       );
       console.log(res);
     } catch (error) {
