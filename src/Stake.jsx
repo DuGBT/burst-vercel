@@ -238,7 +238,7 @@ const Stake = () => {
 
       const res = await erc20Contract.approve(
         "0x4e74c4c76625d1A3f2f2285651A15580023762E6",
-        BigInt(userBalance) * 10n ** BigInt(res2)
+        BigInt(convertAndStakeValue) * 10n ** BigInt(res2)
       );
       console.log(res);
     } catch (error) {
@@ -246,11 +246,12 @@ const Stake = () => {
     }
   };
   const approveForStake = async () => {
+    console.log(stakeInputValue);
     try {
       const res2 = await wBlurErc20Contract.decimals();
       const res = await wBlurErc20Contract.approve(
         import.meta.env.VITE_WBLUR_STAKING,
-        BigInt(userWblurBalance) * 10n ** BigInt(res2)
+        BigInt(stakeInputValue) * 10n ** BigInt(res2)
       );
       console.log(res);
     } catch (error) {

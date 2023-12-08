@@ -127,7 +127,7 @@ const Lock = () => {
 
       const res = await erc20Contract.approve(
         import.meta.env.VITE_BURST_LOCKER,
-        BigInt(userBalance) * 10n ** BigInt(res2)
+        BigInt(lockValue) * 10n ** BigInt(res2)
       );
     } catch (error) {
       console.log(error);
