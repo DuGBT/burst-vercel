@@ -155,7 +155,14 @@ const StakeLP = () => {
       stakedLPValue = 0,
     } = contextValue;
     return (
-      <Box padding={2} sx={{ background: "rgb(42,42,42)" }}>
+      <Box
+        sx={{
+          borderTop: "1px solid #727272",
+          borderBottom: "1px solid #727272",
+        }}
+        height={100}
+        padding={"10px"}
+      >
         <Stack
           direction={"row"}
           justifyContent={"space-between"}
@@ -164,7 +171,7 @@ const StakeLP = () => {
           alignItems={"center"}
         >
           <HeadInfo
-            head={""}
+            head={"pool"}
             content={
               <Stack
                 direction={"row"}
