@@ -201,7 +201,7 @@ const StakeLP = () => {
             content={`$${earnedLPValue?.toFixed(2) || 0}`}
           />
           <HeadInfo
-            head={"My vApr"}
+            head={"My Apr"}
             content={`${
               stakedLPValue
                 ? ((earnedLPValue / stakedLPValue / 7) * 365 * 100).toFixed(2)
@@ -209,14 +209,12 @@ const StakeLP = () => {
             }%`}
           />
           <HeadInfo
-            head={"Max vApr"}
-            content={`${LPInfo?.[0]?.max_apr || 0}%`}
+            head={"Max Apr"}
+            content={`${LPInfo?.[0]?.max_apr?.toFixed(2) || 0}%`}
           />
           <HeadInfo
-            head={"My BLUR staked"}
-            content={`${stakedLPCount || 0} Blur = $${
-              stakedLPValue?.toFixed(2) || 0
-            }`}
+            head={"My deposit"}
+            content={`$${stakedLPValue?.toFixed(2) || 0}`}
           />
           <HeadInfo
             head={"TVL"}
