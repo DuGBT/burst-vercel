@@ -9,7 +9,7 @@ axios.interceptors.response.use(
   }
 );
 
-const baseUrl = "https://testnet-api.burst.wtf";
+const baseUrl = "https://mainnet-api.burst.wtf";
 
 export const getTokenPrice = (params) => {
   return axios.get(`${baseUrl}/burst/token_price`);
