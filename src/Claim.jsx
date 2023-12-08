@@ -67,7 +67,24 @@ const StyledAccordion = styled(Accordion)({
 const YellowButton = styled(Button)({
   "&.MuiButton-root": { background: "yellow !important" },
 });
+const GreyButton = styled(Button)({
+  "&.MuiButton-root": {
+    background: "rgba(146, 146, 146, 0.2)",
+    width: "200px",
+  },
+});
 
+const FunctionButton = (props) => {
+  const { burstColor, children } = props;
+  if (burstColor === "yellow") {
+    return <YellowButton {...props}>{children}</YellowButton>;
+  } else
+    return (
+      <GreyButton {...props} disabled>
+        {children}
+      </GreyButton>
+    );
+};
 const Claim = () => {
   const { contextValue, updateContextValue } = useContext(MyContext);
 
@@ -203,7 +220,8 @@ const Claim = () => {
                   : 0
               }%`}
             />
-            <YellowButton
+            <FunctionButton
+              burstColor={earnedWblurValue ? "yellow" : "black"}
               sx={{
                 maxWidth: "120px",
                 flex: "1 1 0px",
@@ -222,7 +240,7 @@ const Claim = () => {
               variant="contained"
             >
               Claim
-            </YellowButton>
+            </FunctionButton>
           </Stack>
         </AccordionSummary>
         <AccordionDetails>
@@ -312,7 +330,8 @@ const Claim = () => {
                   : 0
               }%`}
             />
-            <YellowButton
+            <FunctionButton
+              burstColor={lockEarnedValue ? "yellow" : "black"}
               sx={{
                 flex: "1 1 0px",
                 maxWidth: "120px",
@@ -332,7 +351,7 @@ const Claim = () => {
               variant="contained"
             >
               Claim
-            </YellowButton>
+            </FunctionButton>
           </Stack>
         </AccordionSummary>
         <AccordionDetails>
@@ -408,7 +427,8 @@ const Claim = () => {
                   : 0
               }%`}
             />
-            <YellowButton
+            <FunctionButton
+              burstColor={earnedLPValue ? "yellow" : "black"}
               sx={{
                 flex: "1 1 0px",
                 maxWidth: "120px",
@@ -426,7 +446,7 @@ const Claim = () => {
               variant="contained"
             >
               Claim
-            </YellowButton>
+            </FunctionButton>
           </Stack>
         </AccordionSummary>
         <AccordionDetails>

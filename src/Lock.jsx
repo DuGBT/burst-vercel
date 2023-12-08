@@ -32,7 +32,12 @@ const FunctionButton = (props) => {
   const { burstColor, children } = props;
   if (burstColor === "yellow") {
     return <YellowButton {...props}>{children}</YellowButton>;
-  } else return <GreyButton {...props}>{children}</GreyButton>;
+  } else
+    return (
+      <GreyButton {...props} disabled>
+        {children}
+      </GreyButton>
+    );
 };
 const StyledInput = styled(TextField)({
   "& .MuiInputBase-input": {
