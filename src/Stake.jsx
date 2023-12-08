@@ -385,7 +385,7 @@ const Stake = () => {
             content={`$${earnedWblurValue?.toFixed(2) || 0}`}
           />
           <HeadInfo
-            head={"My vApr"}
+            head={"My Apr"}
             content={`${
               stakedWblurValue
                 ? (
@@ -396,7 +396,10 @@ const Stake = () => {
                 : 0
             }%`}
           />
-          <HeadInfo head={"Max vApr"} content={`${stakeInfo?.max_apr || 0}%`} />
+          <HeadInfo
+            head={"Max Apr"}
+            content={`${stakeInfo?.max_apr?.toFixed(2) || 0}%`}
+          />
           <HeadInfo
             head={"My BLUR staked"}
             content={`${stakedWblurCount || 0} Blur = $${

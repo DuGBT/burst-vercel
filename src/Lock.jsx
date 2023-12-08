@@ -241,7 +241,10 @@ const Lock = () => {
                 : 0
             }%`}
           />
-          <HeadInfo head={"Max Apr"} content={`${lockInfo?.max_apr || 0}%`} />
+          <HeadInfo
+            head={"Max Apr"}
+            content={`${lockInfo?.max_apr?.toFixed(2) || 0}%`}
+          />
           <HeadInfo
             head={"My Burst locked"}
             content={`${lockCount || 0} Burst = $${
