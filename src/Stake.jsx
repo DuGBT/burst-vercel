@@ -405,7 +405,7 @@ const Stake = () => {
           />
           <HeadInfo
             head={"TVL"}
-            content={`$${stakeInfo?.max_apr || 0}`}
+            content={`$${stakeInfo?.tvl?.toFixed(2) || 0}`}
             noBorder
           />
         </Stack>
