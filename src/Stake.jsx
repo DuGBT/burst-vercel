@@ -340,7 +340,11 @@ const Stake = () => {
     WblurAllowance > 0 &&
     stakeInputValue <= WblurAllowance
   );
-  const { earnedWblurValue, stakedWblurValue, stakedWblurCount } = contextValue;
+  const {
+    earnedWblurValue = 0,
+    stakedWblurValue = 0,
+    stakedWblurCount = 0,
+  } = contextValue;
   console.log(contextValue);
   return (
     <Layout>

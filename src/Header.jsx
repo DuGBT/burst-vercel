@@ -66,8 +66,10 @@ function Header({ children }) {
             zIndex: "1000",
           }}
         >
-          <Box sx={{ position: "absolute", top: "0" }}>
-            <img src={BurstLogo} style={{ width: "300px" }} />
+          <Box sx={{ position: "absolute", top: "0", cursor: "pointer" }}>
+            <Link to={"/"}>
+              <img src={BurstLogo} style={{ width: "300px" }} />
+            </Link>
           </Box>
           <YellowButton
             sx={{

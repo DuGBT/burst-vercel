@@ -278,7 +278,7 @@ function Layout({ children }) {
           const stakedLPRes = await stakeLPContract.earned(address);
 
           const earnedLPCount = Number(BigInt(stakedLPRes._hex) / 10n ** 18n);
-          console.log(earnedLPCount, "earn lp count");
+          console.log(earnedLPCount, earnedWblurValue, "earn lp");
           const earnedLPValue =
             earnedLPCount *
               tokenPrice[
@@ -330,8 +330,10 @@ function Layout({ children }) {
             position: "relative",
           }}
         >
-          <Box sx={{ position: "absolute", top: "0" }}>
-            <img src={BurstLogo} style={{ width: "300px" }} />
+          <Box sx={{ position: "absolute", top: "0", cursor: "pointer" }}>
+            <Link to="/">
+              <img src={BurstLogo} style={{ width: "300px" }} />
+            </Link>
           </Box>
           <YellowButton
             sx={{
