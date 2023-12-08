@@ -9,8 +9,7 @@ axios.interceptors.response.use(
   }
 );
 
-const baseUrl =
-  "http://burst-testnet-431667704.ap-southeast-1.elb.amazonaws.com";
+const baseUrl = "https://testnet-api.burst.wtf";
 
 export const getTokenPrice = (params) => {
   return axios.get(`${baseUrl}/burst/token_price`);

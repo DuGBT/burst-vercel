@@ -146,23 +146,21 @@ const Claim = () => {
   }, []);
 
   const {
-    lockEarnedValue,
-    lockValue,
-    stakedLPValue,
-    earnedLPCount,
-    earnedLPValue,
-    stakedWblurValue,
-    earnedWblurCount,
-    earnedWblurValue,
+    lockEarnedValue = 0,
+    lockValue = 0,
+    stakedLPValue = 0,
+    earnedLPCount = 0,
+    earnedLPValue = 0,
+    stakedWblurValue = 0,
+    earnedWblurCount = 0,
+    earnedWblurValue = 0,
     stakedWblurExtraRewardInfo,
     stakedLPExtraRewardInfo,
-    stakedLPExtraTotalValue,
-    stakedWblurExtraTotalValue,
+    stakedLPExtraTotalValue = 0,
+    stakedWblurExtraTotalValue = 0,
     lockClaimableTokens,
     tokenPrice,
   } = contextValue;
-
-  console.log(contextValue);
 
   return (
     <Layout>
@@ -186,7 +184,7 @@ const Claim = () => {
               sx={{ flex: "1 1 0px" }}
               head={"Claimable (USD value)"}
               content={`$${
-                (earnedWblurValue + stakedWblurExtraTotalValue)?.toFixed(2) || 0
+                (earnedWblurValue + stakedWblurExtraTotalValue).toFixed(2) || 0
               }`}
             />
 

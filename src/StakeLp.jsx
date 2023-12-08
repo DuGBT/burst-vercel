@@ -149,7 +149,11 @@ const StakeLP = () => {
 
   const Header = () => {
     const { contextValue } = useContext(MyContext);
-    const { earnedLPValue, stakedLPCount, stakedLPValue } = contextValue;
+    const {
+      earnedLPValue = 0,
+      stakedLPCount = 0,
+      stakedLPValue = 0,
+    } = contextValue;
     return (
       <Box padding={2} sx={{ background: "rgb(42,42,42)" }}>
         <Stack
@@ -227,7 +231,6 @@ const StakeLP = () => {
     async function getLPInfo() {
       try {
         const res = await getLPPoolInfo();
-        console.log(res, "lp info");
         setLPINfo(res);
       } catch (error) {
         console.log(error);
@@ -235,8 +238,6 @@ const StakeLP = () => {
     }
     getLPInfo();
   }, []);
-
-  console.log(LPInfo);
 
   useEffect(() => {
     async function Connect() {
@@ -272,15 +273,6 @@ const StakeLP = () => {
     Connect();
   }, [wallet]);
 
-  //   const getBalance = async () => {
-  //     try {
-  //       const res = await erc20Contract.balanceOf(wallet.accounts[0].address);
-  //       const res2 = await erc20Contract.decimals();
-  //       setUserBalance(Number(BigInt(res._hex) / 10n ** BigInt(res2)));
-  //     } catch (error) {
-  //       console.log(error);
-  //     }
-  //   };
   const getWblurBalance = async () => {
     try {
       const res = await wBlurErc20Contract.balanceOf(
@@ -292,19 +284,6 @@ const StakeLP = () => {
       console.log(error);
     }
   };
-  //   const approve = async () => {
-  //     try {
-  //       const res2 = await erc20Contract.decimals();
-
-  //       const res = await erc20Contract.approve(
-  //         "0x3eEaE34A7Db2B5F04eFF48249EE640dc3F581a7f",
-  //         BigInt(userBalance * 10 ** res2)
-  //       );
-  //       console.log(res);
-  //     } catch (error) {
-  //       console.log(error);
-  //     }
-  //   };
   const approveForStake = async () => {
     try {
       const res2 = await wBlurErc20Contract.decimals();

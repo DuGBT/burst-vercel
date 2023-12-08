@@ -190,7 +190,7 @@ const Lock = () => {
     }
   };
   const approved = wallet && allowance > 0 && lockValue < allowance;
-  const { lockCount, lockEarnedValue } = contextValue;
+  const { lockCount = 0, lockEarnedValue = 0 } = contextValue;
   return (
     <Layout>
       <Box
