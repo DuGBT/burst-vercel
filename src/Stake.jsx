@@ -987,7 +987,33 @@ const Stake = () => {
             <Box position={"absolute"} top={-30} right={0} color={"yellow"}>
               staked : {stakeValue}
             </Box>
-
+            <Box
+              display={"flex"}
+              position={"absolute"}
+              top={6}
+              right={10}
+              zIndex={100}
+            >
+              <Button
+                onClick={() => {
+                  setUnstakeValue(stakeValue);
+                }}
+                sx={{
+                  height: "30px",
+                  width: "40px",
+                  padding: 0,
+                  minWidth: "30px",
+                  background: "#C3D4A54D",
+                  color: "#c3d4a5",
+                }}
+              >
+                Max
+              </Button>
+              <img
+                src={wBlurIcon}
+                style={{ width: "32px", borderRadius: "50%" }}
+              />
+            </Box>
             <StyledInput
               value={unstakeValue === 0 ? "" : convertAndStakeValue}
               onChange={(e) => {
@@ -997,24 +1023,47 @@ const Stake = () => {
             />
           </Box>
 
-          <YellowButton
-            sx={{ marginX: "8px", height: "41px", color: "#000" }}
-            variant="contained"
-            //   disabled
-            onClick={async () => {
-              try {
-                const res = await stakeContract.withdraw(
-                  BigInt(unstakeValue) * 10n ** 18n,
-                  true
-                );
-                console.log(res);
-              } catch (error) {
-                console.log(error);
-              }
-            }}
-          >
-            UNSTAKE
-          </YellowButton>
+          {wallet && stakeValue > 0 && (
+            <YellowButton
+              sx={{ marginX: "8px", height: "41px", color: "#000" }}
+              variant="contained"
+              //   disabled
+              onClick={async () => {
+                try {
+                  const res = await stakeContract.withdraw(
+                    BigInt(unstakeValue) * 10n ** 18n,
+                    true
+                  );
+                  console.log(res);
+                } catch (error) {
+                  console.log(error);
+                }
+              }}
+            >
+              UNSTAKE
+            </YellowButton>
+          )}
+          {stakeValue === 0 && (
+            <FunctionButton
+              burstColor={wallet ? "yellow" : "black"}
+              sx={{ marginX: "8px", height: "41px", color: "#000" }}
+              variant="contained"
+              //   disabled
+              onClick={async () => {
+                try {
+                  const res = await stakeContract.withdraw(
+                    BigInt(unstakeValue) * 10n ** 18n,
+                    true
+                  );
+                  console.log(res);
+                } catch (error) {
+                  console.log(error);
+                }
+              }}
+            >
+              UNSTAKE
+            </FunctionButton>
+          )}
         </Stack>
       </TabPanel>
       <TabPanel value={value} index={2}>

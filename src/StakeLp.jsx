@@ -771,24 +771,47 @@ const StakeLP = () => {
             />
           </Box>
 
-          <YellowButton
-            sx={{ marginX: "8px", height: "41px", color: "#000" }}
-            variant="contained"
-            //   disabled
-            onClick={async () => {
-              try {
-                const res = await stakeContract.withdraw(
-                  BigInt(unstakeValue) * 10n ** 18n,
-                  true
-                );
-                console.log(res);
-              } catch (error) {
-                console.log(error);
-              }
-            }}
-          >
-            UNSTAKE
-          </YellowButton>
+          {wallet && stakeValue > 0 && (
+            <YellowButton
+              sx={{ marginX: "8px", height: "41px", color: "#000" }}
+              variant="contained"
+              //   disabled
+              onClick={async () => {
+                try {
+                  const res = await stakeContract.withdraw(
+                    BigInt(unstakeValue) * 10n ** 18n,
+                    true
+                  );
+                  console.log(res);
+                } catch (error) {
+                  console.log(error);
+                }
+              }}
+            >
+              UNSTAKE
+            </YellowButton>
+          )}
+          {stakeValue === 0 && (
+            <FunctionButton
+              burstColor={wallet ? "yellow" : "black"}
+              sx={{ marginX: "8px", height: "41px", color: "#000" }}
+              variant="contained"
+              //   disabled
+              onClick={async () => {
+                try {
+                  const res = await stakeContract.withdraw(
+                    BigInt(unstakeValue) * 10n ** 18n,
+                    true
+                  );
+                  console.log(res);
+                } catch (error) {
+                  console.log(error);
+                }
+              }}
+            >
+              UNSTAKE
+            </FunctionButton>
+          )}
         </Stack>
       </TabPanel>
     </Box>
