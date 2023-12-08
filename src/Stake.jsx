@@ -232,32 +232,7 @@ const Stake = () => {
       console.log(error);
     }
   };
-  const approve = async () => {
-    try {
-      const res2 = await erc20Contract.decimals();
 
-      const res = await erc20Contract.approve(
-        "0x4e74c4c76625d1A3f2f2285651A15580023762E6",
-        BigInt(convertAndStakeValue) * 10n ** BigInt(res2)
-      );
-      console.log(res);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-  const approveForStake = async () => {
-    console.log(stakeInputValue);
-    try {
-      const res2 = await wBlurErc20Contract.decimals();
-      const res = await wBlurErc20Contract.approve(
-        import.meta.env.VITE_WBLUR_STAKING,
-        BigInt(stakeInputValue) * 10n ** BigInt(res2)
-      );
-      console.log(res);
-    } catch (error) {
-      console.log(error);
-    }
-  };
   const checkApprove = async () => {
     try {
       const res = await erc20Contract.allowance(
@@ -266,6 +241,27 @@ const Stake = () => {
       );
       setBlurAllowance(Number(BigInt(res._hex) / 10n ** 18n));
       if (res == 0) {
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  const approve = async () => {
+    try {
+      const res2 = await erc20Contract.decimals();
+
+      const transaction = await erc20Contract.approve(
+        "0x4e74c4c76625d1A3f2f2285651A15580023762E6",
+        BigInt(convertAndStakeValue) * 10n ** BigInt(res2)
+      );
+      console.log(transaction);
+      const receipt = await transaction.wait();
+
+      if (receipt.status === 1) {
+        console.log("Transaction mined. Block number:", receipt.blockNumber);
+        checkApprove();
+      } else {
+        console.error("Transaction failed. Error message:", receipt.statusText);
       }
     } catch (error) {
       console.log(error);
@@ -284,11 +280,29 @@ const Stake = () => {
       console.log(error);
     }
   };
+  const approveForStake = async () => {
+    try {
+      const res2 = await wBlurErc20Contract.decimals();
+      const transaction = await wBlurErc20Contract.approve(
+        import.meta.env.VITE_WBLUR_STAKING,
+        BigInt(stakeInputValue) * 10n ** BigInt(res2)
+      );
+      const receipt = await transaction.wait();
 
+      if (receipt.status === 1) {
+        console.log("Transaction mined. Block number:", receipt.blockNumber);
+        checkApproveForStake();
+      } else {
+        console.error("Transaction failed. Error message:", receipt.statusText);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
   const checkStakeBalance = async () => {
     try {
       const res = await stakeContract.balanceOf(wallet.accounts[0].address);
-      setStakeValue(Number(BigInt(res._hex) / 10n ** 18n));
+      setStakeValue(Number(BigInt(res._hex) / 10n ** 16n)) / 100;
     } catch (error) {
       console.log(error);
     }
@@ -314,7 +328,6 @@ const Stake = () => {
     async function getStakeInfo() {
       try {
         const res = await getStakeWblurInfo();
-        console.log(res);
         setStakeInfo(res);
       } catch (error) {
         console.log(error);
@@ -490,13 +503,16 @@ const Stake = () => {
             rates may vary. It is possible to convert wBLUR back to BLUR if a
             DAO vote passes in favor of this action.
           </Box>
-          <Box textAlign={"left"} sx={{ color: "#fff" }}>
+          <Box textAlign={"right"} sx={{ color: "#fff" }}>
             advanced
             <YellowSwitch
               checked={advanced}
               onChange={handleSwitchChange}
               inputProps={{ "aria-label": "controlled" }}
             />
+          </Box>
+          <Box sx={{ textAlign: "left" }}>
+            Convert and stake Blur in one go:
           </Box>
           <Stack
             direction={"row"}
@@ -639,11 +655,23 @@ const Stake = () => {
                     );
                     const connectedContract = Contract.connect(signer);
 
-                    const res = await connectedContract.deposit(
-                      BigInt(convertAndStakeValue) * 10n ** 18n,
+                    const transaction = await connectedContract.deposit(
+                      BigInt(convertAndStakeValue * 100) * 10n ** 16n,
                       import.meta.env.VITE_WBLUR_STAKING
                     );
-                    console.log(res);
+                    const receipt = await transaction.wait();
+
+                    if (receipt.status === 1) {
+                      console.log(
+                        "Transaction mined. Block number:",
+                        receipt.blockNumber
+                      );
+                    } else {
+                      console.error(
+                        "Transaction failed. Error message:",
+                        receipt.statusText
+                      );
+                    }
                   } catch (error) {
                     console.log(error);
                   }
@@ -810,7 +838,7 @@ const Stake = () => {
                         const connectedContract = Contract.connect(signer);
 
                         const res = await connectedContract.deposit(
-                          BigInt(convertValue) * 10n ** 18n,
+                          BigInt(convertValue * 100) * 10n ** 16n,
                           "0x0000000000000000000000000000000000000000"
                         );
                         console.log(res);
@@ -970,7 +998,7 @@ const Stake = () => {
                         const connectedContract = stakeContract.connect(signer);
 
                         const res = await connectedContract.stake(
-                          BigInt(stakeInputValue) * 10n ** 18n
+                          BigInt(stakeInputValue * 100) * 10n ** 16n
                         );
                         console.log(res);
                       } catch (error) {
@@ -1040,7 +1068,7 @@ const Stake = () => {
               onClick={async () => {
                 try {
                   const res = await stakeContract.withdraw(
-                    BigInt(unstakeValue) * 10n ** 18n,
+                    BigInt(unstakeValue * 100) * 10n ** 16n,
                     true
                   );
                   console.log(res);
@@ -1061,7 +1089,7 @@ const Stake = () => {
               onClick={async () => {
                 try {
                   const res = await stakeContract.withdraw(
-                    BigInt(unstakeValue) * 10n ** 18n,
+                    BigInt(unstakeValue * 100) * 10n ** 16n,
                     true
                   );
                   console.log(res);
