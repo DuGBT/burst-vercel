@@ -1015,7 +1015,7 @@ const Stake = () => {
               />
             </Box>
             <StyledInput
-              value={unstakeValue === 0 ? "" : convertAndStakeValue}
+              value={unstakeValue === 0 ? "" : unstakeValue}
               onChange={(e) => {
                 setUnstakeValue(e.target.value);
               }}
