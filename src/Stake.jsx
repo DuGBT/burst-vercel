@@ -302,7 +302,7 @@ const Stake = () => {
   const checkStakeBalance = async () => {
     try {
       const res = await stakeContract.balanceOf(wallet.accounts[0].address);
-      setStakeValue(Number(BigInt(res._hex) / 10n ** 16n)) / 100;
+      setStakeValue(Number(BigInt(res._hex) / 10n ** 16n) / 100);
     } catch (error) {
       console.log(error);
     }

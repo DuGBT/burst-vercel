@@ -175,6 +175,7 @@ function Layout({ children }) {
       }
     }
     getTotalDeposit();
+    updateContextValue({ getTotalDeposit });
   }, [wallet, stakeContract, tokenPrice, stakeLPContract, lockContract]);
 
   useEffect(() => {
@@ -317,6 +318,9 @@ function Layout({ children }) {
       }
     }
     getTotalClaimable();
+    updateContextValue({
+      getTotalClaimable,
+    });
   }, [wallet, stakeContract, tokenPrice, stakeLPContract, lockContract]);
 
   return (
