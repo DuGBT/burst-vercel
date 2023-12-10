@@ -302,7 +302,7 @@ const Stake = () => {
   const checkStakeBalance = async () => {
     try {
       const res = await stakeContract.balanceOf(wallet.accounts[0].address);
-      setStakeValue(Number(BigInt(res._hex) / 10n ** 16n)) / 100;
+      setStakeValue(Number(BigInt(res._hex) / 10n ** 16n) / 100);
     } catch (error) {
       console.log(error);
     }
@@ -1161,10 +1161,10 @@ const Stake = () => {
               <a
                 style={{ color: "yellow" }}
                 href={
-                  "https://goerli.etherscan.io/address/0x56f9E3de66600ca09F2568c11a5F2D1E793C0ef2"
+                  "https://goerli.etherscan.io/address/0x079Ea5F65b7D349a1eDB2B5504BBc4c3aa4b23B0"
                 }
               >
-                0x56f9E3de66600ca09F2568c11a5F2D1E793C0ef2
+                0x079Ea5F65b7D349a1eDB2B5504BBc4c3aa4b23B0
               </a>
             </Box>
           </Stack>
