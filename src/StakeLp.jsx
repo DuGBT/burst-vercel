@@ -314,7 +314,7 @@ const StakeLP = () => {
         wallet.accounts[0].address,
         "0x3eEaE34A7Db2B5F04eFF48249EE640dc3F581a7f"
       );
-      setWBlurAllowance(Number(BigInt(res._hex) / 10n ** 18n));
+      setWBlurAllowance(Number(BigInt(res._hex) / 10n ** 16n) / 100);
       if (res == 0) {
       }
     } catch (error) {
@@ -336,12 +336,6 @@ const StakeLP = () => {
     if (stakeContract) checkStakeBalance();
   }, [stakeContract]);
 
-  //   useEffect(() => {
-  //     if (erc20Contract) {
-  //       checkApprove();
-  //       getBalance();
-  //     }
-  //   }, [erc20Contract]);
   useEffect(() => {
     if (wBlurErc20Contract) {
       getWblurBalance();
@@ -558,7 +552,7 @@ const StakeLP = () => {
                     const connectedContract = stakeContract.connect(signer);
 
                     const res = await connectedContract.stake(
-                      BigInt(stakeInputValue) * 10n ** 18n
+                      BigInt(stakeInputValue * 100) * 10n ** 16n
                     );
                     console.log(res);
                   } catch (error) {
@@ -637,7 +631,7 @@ const StakeLP = () => {
               onClick={async () => {
                 try {
                   const res = await stakeContract.withdraw(
-                    BigInt(unstakeValue) * 10n ** 18n,
+                    BigInt(unstakeValue * 100) * 10n ** 16n,
                     true
                   );
                   console.log(res);
@@ -658,7 +652,7 @@ const StakeLP = () => {
               onClick={async () => {
                 try {
                   const res = await stakeContract.withdraw(
-                    BigInt(unstakeValue) * 10n ** 18n,
+                    BigInt(unstakeValue * 100) * 10n ** 16n,
                     true
                   );
                   console.log(res);

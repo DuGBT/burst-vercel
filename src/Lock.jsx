@@ -139,7 +139,7 @@ const Lock = () => {
         wallet.accounts[0].address,
         import.meta.env.VITE_BURST_LOCKER
       );
-      setAllowance(Number(BigInt(res._hex) / 10n ** 18n));
+      setAllowance(Number(BigInt(res._hex) / 10n ** 16n) / 100);
       if (res == 0) {
       }
     } catch (error) {
@@ -186,7 +186,7 @@ const Lock = () => {
     try {
       const res = await lockContract.lock(
         wallet.accounts[0].address,
-        BigInt(lockValue) * 10n ** 18n,
+        BigInt(lockValue * 100) * 10n ** 16n,
         0
       );
     } catch (error) {
