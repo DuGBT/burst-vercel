@@ -17,8 +17,8 @@ import convertIconWhite from "./assets/convert-white.svg";
 import convertIcon from "./assets/convert.svg";
 import unstakeIconWhite from "./assets/Unstake-white.svg";
 import unstakeIcon from "./assets/Unstake.svg";
-import blur from "./assets/blur.jpg";
-import wBlurIcon from "./assets/wrapBlur_4.png";
+import blur from "./assets/Blurtoken.png";
+import wBlurIcon from "./assets/wrapBlurtoken.png";
 const StyledInput = styled(TextField)({
   "& .MuiInputBase-input": {
     padding: "10px",
@@ -137,28 +137,25 @@ const StakeLP = () => {
   const [{ wallet, connecting }, connect, disconnect] = useConnectWallet();
   const [value, setValue] = useState(0);
   const [convertAndStakeValue, setConvertAndStakevalueValue] = useState(0);
-  const [blurAllowance, setBlurAllowance] = useState(0);
   const [WblurAllowance, setWBlurAllowance] = useState(0);
 
-  const [convertValue, setConvertValue] = useState(0);
   const [stakeValue, setStakeValue] = useState(0);
   const [stakeInputValue, setStakeInputValue] = useState(0);
   const [stakeContract, setStakeContract] = useState();
   const [ethersProvider, setProvider] = useState();
   const [erc20Contract, setErc20Contract] = useState();
   const [wBlurErc20Contract, setWBlurErc20Contract] = useState();
-  const [userBalance, setUserBalance] = useState(0);
   const [userWblurBalance, setUserWblurBalance] = useState(0);
   const [unstakeValue, setUnstakeValue] = useState(0);
   const [LPInfo, setLPINfo] = useState();
-
+  const { contextValue } = useContext(MyContext);
+  const {
+    earnedLPValue = 0,
+    stakedLPCount = 0,
+    stakedLPValue = 0,
+    getTotalDeposit,
+  } = contextValue;
   const Header = () => {
-    const { contextValue } = useContext(MyContext);
-    const {
-      earnedLPValue = 0,
-      stakedLPCount = 0,
-      stakedLPValue = 0,
-    } = contextValue;
     return (
       <Box
         sx={{
@@ -188,6 +185,7 @@ const StakeLP = () => {
                   display={"flex"}
                   justifyContent={"center"}
                   alignContent={"center"}
+                  marginRight={"15px"}
                 >
                   <img
                     style={{ height: "26px", borderRadius: "50%" }}
@@ -197,13 +195,13 @@ const StakeLP = () => {
                     style={{
                       height: "26px",
                       borderRadius: "50%",
-                      // position: "absolute",
-                      // right: "-20px",
+                      position: "absolute",
+                      left: "20px",
                     }}
                     src={wBlurIcon}
                   />
-                  <Box sx={{ marginLeft: "10px" }}>Blur+wBlur</Box>
                 </Box>
+                <Box sx={{ marginLeft: "10px" }}>Blur+wBlur</Box>
               </Stack>
             }
           ></HeadInfo>
@@ -363,7 +361,7 @@ const StakeLP = () => {
           label={
             <Stack direction={"row"}>
               <img src={value === 0 ? convertIcon : convertIconWhite} />
-              CONVERT/STAKE
+              STAKE
             </Stack>
           }
           sx={{
@@ -425,6 +423,7 @@ const StakeLP = () => {
                     height: "30px",
                     width: "40px",
                     padding: 0,
+                    marginRight: "6px",
                     minWidth: "30px",
                     background: "#C3D4A54D",
                     color: "#c3d4a5",
@@ -432,7 +431,7 @@ const StakeLP = () => {
                 >
                   Max
                 </Button>
-                <Box>
+                <Box display={"flex"} alignItems={"center"}>
                   <img
                     style={{ height: "26px", borderRadius: "50%" }}
                     src={blur}
@@ -551,10 +550,26 @@ const StakeLP = () => {
                     );
                     const connectedContract = stakeContract.connect(signer);
 
-                    const res = await connectedContract.stake(
+                    const transaction = await connectedContract.stake(
                       BigInt(stakeInputValue * 100) * 10n ** 16n
                     );
-                    console.log(res);
+                    const receipt = await transaction.wait();
+
+                    if (receipt.status === 1) {
+                      console.log(
+                        "Transaction mined. Block number:",
+                        receipt.blockNumber
+                      );
+                      getTotalDeposit();
+                      getWblurBalance();
+                      checkStakeBalance();
+                      checkApproveForStake();
+                    } else {
+                      console.error(
+                        "Transaction failed. Error message:",
+                        receipt.statusText
+                      );
+                    }
                   } catch (error) {
                     console.log(error);
                   }
@@ -591,6 +606,7 @@ const StakeLP = () => {
                   height: "30px",
                   width: "40px",
                   padding: 0,
+                  marginRight: "6px",
                   minWidth: "30px",
                   background: "#C3D4A54D",
                   color: "#c3d4a5",
@@ -598,7 +614,7 @@ const StakeLP = () => {
               >
                 Max
               </Button>
-              <Box>
+              <Box display={"flex"} alignItems={"center"}>
                 <img
                   style={{ height: "26px", borderRadius: "50%" }}
                   src={blur}
@@ -630,11 +646,26 @@ const StakeLP = () => {
               //   disabled
               onClick={async () => {
                 try {
-                  const res = await stakeContract.withdraw(
+                  const transaction = await stakeContract.withdraw(
                     BigInt(unstakeValue * 100) * 10n ** 16n,
                     true
                   );
-                  console.log(res);
+                  const receipt = await transaction.wait();
+                  if (receipt.status === 1) {
+                    console.log(
+                      "Transaction mined. Block number:",
+                      receipt.blockNumber
+                    );
+                    getTotalDeposit();
+                    getWblurBalance();
+                    checkApproveForStake();
+                    checkStakeBalance();
+                  } else {
+                    console.error(
+                      "Transaction failed. Error message:",
+                      receipt.statusText
+                    );
+                  }
                 } catch (error) {
                   console.log(error);
                 }

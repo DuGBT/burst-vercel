@@ -313,11 +313,45 @@ const Claim = () => {
               sx={{ flex: "1 1 0px" }}
               head={"Apr"}
               content={`${
-                lockEarnedValue
+                lockValue
                   ? ((lockEarnedValue / lockValue / 7) * 365 * 100).toFixed(2)
                   : 0
               }%`}
             />
+            <FunctionButton
+              burstColor={lockEarnedValue ? "yellow" : "black"}
+              sx={{
+                flex: "1 1 0px",
+                maxWidth: "120px",
+                marginX: "8px",
+                height: "41px",
+                color: "#000",
+              }}
+              onClick={async () => {
+                try {
+                  const transaction = await lockContract.withdrawExpiredLocksTo(
+                    wallet.accounts[0].address
+                  );
+                  const receipt = await transaction.wait();
+                  if (receipt.status === 1) {
+                    console.log(
+                      "Transaction mined. Block number:",
+                      receipt.blockNumber
+                    );
+                  } else {
+                    console.error(
+                      "Transaction failed. Error message:",
+                      receipt.statusText
+                    );
+                  }
+                } catch (error) {
+                  console.log(error);
+                }
+              }}
+              variant="contained"
+            >
+              Withdraw
+            </FunctionButton>
             <FunctionButton
               burstColor={lockEarnedValue ? "yellow" : "black"}
               sx={{

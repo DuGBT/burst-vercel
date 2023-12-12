@@ -865,6 +865,7 @@ const Stake = () => {
                           getTotalDeposit();
                           getBalance();
                           checkApprove();
+                          getWblurBalance();
                         } else {
                           console.error(
                             "Transaction failed. Error message:",

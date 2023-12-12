@@ -101,7 +101,7 @@ const Lock = () => {
   const [allowance, setAllowance] = useState(0);
   const [userBalance, setUserBalance] = useState(0);
   const [lockContract, setLockContract] = useState();
-  console.log(contextValue);
+  const { getTotalDeposit } = contextValue;
   useEffect(() => {
     if (erc20Contract) {
       getBalance();
@@ -125,10 +125,17 @@ const Lock = () => {
     try {
       const res2 = await erc20Contract.decimals();
 
-      const res = await erc20Contract.approve(
+      const transaction = await erc20Contract.approve(
         import.meta.env.VITE_BURST_LOCKER,
-        BigInt(lockValue) * 10n ** BigInt(res2)
+        BigInt(lockValue * 100) * 10n ** BigInt(res2 - 2)
       );
+      const receipt = await transaction.wait();
+      if (receipt.status === 1) {
+        console.log("Transaction mined. Block number:", receipt.blockNumber);
+        checkApprove();
+      } else {
+        console.error("Transaction failed. Error message:", receipt.statusText);
+      }
     } catch (error) {
       console.log(error);
     }
@@ -139,6 +146,7 @@ const Lock = () => {
         wallet.accounts[0].address,
         import.meta.env.VITE_BURST_LOCKER
       );
+      console.log(Number(BigInt(res._hex) / 10n ** 16n) / 100);
       setAllowance(Number(BigInt(res._hex) / 10n ** 16n) / 100);
       if (res == 0) {
       }
@@ -150,8 +158,7 @@ const Lock = () => {
     try {
       const res = await erc20Contract.balanceOf(wallet.accounts[0].address);
       const res2 = await erc20Contract.decimals();
-      console.log(Number(BigInt(res._hex) / 10n ** BigInt(res2)));
-      setUserBalance(Number(BigInt(res._hex) / 10n ** BigInt(res2)));
+      setUserBalance(Number(BigInt(res._hex) / 10n ** BigInt(res2 - 2)) / 100);
     } catch (error) {
       console.log(error);
     }
@@ -184,231 +191,280 @@ const Lock = () => {
 
   const lock = async () => {
     try {
-      const res = await lockContract.lock(
+      const transaction = await lockContract.lock(
         wallet.accounts[0].address,
         BigInt(lockValue * 100) * 10n ** 16n,
         0
       );
+      const receipt = await transaction.wait();
+
+      if (receipt.status === 1) {
+        console.log("Transaction mined. Block number:", receipt.blockNumber);
+        checkApprove();
+        getBalance();
+        getTotalDeposit();
+      } else {
+        console.error("Transaction failed. Error message:", receipt.statusText);
+      }
     } catch (error) {
       console.log(error);
     }
   };
+  console.log(contextValue);
   const approved = wallet && allowance > 0 && lockValue <= allowance;
-  const { lockCount = 0, lockEarnedValue = 0 } = contextValue;
+  const { lockCount = 0, lockEarnedValue = 0, lockedInfoRes } = contextValue;
   return (
     <Layout>
-      <Box
-        sx={{
-          borderTop: "1px solid #727272",
-          borderBottom: "1px solid #727272",
-        }}
-        height={100}
-        padding={"10px"}
-      >
+      <Box position={"relative"} width="72%">
+        <Box
+          sx={{
+            borderTop: "1px solid #727272",
+            borderBottom: "1px solid #727272",
+          }}
+          height={100}
+          padding={"10px"}
+        >
+          <Stack
+            direction={"row"}
+            justifyContent={"space-between"}
+            textAlign={"left"}
+            height={"100%"}
+            alignItems={"center"}
+          >
+            <HeadInfo
+              head={""}
+              content={
+                <Box
+                  display={"flex"}
+                  justifyContent={"center"}
+                  alignItems={"center"}
+                >
+                  <img
+                    src={burstIcon}
+                    style={{
+                      height: "48px",
+                      width: "48px",
+                      marginTop: "4px",
+                    }}
+                  ></img>
+                  Burst
+                </Box>
+              }
+            ></HeadInfo>
+
+            <HeadInfo
+              head={"All Claimable"}
+              content={`$${lockEarnedValue?.toFixed(2) || 0}`}
+            />
+            <HeadInfo
+              head={"My Apr"}
+              content={`${
+                contextValue.lockValue
+                  ? (
+                      (lockEarnedValue / contextValue.lockValue / 7) *
+                      365 *
+                      100
+                    ).toFixed(2)
+                  : 0
+              }%`}
+            />
+            <HeadInfo
+              head={"Max Apr"}
+              content={`${lockInfo?.max_apr?.toFixed(2) || 0}%`}
+            />
+            <HeadInfo
+              head={"My Burst locked"}
+              content={`${lockCount || 0} Burst = $${
+                contextValue?.lockValue?.toFixed(2) || 0
+              }`}
+            />
+            <HeadInfo
+              head={"TVL"}
+              content={`$${lockInfo?.tvl?.toFixed(2) || 0}`}
+              noBorder
+            />
+          </Stack>
+        </Box>
+        <Box textAlign={"left"}>
+          Lock $BURST for a duration of 16 weeks. Lock $BURST grants voting
+          power for determining Blur governance votes, as well as influencing
+          Admin Proposals on Burst. Additionally, holding locked BURST entitles
+          you to a portion of the platform's fees.
+          <a
+            style={{ cursor: "pointer" }}
+            onClick={() => {
+              window.open("https://gov.blur.foundation/");
+            }}
+          >
+            https://gov.blur.foundation/
+          </a>
+        </Box>
         <Stack
           direction={"row"}
-          justifyContent={"space-between"}
-          textAlign={"left"}
-          height={"100%"}
-          alignItems={"center"}
+          alignItems={"flex-end"}
+          alignContent={"baseline"}
         >
-          <HeadInfo
-            head={""}
-            content={
-              <Box
-                display={"flex"}
-                justifyContent={"center"}
-                alignItems={"center"}
-              >
-                <img
-                  src={burstIcon}
-                  style={{ height: "48px", width: "48px", marginTop: "4px" }}
-                ></img>
-                Burst
-              </Box>
-            }
-          ></HeadInfo>
-
-          <HeadInfo
-            head={"All Claimable"}
-            content={`$${lockEarnedValue?.toFixed(2) || 0}`}
-          />
-          <HeadInfo
-            head={"My Apr"}
-            content={`${
-              lockEarnedValue
-                ? (
-                    (lockEarnedValue / contextValue?.lockValue / 7) *
-                    365 *
-                    100
-                  ).toFixed(2)
-                : 0
-            }%`}
-          />
-          <HeadInfo
-            head={"Max Apr"}
-            content={`${lockInfo?.max_apr?.toFixed(2) || 0}%`}
-          />
-          <HeadInfo
-            head={"My Burst locked"}
-            content={`${lockCount || 0} Burst = $${
-              contextValue?.lockValue?.toFixed(2) || 0
-            }`}
-          />
-          <HeadInfo
-            head={"TVL"}
-            content={`$${lockInfo?.tvl?.toFixed(2) || 0}`}
-            noBorder
-          />
-        </Stack>
-      </Box>
-      <Box textAlign={"left"}>
-        Lock $BURST for a duration of 16 weeks. Lock $BURST grants voting power
-        for determining Blur governance votes, as well as influencing Admin
-        Proposals on Burst. Additionally, holding locked BURST entitles you to a
-        portion of the platform's fees.
-        <a
-          style={{ cursor: "pointer" }}
-          onClick={() => {
-            window.open("https://gov.blur.foundation/");
-          }}
-        >
-          https://gov.blur.foundation/
-        </a>
-      </Box>
-      <Stack
-        direction={"row"}
-        alignItems={"flex-end"}
-        alignContent={"baseline"}
-      >
-        <Box width={400} position={"relative"} marginTop={5}>
-          <Box position={"absolute"} top={-30} right={0} color={"yellow"}>
-            Avaliable : {userBalance} Burst
-          </Box>
-          <Box
-            display={"flex"}
-            position={"absolute"}
-            top={6}
-            right={10}
-            zIndex={100}
-          >
-            <Button
-              onClick={() => {
-                setLockValue(userBalance);
-              }}
-              sx={{
-                height: "30px",
-                width: "40px",
-                padding: 0,
-                minWidth: "30px",
-                background: "#C3D4A54D",
-                color: "#c3d4a5",
-              }}
+          <Box width={400} position={"relative"} marginTop={5}>
+            <Box position={"absolute"} top={-30} right={0} color={"yellow"}>
+              Avaliable : {userBalance} Burst
+            </Box>
+            <Box
+              display={"flex"}
+              position={"absolute"}
+              top={6}
+              right={10}
+              zIndex={100}
             >
-              Max
-            </Button>
-            <img
-              src={burstIcon}
-              style={{ width: "32px", borderRadius: "50%" }}
+              <Button
+                onClick={() => {
+                  setLockValue(userBalance);
+                }}
+                sx={{
+                  height: "30px",
+                  width: "40px",
+                  padding: 0,
+                  minWidth: "30px",
+                  background: "#C3D4A54D",
+                  color: "#c3d4a5",
+                }}
+              >
+                Max
+              </Button>
+              <img
+                src={burstIcon}
+                style={{ width: "32px", borderRadius: "50%" }}
+              />
+            </Box>
+            <StyledInput
+              value={lockValue === 0 ? "" : lockValue}
+              onChange={(e) => {
+                setLockValue(e.target.value);
+              }}
+              sx={{ width: "100%" }}
             />
           </Box>
-          <StyledInput
-            value={lockValue === 0 ? "" : lockValue}
-            onChange={(e) => {
-              setLockValue(e.target.value);
-            }}
-            sx={{ width: "100%" }}
-          />
-        </Box>
-        <Box>
-          <Stack direction={"row"} justifyContent={"center"}>
+          <Box>
+            <Stack direction={"row"} justifyContent={"center"}>
+              <Box
+                sx={{
+                  marginBottom: "6px",
+                  width: "20px",
+                  height: "20px",
+                  lineHeight: "20px",
+                  textAlign: "center",
+                  borderRadius: "50%",
+                  color: approved ? "#929292" : "#000",
+                  background: !wallet ? "rgba(146, 146, 146, 0.2)" : "yellow",
+                }}
+              >
+                1
+              </Box>
+            </Stack>
+            {approved && (
+              <BlackButton
+                sx={{
+                  marginX: "8px",
+                  height: "41px",
+                  color: "yellow !important",
+                  border: "1px solid yellow",
+                }}
+                variant="contained"
+                disabled
+                onClick={() => {}}
+              >
+                Approved
+              </BlackButton>
+            )}
+            {!approved && (
+              <FunctionButton
+                burstColor={wallet ? "yellow" : "black"}
+                sx={{
+                  marginX: "8px",
+                  height: "41px",
+                  color: "#000",
+                }}
+                variant="contained"
+                onClick={() => {
+                  approve();
+                }}
+              >
+                Approve
+              </FunctionButton>
+            )}
+          </Box>
+          <Box position={"relative"}>
             <Box
+              position={"absolute"}
               sx={{
-                marginBottom: "6px",
-                width: "20px",
-                height: "20px",
-                lineHeight: "20px",
-                textAlign: "center",
-                borderRadius: "50%",
-                color: approved ? "#929292" : "#000",
-                background: !wallet ? "rgba(146, 146, 146, 0.2)" : "yellow",
-              }}
-            >
-              1
-            </Box>
-          </Stack>
-          {approved && (
-            <BlackButton
-              sx={{
-                marginX: "8px",
-                height: "41px",
-                color: "yellow !important",
-                border: "1px solid yellow",
-              }}
-              variant="contained"
-              disabled
-              onClick={() => {}}
-            >
-              Approved
-            </BlackButton>
-          )}
-          {!approved && (
-            <FunctionButton
-              burstColor={wallet ? "yellow" : "black"}
-              sx={{
-                marginX: "8px",
-                height: "41px",
-                color: "#000",
-              }}
-              variant="contained"
-              onClick={() => {
-                approve();
-              }}
-            >
-              Approve
-            </FunctionButton>
-          )}
-        </Box>
-        <Box position={"relative"}>
-          <Box
-            position={"absolute"}
-            sx={{
-              top: "10px",
-              transform: "translate(-50%,-50%)",
-              height: "2px",
-              width: "92%",
-              background: !approved ? "rgba(146, 146, 146, 0.2)" : "yellow",
-            }}
-          ></Box>
-          <Stack direction={"row"} justifyContent={"center"}>
-            <Box
-              sx={{
-                marginBottom: "6px",
-                width: "20px",
-                height: "20px",
-                lineHeight: "20px",
-                textAlign: "center",
-                borderRadius: "50%",
-                color: approved ? "#929292" : "#000",
+                top: "10px",
+                transform: "translate(-50%,-50%)",
+                height: "2px",
+                width: "92%",
                 background: !approved ? "rgba(146, 146, 146, 0.2)" : "yellow",
               }}
+            ></Box>
+            <Stack direction={"row"} justifyContent={"center"}>
+              <Box
+                sx={{
+                  marginBottom: "6px",
+                  width: "20px",
+                  height: "20px",
+                  lineHeight: "20px",
+                  textAlign: "center",
+                  borderRadius: "50%",
+                  color: approved ? "#929292" : "#000",
+                  background: !approved ? "rgba(146, 146, 146, 0.2)" : "yellow",
+                }}
+              >
+                2
+              </Box>
+            </Stack>
+            <FunctionButton
+              burstColor={wallet && approved ? "yellow" : "black"}
+              sx={{ marginX: "8px", height: "41px", color: "#000" }}
+              variant="contained"
+              //   disabled
+              onClick={() => {
+                lock();
+              }}
             >
-              2
-            </Box>
-          </Stack>
-          <FunctionButton
-            burstColor={wallet && approved ? "yellow" : "black"}
-            sx={{ marginX: "8px", height: "41px", color: "#000" }}
-            variant="contained"
-            //   disabled
-            onClick={() => {
-              lock();
-            }}
-          >
-            Lock
-          </FunctionButton>
-        </Box>
-      </Stack>
+              Lock
+            </FunctionButton>
+          </Box>
+        </Stack>
+      </Box>
+      <Paper
+        sx={{
+          position: "absolute",
+          width: "22%",
+          right: "0",
+          top: "0",
+          background: "#000",
+          color: "#fff",
+          border: "1px solid #fff",
+        }}
+      >
+        <Box>Your current Burst locks</Box>
+        <Box> current reward weight:{lockCount}</Box>
+        {/* <Stack ></Stack> */}
+        <Stack direction={"row"}>
+          <Box sx={{ flex: "1 1 0px" }}>Amount</Box>
+          <Box sx={{ flex: "1 1 0px" }}> unlockTime</Box>
+        </Stack>
+        {lockedInfoRes &&
+          lockedInfoRes.lockData.map((data) => {
+            return (
+              <Stack direction={"row"}>
+                <Box sx={{ flex: "1 1 0px" }}>
+                  {Number(BigInt(data.amount) / 10n ** 16n) / 100}
+                </Box>
+                <Box sx={{ flex: "1 1 0px" }}>
+                  {new Date(data.unlockTime * 1000).toLocaleString()}
+                </Box>
+              </Stack>
+            );
+          })}
+      </Paper>
     </Layout>
   );
 };
