@@ -16,6 +16,9 @@ import { erc20TokenAbi } from "./abi/erc20token";
 import { WblurStakeAbi } from "./abi/wblur-staking";
 import { getTokenPrice } from "./api";
 import { LockerAbi } from "./abi/burst-locker";
+import { tokenLockerAbi } from "./abi/token-locker";
+import XIcon from "./assets/x.svg";
+import gitbookIcon from "./assets/gitbook.svg";
 const StyledTabs = styled(Tabs)({
   "& .MuiTabs-indicator": {
     display: "none",
@@ -50,6 +53,7 @@ function Layout({ children }) {
   const [totalDepositValue, setTotalDepositValue] = useState(0);
   const [totalClaimableValue, setTotalClaimableValue] = useState(0);
   const [tokenPrice, setTokenPrice] = useState();
+  const [burstLockerContract, setBurstLockerContract] = useState();
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
@@ -113,16 +117,23 @@ function Layout({ children }) {
           LockerAbi,
           provider
         );
+        const tokenLockerContract = new ethers.Contract(
+          import.meta.env.VITE_TOKEN_LOCKER,
+          tokenLockerAbi,
+          provider
+        );
         const connectedStakeContract = stakeContract.connect(signer);
         const connectedContract = Contract.connect(signer);
         const connectedWBlurContract = WblurContract.connect(signer);
         const connectedStakeLPContract = stakeLPContract.connect(signer);
+        const connectedBurstLockerContract =
+          tokenLockerContract.connect(signer);
         setErc20Contract(connectedContract);
         setWBlurErc20Contract(connectedWBlurContract);
         setStakeContract(connectedStakeContract);
         setStakeLPContract(connectedStakeLPContract);
+        setBurstLockerContract(connectedBurstLockerContract);
         setLockContract(LockContract.connect(signer));
-
         setProvider(provider);
       }
     }
@@ -153,14 +164,19 @@ function Layout({ children }) {
                 "0xEa542D518Ce4E6633Bbf697b089ecDEfe0A97dA6".toLowerCase()
               ] || 0;
 
+          const lockedInfoRes = await lockContract.lockedBalances(address);
+          console.log(lockedInfoRes);
           const lockRes = await lockContract.lockedBalanceOf(address);
-          const lockCount = Number(BigInt(lockRes._hex) / 10n ** 16n) / 100;
+          const lockCount =
+            Number(BigInt(lockedInfoRes.locked._hex) / 10n ** 16n) / 100;
           const lockValue =
             lockCount *
             tokenPrice[
               "0x0535a470f39dec973c15d2aa6e7f968235f6e1d4".toLowerCase()
             ];
+
           updateContextValue({
+            lockedInfoRes,
             lockCount,
             lockValue,
             stakedLPCount,
@@ -180,7 +196,7 @@ function Layout({ children }) {
 
   useEffect(() => {
     async function getExtraTotalClaimable() {
-      if (wallet && tokenPrice) {
+      if (wallet && stakeContract && tokenPrice) {
         const address = wallet.accounts[0].address;
         try {
           const stakedWblurRes = await stakeContract.extraRewardsLength();
@@ -265,7 +281,7 @@ function Layout({ children }) {
         const address = wallet.accounts[0].address;
         try {
           const stakedWblurRes = await stakeContract.earned(address);
-
+          console.log(stakedWblurRes);
           const earnedWblurCount =
             Number(BigInt(stakedWblurRes._hex) / 10n ** 16n) / 100;
           const earnedWblurValue =
@@ -300,6 +316,17 @@ function Layout({ children }) {
           const lockEarnedValue = lockClaimableTokens.reduce((sum, token) => {
             return sum + token.value;
           }, 0);
+
+          const releasableBalanceRes =
+            await burstLockerContract.releasableBalanceOf(address);
+          const lockerBalanceRes = await burstLockerContract.balanceOf(address);
+
+          console.log(
+            "releasable and balance",
+            releasableBalanceRes,
+            lockerBalanceRes
+          );
+
           const extraValue = await getExtraTotalClaimable();
           setTotalClaimableValue(
             lockEarnedValue + earnedLPValue + earnedWblurValue + extraValue
@@ -321,7 +348,14 @@ function Layout({ children }) {
     updateContextValue({
       getTotalClaimable,
     });
-  }, [wallet, stakeContract, tokenPrice, stakeLPContract, lockContract]);
+  }, [
+    wallet,
+    stakeContract,
+    tokenPrice,
+    stakeLPContract,
+    lockContract,
+    burstLockerContract,
+  ]);
 
   return (
     <div>
@@ -495,8 +529,37 @@ function Layout({ children }) {
           zIndex={1}
         >
           <Paper elevation={3} sx={{ height: 600, m: 1, background: "#000" }}>
-            <Box sx={{ width: "100%", bgcolor: "#000", color: "#929292" }}>
+            <Box
+              sx={{
+                // minHeight: "100vh",
+                width: "100%",
+                bgcolor: "#000",
+                color: "#929292",
+              }}
+            >
               {children}
+              <Stack
+                sx={{
+                  width: "100%",
+                  justifyContent: "center",
+                  marginTop: "100px",
+                  marginBottom: "2rem",
+                }}
+                direction={"row"}
+              >
+                <img
+                  src={XIcon}
+                  style={{
+                    width: "24px",
+                    marginRight: "20px",
+                    cursor: "pointer",
+                  }}
+                />
+                <img
+                  src={gitbookIcon}
+                  style={{ width: "24px", cursor: "pointer" }}
+                />
+              </Stack>
             </Box>
           </Paper>
         </Box>
