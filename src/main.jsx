@@ -64,11 +64,9 @@ const router = createBrowserRouter([
 ]);
 
 ReactDOM.createRoot(document.getElementById("root")).render(
-  <React.StrictMode>
-    <Web3OnboardProvider web3Onboard={web3Onboard}>
-      <MyContextProvider>
-        <RouterProvider router={router} />
-      </MyContextProvider>
-    </Web3OnboardProvider>
-  </React.StrictMode>
+  <Web3OnboardProvider web3Onboard={web3Onboard}>
+    <MyContextProvider>
+      <RouterProvider router={router} />
+    </MyContextProvider>
+  </Web3OnboardProvider>
 );

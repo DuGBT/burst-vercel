@@ -16,6 +16,7 @@ import { WblurStakeAbi } from "./abi/wblur-staking";
 import { LockerAbi } from "./abi/burst-locker";
 import { MyContext } from "./Context";
 import * as ethers from "ethers";
+import burstIcon from "./assets/BURST_Icon_Black.png";
 function HeadInfoItem({ head, content }) {
   return (
     <Box>
@@ -235,7 +236,10 @@ const Claim = () => {
           {poolInfo && stakedWblurExtraRewardInfo && (
             <Box>
               <Stack direction={"row"}>
-                <Box sx={{ width: "100px", textAlign: "left" }}>{"Burst"}</Box>
+                <Box sx={{ width: "40px", textAlign: "left" }}>
+                  <img src={burstIcon} style={{ height: "24px" }}></img>
+                </Box>
+                <Box sx={{ width: "60px", textAlign: "left" }}>{"Burst"}</Box>
 
                 <Box sx={{ textAlign: "left" }}>
                   {`${earnedWblurCount || 0} ≈ $ ${
@@ -395,13 +399,17 @@ const Claim = () => {
                       return true;
                   });
                   return (
-                    // <Stack direction={"row"}>
-                    //   <Box sx={{ marginRight: "10px" }}>{reward.symbol}</Box>
-                    //   <Box>{rewardInfo?.count || 0}</Box>
-                    //   <Box>{rewardInfo?.value?.toFixed(2) || 0}</Box>
-                    // </Stack>
                     <Stack direction={"row"}>
-                      <Box sx={{ width: "100px", textAlign: "left" }}>
+                      <Box sx={{ width: "40px", textAlign: "left" }}>
+                        <img
+                          src={
+                            reward.symbol === "Burst" ? burstIcon : reward.icon
+                          }
+                          style={{ height: "24px" }}
+                        ></img>
+                      </Box>
+
+                      <Box sx={{ width: "60px", textAlign: "left" }}>
                         {reward.symbol}
                       </Box>
 
@@ -475,7 +483,10 @@ const Claim = () => {
           {poolInfo && stakedLPExtraRewardInfo && (
             <Box>
               <Stack direction={"row"}>
-                <Box sx={{ width: "100px", textAlign: "left" }}>{"Burst"}</Box>
+                <Box sx={{ width: "40px", textAlign: "left" }}>
+                  <img src={burstIcon} style={{ height: "24px" }}></img>
+                </Box>
+                <Box sx={{ width: "60px", textAlign: "left" }}>{"Burst"}</Box>
 
                 <Box sx={{ textAlign: "left" }}>
                   {`${earnedLPCount || 0} ≈ $ ${

@@ -20,6 +20,7 @@ const YellowButton = styled(Button)({
 });
 const ScrollPagination = () => {
   const containerRef = useRef(null);
+  window.burstLoaded = false;
   return (
     <Box
       id="test"

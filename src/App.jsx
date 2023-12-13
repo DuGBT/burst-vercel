@@ -19,6 +19,7 @@ import { LockerAbi } from "./abi/burst-locker";
 import { tokenLockerAbi } from "./abi/token-locker";
 import XIcon from "./assets/x.svg";
 import gitbookIcon from "./assets/gitbook.svg";
+import loadingGif from "./assets/Burst_loading.gif";
 const StyledTabs = styled(Tabs)({
   "& .MuiTabs-indicator": {
     display: "none",
@@ -54,9 +55,17 @@ function Layout({ children }) {
   const [totalClaimableValue, setTotalClaimableValue] = useState(0);
   const [tokenPrice, setTokenPrice] = useState();
   const [burstLockerContract, setBurstLockerContract] = useState();
+  const [loading, setLoading] = useState(true);
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
+
+  useEffect(() => {
+    setTimeout(() => {
+      setLoading(false);
+      window.burstLoaded = true;
+    }, 500);
+  }, []);
 
   useEffect(() => {
     const name = window.location.pathname;
@@ -356,6 +365,21 @@ function Layout({ children }) {
     lockContract,
     burstLockerContract,
   ]);
+
+  if (loading && !window.burstLoaded) {
+    return (
+      <Box
+        sx={{
+          position: "absolute",
+          top: "50%",
+          left: "48%",
+          transform: "translate(-50%,-50%)",
+        }}
+      >
+        <img src={loadingGif} />
+      </Box>
+    );
+  }
 
   return (
     <div>
