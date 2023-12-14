@@ -330,17 +330,35 @@ function Layout({ children }) {
             await burstLockerContract.releasableBalanceOf(address);
           const lockerBalanceRes = await burstLockerContract.balanceOf(address);
 
-          console.log(
-            "releasable and balance",
-            releasableBalanceRes,
-            lockerBalanceRes
-          );
+          const releasableBalance =
+            Number(BigInt(releasableBalanceRes._hex) / 10n ** 16n) / 100;
+          const releasableValue =
+            releasableBalance *
+              tokenPrice[
+                "0x0535a470f39dec973c15d2aa6e7f968235f6e1d4".toLowerCase()
+              ] || 0;
 
+          const tokenLockerBalance =
+            Number(BigInt(lockerBalanceRes._hex) / 10n ** 16n) / 100;
+
+          const tokenLockerValue =
+            tokenLockerBalance *
+              tokenPrice[
+                "0x0535a470f39dec973c15d2aa6e7f968235f6e1d4".toLowerCase()
+              ] || 0;
           const extraValue = await getExtraTotalClaimable();
           setTotalClaimableValue(
-            lockEarnedValue + earnedLPValue + earnedWblurValue + extraValue
+            lockEarnedValue +
+              earnedLPValue +
+              earnedWblurValue +
+              extraValue +
+              releasableValue
           );
           updateContextValue({
+            releasableBalance,
+            releasableValue,
+            tokenLockerBalance: tokenLockerBalance - releasableBalance,
+            tokenLockerValue: tokenLockerValue - releasableValue,
             lockClaimableTokens,
             lockEarnedValue,
             earnedLPCount,

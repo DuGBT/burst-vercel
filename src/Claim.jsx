@@ -14,6 +14,8 @@ import { getLockInfo, getClaimPoolInfo } from "./api";
 
 import { WblurStakeAbi } from "./abi/wblur-staking";
 import { LockerAbi } from "./abi/burst-locker";
+import { tokenLockerAbi } from "./abi/token-locker";
+
 import { MyContext } from "./Context";
 import * as ethers from "ethers";
 import burstIcon from "./assets/BURST_Icon_Black.png";
@@ -96,6 +98,7 @@ const Claim = () => {
   const [contract, setContract] = useState();
   const [lockContract, setLockContract] = useState();
   const [stakeLPContract, setStakeLPContract] = useState();
+  const [burstLockerContract, setBurstLockerContract] = useState();
   const [poolInfo, setPoolInfo] = useState();
   useEffect(() => {
     async function Connect() {
@@ -119,7 +122,14 @@ const Claim = () => {
           WblurStakeAbi,
           provider
         );
+        const tokenLockerContract = new ethers.Contract(
+          import.meta.env.VITE_TOKEN_LOCKER,
+          tokenLockerAbi,
+          provider
+        );
+
         setStakeLPContract(stakeLPContract.connect(signer));
+        setBurstLockerContract(tokenLockerContract.connect(signer));
 
         setContract(stakeContract.connect(signer));
         setLockContract(LockContract.connect(signer));
@@ -166,7 +176,13 @@ const Claim = () => {
     stakedWblurExtraTotalValue = 0,
     lockClaimableTokens,
     tokenPrice,
+    tokenLockerBalance = 0,
+    tokenLockerValue = 0,
+    releasableBalance = 0,
+    releasableValue = 0,
   } = contextValue;
+
+  console.log(contextValue);
 
   return (
     <Layout>
@@ -322,7 +338,7 @@ const Claim = () => {
                   : 0
               }%`}
             />
-            <FunctionButton
+            {/* <FunctionButton
               burstColor={lockEarnedValue ? "yellow" : "black"}
               sx={{
                 flex: "1 1 0px",
@@ -355,7 +371,7 @@ const Claim = () => {
               variant="contained"
             >
               Withdraw
-            </FunctionButton>
+            </FunctionButton> */}
             <FunctionButton
               burstColor={lockEarnedValue ? "yellow" : "black"}
               sx={{
@@ -425,7 +441,13 @@ const Claim = () => {
           )}
         </AccordionDetails>
       </StyledAccordion>
-      <StyledAccordion sx={{ background: "rgb(42, 42, 42)", color: "#fff" }}>
+      <StyledAccordion
+        sx={{
+          background: "rgb(42, 42, 42)",
+          color: "#fff",
+          marginBottom: "20px",
+        }}
+      >
         <AccordionSummary
           expandIcon={<ExpandMoreIcon />}
           aria-controls="panel2a-content"
@@ -527,6 +549,65 @@ const Claim = () => {
                 })}
             </Box>
           )}
+        </AccordionDetails>
+      </StyledAccordion>
+      <StyledAccordion sx={{ background: "rgb(42, 42, 42)", color: "#fff" }}>
+        <AccordionSummary
+          expandIcon={<ExpandMoreIcon />}
+          aria-controls="panel2a-content"
+          id="panel2a-header"
+        >
+          <Stack width={"100%"} direction={"row"} textAlign={"left"}>
+            <Box sx={{ fontSize: "17px", fontWeight: 700, flex: "1 1 0px" }}>
+              Locked Rewards
+            </Box>
+            <HeadInfo
+              sx={{ flex: "1 1 0px" }}
+              head={"Claimable (USD value)"}
+              content={`$${releasableValue?.toFixed(2) || 0}`}
+            />
+            <HeadInfo
+              sx={{ flex: "1 1 0px" }}
+              head={"Unlocking reward"}
+              content={`$${tokenLockerValue?.toFixed(2) || 0}`}
+            />
+            <FunctionButton
+              burstColor={releasableValue ? "yellow" : "black"}
+              sx={{
+                flex: "1 1 0px",
+                maxWidth: "120px",
+                marginX: "8px",
+                height: "41px",
+                color: "#000",
+              }}
+              onClick={async () => {
+                try {
+                  const res = await burstLockerContract.releaseToken();
+                } catch (error) {
+                  console.log(error);
+                }
+              }}
+              variant="contained"
+            >
+              Claim
+            </FunctionButton>
+          </Stack>
+        </AccordionSummary>
+        <AccordionDetails>
+          <Box>
+            <Stack direction={"row"}>
+              <Box sx={{ width: "40px", textAlign: "left" }}>
+                <img src={burstIcon} style={{ height: "24px" }}></img>
+              </Box>
+              <Box sx={{ width: "60px", textAlign: "left" }}>{"Burst"}</Box>
+
+              <Box sx={{ textAlign: "left" }}>
+                {`${tokenLockerBalance || 0} ≈ $ ${
+                  tokenLockerValue?.toFixed(2) || 0
+                }`}
+              </Box>
+            </Stack>
+          </Box>
         </AccordionDetails>
       </StyledAccordion>
     </Layout>

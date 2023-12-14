@@ -210,12 +210,32 @@ const Lock = () => {
       console.log(error);
     }
   };
-  console.log(contextValue);
   const approved = wallet && allowance > 0 && lockValue <= allowance;
   const { lockCount = 0, lockEarnedValue = 0, lockedInfoRes } = contextValue;
+  function calculateWeeksRemaining(timestamp) {
+    // 获取当前时间戳
+    const now = Date.now();
+
+    // 计算时间差（毫秒）
+    const timeDifference = timestamp - now;
+
+    // 如果时间差小于等于0，表示指定时间已经过去，返回0周
+    if (timeDifference <= 0) {
+      return 0;
+    }
+
+    // 计算剩余的周数
+    const weeksRemaining = Math.floor(
+      timeDifference / (7 * 24 * 60 * 60 * 1000)
+    );
+
+    return weeksRemaining;
+  }
+  console.log(contextValue);
+
   return (
     <Layout>
-      <Box position={"relative"} width="72%">
+      <Box position={"relative"} width="64%">
         <Box
           sx={{
             borderTop: "1px solid #727272",
@@ -435,35 +455,122 @@ const Lock = () => {
       </Box>
       <Paper
         sx={{
+          padding: "1rem",
+          textAlign: "left",
           position: "absolute",
-          width: "22%",
+          width: "34%",
           right: "0",
           top: "0",
-          background: "#000",
+          background: "rgba(45, 45, 45, 0.8)",
           color: "#fff",
-          border: "1px solid #fff",
+          // border: "1px solid #fff",
         }}
       >
-        <Box>Your current Burst locks</Box>
-        <Box> current reward weight:{lockCount}</Box>
+        <Box sx={{ fontFamily: "Rajdhani Bold", marginBottom: "20px" }}>
+          Your current Burst locks
+        </Box>
+        <Box sx={{ fontFamily: "Rajdhani SemiBold", marginBottom: "20px" }}>
+          current reward weight:{lockCount}
+        </Box>
         {/* <Stack ></Stack> */}
-        <Stack direction={"row"}>
-          <Box sx={{ flex: "1 1 0px" }}>Amount</Box>
-          <Box sx={{ flex: "1 1 0px" }}> unlockTime</Box>
-        </Stack>
+        {lockedInfoRes && lockedInfoRes.lockData.length > 0 && (
+          <Stack direction={"row"} sx={{ fontFamily: "Rajdhani" }}>
+            <Box sx={{ flex: "1 1 0px" }}>Amount</Box>
+            <Box sx={{ flex: "1 1 50px" }}> UnlockTime</Box>
+            <Box sx={{ flex: "1 1 0px" }}> Remaining</Box>
+          </Stack>
+        )}
         {lockedInfoRes &&
           lockedInfoRes.lockData.map((data) => {
+            console.log(data.unlockTime);
             return (
-              <Stack direction={"row"}>
+              <Stack direction={"row"} sx={{ marginBottom: "20px" }}>
                 <Box sx={{ flex: "1 1 0px" }}>
                   {Number(BigInt(data.amount) / 10n ** 16n) / 100}
                 </Box>
-                <Box sx={{ flex: "1 1 0px" }}>
+                <Box sx={{ flex: "1 1 50px" }}>
                   {new Date(data.unlockTime * 1000).toLocaleString()}
+                </Box>
+                <Box sx={{ flex: "1 1 0px" }}>
+                  {` ${calculateWeeksRemaining(data.unlockTime * 1000)} Weeks`}
                 </Box>
               </Stack>
             );
           })}
+        <Stack direction={"row"} sx={{ marginTop: "20px" }}>
+          <FunctionButton
+            sx={{ flex: "1 1 0px", marginRight: "32px", color: "#000" }}
+            onClick={async () => {
+              try {
+                const transaction = await lockContract.withdrawExpiredLocksTo(
+                  wallet.accounts[0].address
+                );
+                const receipt = await transaction.wait();
+                if (receipt.status === 1) {
+                  console.log(
+                    "Transaction mined. Block number:",
+                    receipt.blockNumber
+                  );
+                  checkApprove();
+                  getBalance();
+                  getTotalDeposit();
+                } else {
+                  console.error(
+                    "Transaction failed. Error message:",
+                    receipt.statusText
+                  );
+                }
+              } catch (error) {
+                console.log(error);
+              }
+            }}
+            burstColor={
+              Number(BigInt(lockedInfoRes?.unlockable || 0) / 10n ** 16n) /
+                100 >
+              0
+                ? "yellow"
+                : "black"
+            }
+          >
+            Withdraw Expired
+          </FunctionButton>
+          <FunctionButton
+            sx={{ flex: "1 1 0px", color: "#000" }}
+            onClick={async () => {
+              try {
+                const transaction = await lockContract.processExpiredLocks(
+                  true
+                );
+                const receipt = await transaction.wait();
+                if (receipt.status === 1) {
+                  console.log(
+                    "Transaction mined. Block number:",
+                    receipt.blockNumber
+                  );
+                  checkApprove();
+                  getBalance();
+                  getTotalDeposit();
+                } else {
+                  console.error(
+                    "Transaction failed. Error message:",
+                    receipt.statusText
+                  );
+                }
+              } catch (error) {
+                console.log(error);
+              }
+            }}
+            burstColor={
+              Number(BigInt(lockedInfoRes?.unlockable || 0) / 10n ** 16n) /
+                100 >
+              0
+                ? "yellow"
+                : "black"
+            }
+          >
+            Relock Expired
+          </FunctionButton>
+        </Stack>
       </Paper>
     </Layout>
   );
