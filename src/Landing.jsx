@@ -15,7 +15,7 @@ import { Link, useParams } from "react-router-dom";
 import XIcon from "./assets/x.svg";
 import gitbookIcon from "./assets/gitbook.svg";
 import BurstLogo from "./assets/BURST_Logo_Yellow.png";
-
+import Footer from "./Footer";
 const YellowButton = styled(Button)({
   "&.MuiButton-root": { background: "yellow !important" },
 });
