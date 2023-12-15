@@ -1217,16 +1217,37 @@ const Stake = () => {
             <Box
               sx={{ marginRight: "50px", width: "300px", textAlign: "left" }}
             >
+              token locker
+            </Box>
+            <Box>
+              <a
+                style={{ color: "yellow" }}
+                href={
+                  "https://goerli.etherscan.io/address/0xBaFf99D97cE2acDD5290587905E0B3f151cef063"
+                }
+              >
+                0xBaFf99D97cE2acDD5290587905E0B3f151cef063
+              </a>
+            </Box>
+          </Stack>
+          <Stack
+            direction={"row"}
+            alignItems={"flex-end"}
+            alignContent={"baseline"}
+          >
+            <Box
+              sx={{ marginRight: "50px", width: "300px", textAlign: "left" }}
+            >
               wBlur staking contract
             </Box>
             <Box>
               <a
                 style={{ color: "yellow" }}
                 href={
-                  "https://goerli.etherscan.io/address/0x079Ea5F65b7D349a1eDB2B5504BBc4c3aa4b23B0"
+                  "https://goerli.etherscan.io/address/0xbB32ff98CCf54493160Ef80a9Ec1943e50A000fA"
                 }
               >
-                0x079Ea5F65b7D349a1eDB2B5504BBc4c3aa4b23B0
+                0xbB32ff98CCf54493160Ef80a9Ec1943e50A000fA
               </a>
             </Box>
           </Stack>
