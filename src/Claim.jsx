@@ -180,6 +180,7 @@ const Claim = () => {
     tokenLockerValue = 0,
     releasableBalance = 0,
     releasableValue = 0,
+    getTotalClaimable,
   } = contextValue;
 
   console.log(contextValue);
@@ -236,8 +237,21 @@ const Claim = () => {
               }}
               onClick={async () => {
                 try {
-                  const res = await contract.getReward();
-                  console.log(res);
+                  const transaction = await contract.getReward();
+
+                  const receipt = await transaction.wait();
+                  if (receipt.status === 1) {
+                    console.log(
+                      "Transaction mined. Block number:",
+                      receipt.blockNumber
+                    );
+                    getTotalClaimable();
+                  } else {
+                    console.error(
+                      "Transaction failed. Error message:",
+                      receipt.statusText
+                    );
+                  }
                 } catch (error) {
                   console.log(error);
                 }
@@ -292,7 +306,16 @@ const Claim = () => {
                     tokenPrice[reward.addr.toLowerCase()];
                   return (
                     <Stack direction={"row"}>
-                      <Box sx={{ width: "100px", textAlign: "left" }}>
+                      <Box sx={{ width: "40px", textAlign: "left" }}>
+                        <img
+                          src={
+                            reward.symbol === "Burst" ? burstIcon : reward.icon
+                          }
+                          style={{ height: "24px" }}
+                        ></img>
+                      </Box>
+
+                      <Box sx={{ width: "60px", textAlign: "left" }}>
                         {reward.symbol}
                       </Box>
                       <Box sx={{ textAlign: "left" }}>
@@ -383,9 +406,23 @@ const Claim = () => {
               }}
               onClick={async () => {
                 try {
-                  const res = await lockContract.getReward(
+                  const transaction = await lockContract.getReward(
                     wallet.accounts[0].address
                   );
+
+                  const receipt = await transaction.wait();
+                  if (receipt.status === 1) {
+                    console.log(
+                      "Transaction mined. Block number:",
+                      receipt.blockNumber
+                    );
+                    getTotalClaimable();
+                  } else {
+                    console.error(
+                      "Transaction failed. Error message:",
+                      receipt.statusText
+                    );
+                  }
                 } catch (error) {
                   console.log(error);
                 }
@@ -490,7 +527,23 @@ const Claim = () => {
               }}
               onClick={async () => {
                 try {
-                  const res = await stakeLPContract.getReward();
+                  const transaction = await stakeLPContract.getReward(
+                    wallet.accounts[0].address
+                  );
+
+                  const receipt = await transaction.wait();
+                  if (receipt.status === 1) {
+                    console.log(
+                      "Transaction mined. Block number:",
+                      receipt.blockNumber
+                    );
+                    getTotalClaimable();
+                  } else {
+                    console.error(
+                      "Transaction failed. Error message:",
+                      receipt.statusText
+                    );
+                  }
                 } catch (error) {
                   console.log(error);
                 }
@@ -559,7 +612,7 @@ const Claim = () => {
         >
           <Stack width={"100%"} direction={"row"} textAlign={"left"}>
             <Box sx={{ fontSize: "17px", fontWeight: 700, flex: "1 1 0px" }}>
-              Locked Rewards
+              Rewards
             </Box>
             <HeadInfo
               sx={{ flex: "1 1 0px" }}
@@ -582,7 +635,21 @@ const Claim = () => {
               }}
               onClick={async () => {
                 try {
-                  const res = await burstLockerContract.releaseToken();
+                  const transaction = await burstLockerContract.releaseToken();
+
+                  const receipt = await transaction.wait();
+                  if (receipt.status === 1) {
+                    console.log(
+                      "Transaction mined. Block number:",
+                      receipt.blockNumber
+                    );
+                    getTotalClaimable();
+                  } else {
+                    console.error(
+                      "Transaction failed. Error message:",
+                      receipt.statusText
+                    );
+                  }
                 } catch (error) {
                   console.log(error);
                 }
@@ -594,20 +661,25 @@ const Claim = () => {
           </Stack>
         </AccordionSummary>
         <AccordionDetails>
-          <Box>
-            <Stack direction={"row"}>
-              <Box sx={{ width: "40px", textAlign: "left" }}>
-                <img src={burstIcon} style={{ height: "24px" }}></img>
+          {tokenLockerValue > 0 && (
+            <Box>
+              <Box textAlign={"left"} sx={{}}>
+                Unlocking Rewards
               </Box>
-              <Box sx={{ width: "60px", textAlign: "left" }}>{"Burst"}</Box>
+              <Stack direction={"row"}>
+                <Box sx={{ width: "40px", textAlign: "left" }}>
+                  <img src={burstIcon} style={{ height: "24px" }}></img>
+                </Box>
+                <Box sx={{ width: "60px", textAlign: "left" }}>{"Burst"}</Box>
 
-              <Box sx={{ textAlign: "left" }}>
-                {`${tokenLockerBalance || 0} ≈ $ ${
-                  tokenLockerValue?.toFixed(2) || 0
-                }`}
-              </Box>
-            </Stack>
-          </Box>
+                <Box sx={{ textAlign: "left" }}>
+                  {`${tokenLockerBalance || 0} ≈ $ ${
+                    tokenLockerValue.toFixed(2) || 0
+                  }`}
+                </Box>
+              </Stack>
+            </Box>
+          )}
         </AccordionDetails>
       </StyledAccordion>
     </Layout>

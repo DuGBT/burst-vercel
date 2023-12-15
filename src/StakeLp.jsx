@@ -297,11 +297,17 @@ const StakeLP = () => {
   const approveForStake = async () => {
     try {
       const res2 = await wBlurErc20Contract.decimals();
-      const res = await wBlurErc20Contract.approve(
+      const transaction = await wBlurErc20Contract.approve(
         "0x3eEaE34A7Db2B5F04eFF48249EE640dc3F581a7f",
-        BigInt(stakeInputValue) * 10n ** BigInt(res2)
+        BigInt(stakeInputValue * 100) * 10n ** BigInt(res2 - 2)
       );
-      console.log(res);
+      const receipt = await transaction.wait();
+      if (receipt.status === 1) {
+        console.log("Transaction mined. Block number:", receipt.blockNumber);
+        checkApproveForStake();
+      } else {
+        console.error("Transaction failed. Error message:", receipt.statusText);
+      }
     } catch (error) {
       console.log(error);
     }
