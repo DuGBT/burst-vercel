@@ -1,17 +1,12 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-import App from "./App.jsx";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import "./index.css";
 import Stake from "./Stake.jsx";
 import Claim from "./Claim.jsx";
 import Lock from "./Lock";
 import ScrollPagination from "./Landing.jsx";
-import {
-  useConnectWallet,
-  Web3OnboardProvider,
-  init,
-} from "@web3-onboard/react";
+import { Web3OnboardProvider, init } from "@web3-onboard/react";
 import injectedModule from "@web3-onboard/injected-wallets";
 import { MyContextProvider } from "./Context";
 

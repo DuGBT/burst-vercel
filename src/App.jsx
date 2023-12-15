@@ -17,6 +17,7 @@ import { WblurStakeAbi } from "./abi/wblur-staking";
 import { getTokenPrice } from "./api";
 import { LockerAbi } from "./abi/burst-locker";
 import { tokenLockerAbi } from "./abi/token-locker";
+import Footer from "./Footer";
 import XIcon from "./assets/x.svg";
 import gitbookIcon from "./assets/gitbook.svg";
 import loadingGif from "./assets/Burst_loading.gif";
@@ -400,7 +401,7 @@ function Layout({ children }) {
   }
 
   return (
-    <div>
+    <Box id="layout-box" position={"relative"} sx={{ minHeight: "100vh" }}>
       <div className="header">
         <Box
           sx={{
@@ -570,7 +571,7 @@ function Layout({ children }) {
           position={"relative"}
           zIndex={1}
         >
-          <Paper elevation={3} sx={{ height: 600, m: 1, background: "#000" }}>
+          <Paper elevation={3} sx={{ m: 1, background: "#000" }}>
             <Box
               sx={{
                 // minHeight: "100vh",
@@ -580,33 +581,12 @@ function Layout({ children }) {
               }}
             >
               {children}
-              <Stack
-                sx={{
-                  width: "100%",
-                  justifyContent: "center",
-                  marginTop: "100px",
-                  marginBottom: "2rem",
-                }}
-                direction={"row"}
-              >
-                <img
-                  src={XIcon}
-                  style={{
-                    width: "24px",
-                    marginRight: "20px",
-                    cursor: "pointer",
-                  }}
-                />
-                <img
-                  src={gitbookIcon}
-                  style={{ width: "24px", cursor: "pointer" }}
-                />
-              </Stack>
             </Box>
           </Paper>
         </Box>
       </Box>
-    </div>
+      <Footer></Footer>
+    </Box>
   );
 }
 

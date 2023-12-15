@@ -14,16 +14,23 @@ import BurstIconBlack from "./assets/BURST_Icon_Black.png";
 import { Link, useParams } from "react-router-dom";
 import XIcon from "./assets/x.svg";
 import gitbookIcon from "./assets/gitbook.svg";
-
+import BurstLogo from "./assets/BURST_Logo_Yellow.png";
+import Footer from "./Footer";
 const YellowButton = styled(Button)({
   "&.MuiButton-root": { background: "yellow !important" },
 });
 const ScrollPagination = () => {
   const containerRef = useRef(null);
   window.burstLoaded = false;
+  useEffect(() => {
+    const x = window.matchMedia("(max-width: 700px)");
+    setIsMobile(x.matches);
+  }, []);
+  const [isMobile, setIsMobile] = useState(false);
+  console.log(isMobile);
   return (
     <Box
-      id="test"
+      id="landing"
       ref={containerRef}
       sx={{
         // height: "100vh",
@@ -34,7 +41,13 @@ const ScrollPagination = () => {
         position: "relative",
       }}
     >
-      <Header></Header>
+      {!isMobile && <Header></Header>}
+      {isMobile && (
+        <Box position={"absolute"} sx={{ top: "2rem" }}>
+          <img src={BurstLogo} style={{ width: "40%" }}></img>
+        </Box>
+      )}
+
       <Box
         sx={{
           position: "absolute",
@@ -48,7 +61,7 @@ const ScrollPagination = () => {
         <Box
           sx={{
             textAlign: "left",
-            width: "620px",
+            width: isMobile ? "100%" : "620px",
             wordBreak: "break-word",
             fontFamily: "Rajdhani SemiBold",
             fontSize: "80px",
@@ -62,7 +75,7 @@ const ScrollPagination = () => {
           sx={{
             textAlign: "left",
             marginTop: "6px",
-            width: "620px",
+            width: isMobile ? "100%" : "620px",
             wordBreak: "break-word",
             fontFamily: "Rajdhani SemiBold",
             fontSize: "24px",
@@ -82,7 +95,7 @@ const ScrollPagination = () => {
               height: "48px",
             }}
           >
-            <img src={LaunchIcon} />
+            <img src={LaunchIcon} style={{ width: "24px" }} />
             Launch APP
           </YellowButton>
         </Link>
@@ -118,7 +131,7 @@ const ScrollPagination = () => {
         />
         <Box
           sx={{
-            paddingTop: "170px",
+            paddingTop: isMobile ? "0" : "170px",
             textAlign: "left",
             paddingLeft: "10%",
           }}
@@ -126,7 +139,7 @@ const ScrollPagination = () => {
           <img style={{ width: "40px" }} src={BurstIconBlack} />
           <Box
             sx={{
-              width: "500px",
+              width: isMobile ? "100%" : "500px",
               wordBreak: "break-word",
               textTransform: "uppercase",
               fontFamily: "Rajdhani",
@@ -156,7 +169,7 @@ const ScrollPagination = () => {
             paddingRight: "10%",
           }}
         >
-          <img style={{ height: "180px" }} src={Dots} />
+          <img style={{ height: "180px", width: "auto" }} src={Dots} />
           <Box sx={{ textAlign: "right" }}>
             <Box
               sx={{
@@ -201,13 +214,13 @@ const ScrollPagination = () => {
           </Box>
           <Box
             sx={{
-              width: "500px",
+              width: isMobile ? "100%" : "500px",
               wordBreak: "break-word",
               textTransform: "uppercase",
               fontFamily: "Rajdhani",
               fontSize: "17px",
               fontWeight: "500",
-              textAlign: "left",
+              textAlign: isMobile ? "center" : "left",
             }}
           >
             Burst won't trigger unstaking, thus preserving your multiplier,
@@ -230,7 +243,7 @@ const ScrollPagination = () => {
         />
         <Box
           sx={{
-            paddingTop: "170px",
+            paddingTop: isMobile ? "0" : "170px",
             textAlign: "left",
             paddingLeft: "10%",
           }}
@@ -238,7 +251,7 @@ const ScrollPagination = () => {
           <img style={{ width: "40px" }} src={BurstIconBlack} />
           <Box
             sx={{
-              width: "500px",
+              width: isMobile ? "100%" : "500px",
               wordBreak: "break-word",
               textTransform: "uppercase",
               fontFamily: "Rajdhani",
@@ -276,7 +289,7 @@ const ScrollPagination = () => {
             paddingRight: "10%",
           }}
         >
-          <img style={{ height: "180px" }} src={Dots} />
+          <img style={{ height: "180px", width: "auto" }} src={Dots} />
           <Box sx={{ textAlign: "right" }}>
             <Box
               sx={{
@@ -321,13 +334,13 @@ const ScrollPagination = () => {
           </Box>
           <Box
             sx={{
-              width: "500px",
+              width: isMobile ? "100%" : "500px",
               wordBreak: "break-word",
               textTransform: "uppercase",
               fontFamily: "Rajdhani",
               fontSize: "17px",
               fontWeight: "500",
-              textAlign: "left",
+              textAlign: isMobile ? "center" : "left",
             }}
           >
             The boost is collectively sourced from $BLUR stakers, eliminating
@@ -349,7 +362,7 @@ const ScrollPagination = () => {
         />
         <Box
           sx={{
-            paddingTop: "170px",
+            paddingTop: isMobile ? "0" : "170px",
             textAlign: "left",
             paddingLeft: "10%",
           }}
@@ -388,7 +401,7 @@ const ScrollPagination = () => {
                 height: "48px",
               }}
             >
-              <img src={LaunchIcon} />
+              <img src={LaunchIcon} style={{ width: "24px" }} />
               Launch APP
             </YellowButton>
           </Link>
@@ -401,7 +414,7 @@ const ScrollPagination = () => {
             paddingRight: "10%",
           }}
         >
-          <img style={{ height: "180px" }} src={Dots} />
+          <img style={{ height: "180px", width: "auto" }} src={Dots} />
           <Box sx={{ textAlign: "right" }}>
             <Box
               sx={{
@@ -444,13 +457,13 @@ const ScrollPagination = () => {
           </Box>
           <Box
             sx={{
-              width: "500px",
+              width: isMobile ? "100%" : "500px",
               wordBreak: "break-word",
               textTransform: "uppercase",
               fontFamily: "Rajdhani",
               fontSize: "17px",
               fontWeight: "500",
-              textAlign: "left",
+              textAlign: isMobile ? "center" : "left",
             }}
           >
             vlBURST (vote-lock BURST) earns a portion of the platform blur
