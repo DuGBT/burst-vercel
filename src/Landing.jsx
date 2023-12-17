@@ -22,7 +22,9 @@ const YellowButton = styled(Button)({
 const ScrollPagination = () => {
   const containerRef = useRef(null);
   window.burstLoaded = false;
-  const [isMobile, setIsMobile] = useState(false);
+  const [isMobile, setIsMobile] = useState(
+    window.matchMedia("(max-width: 700px)").matches
+  );
   useEffect(() => {
     window.addEventListener("resize", () => {
       const x = window.matchMedia("(max-width: 700px)");
