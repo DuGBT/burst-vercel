@@ -9,7 +9,7 @@ const Footer = () => (
       width: "100%",
       bottom: "2rem",
       justifyContent: "center",
-      marginTop: "100px",
+      marginTop: "150px",
       // marginBottom: "2rem",
     }}
     direction={"row"}

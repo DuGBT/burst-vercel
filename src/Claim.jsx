@@ -51,6 +51,19 @@ function HeadInfo({ head, content, sx }) {
   );
 }
 
+function calculateWeeksRemaining(timestamp) {
+  const now = Date.now();
+
+  const timeDifference = timestamp - now;
+
+  if (timeDifference <= 0) {
+    return 0;
+  }
+
+  const weeksRemaining = Math.floor(timeDifference / (7 * 24 * 60 * 60 * 1000));
+
+  return weeksRemaining;
+}
 const WhiteDisabledButton = styled(Button)({
   "&.Mui-disabled": {
     background: "#d7d7d7",
@@ -181,6 +194,7 @@ const Claim = () => {
     releasableBalance = 0,
     releasableValue = 0,
     getTotalClaimable,
+    burstBalanceInLockerRes,
   } = contextValue;
 
   console.log(contextValue);
@@ -661,23 +675,38 @@ const Claim = () => {
           </Stack>
         </AccordionSummary>
         <AccordionDetails>
-          {tokenLockerValue > 0 && (
-            <Box>
+          {tokenLockerValue >= 0 && (
+            <Box sx={{ width: "40%" }}>
               <Box textAlign={"left"} sx={{}}>
                 Unlocking Rewards
               </Box>
-              <Stack direction={"row"}>
-                <Box sx={{ width: "40px", textAlign: "left" }}>
-                  <img src={burstIcon} style={{ height: "24px" }}></img>
-                </Box>
-                <Box sx={{ width: "60px", textAlign: "left" }}>{"Burst"}</Box>
-
-                <Box sx={{ textAlign: "left" }}>
-                  {`${tokenLockerBalance || 0} ≈ $ ${
-                    tokenLockerValue.toFixed(2) || 0
-                  }`}
-                </Box>
-              </Stack>
+              {burstBalanceInLockerRes &&
+                burstBalanceInLockerRes.lockData.length >= 0 && (
+                  <Stack direction={"row"} sx={{ fontFamily: "Rajdhani" }}>
+                    <Box sx={{ flex: "1 1 0px" }}>Amount</Box>
+                    <Box sx={{ flex: "1 1 50px" }}> UnlockTime</Box>
+                    <Box sx={{ flex: "1 1 0px" }}> Remaining</Box>
+                  </Stack>
+                )}
+              {burstBalanceInLockerRes &&
+                burstBalanceInLockerRes.lockData.length > 0 &&
+                burstBalanceInLockerRes.lockData.map((data) => {
+                  return (
+                    <Stack direction={"row"} sx={{ marginBottom: "20px" }}>
+                      <Box sx={{ flex: "1 1 0px" }}>
+                        {Number(BigInt(data.amount) / 10n ** 16n) / 100}
+                      </Box>
+                      <Box sx={{ flex: "1 1 50px" }}>
+                        {new Date(data.endTime * 1000).toLocaleString()}
+                      </Box>
+                      <Box sx={{ flex: "1 1 0px" }}>
+                        {` ${calculateWeeksRemaining(
+                          data.endTime * 1000
+                        )} Weeks`}
+                      </Box>
+                    </Stack>
+                  );
+                })}
             </Box>
           )}
         </AccordionDetails>

@@ -122,6 +122,67 @@ export const tokenLockerAbi = [
         type: "address",
       },
     ],
+    name: "lockedBalances",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "total",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "releasable",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "locked",
+        type: "uint256",
+      },
+      {
+        components: [
+          {
+            internalType: "uint256",
+            name: "amount",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "startTime",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "endTime",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "lockTime",
+            type: "uint256",
+          },
+          {
+            internalType: "bool",
+            name: "released",
+            type: "bool",
+          },
+        ],
+        internalType: "struct tokenLocker.LockTokenEntity[]",
+        name: "lockData",
+        type: "tuple[]",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "account",
+        type: "address",
+      },
+    ],
     name: "releasableBalanceOf",
     outputs: [
       {
