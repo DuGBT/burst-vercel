@@ -22,11 +22,13 @@ const YellowButton = styled(Button)({
 const ScrollPagination = () => {
   const containerRef = useRef(null);
   window.burstLoaded = false;
-  useEffect(() => {
-    const x = window.matchMedia("(max-width: 700px)");
-    setIsMobile(x.matches);
-  }, []);
   const [isMobile, setIsMobile] = useState(false);
+  useEffect(() => {
+    window.addEventListener("resize", () => {
+      const x = window.matchMedia("(max-width: 700px)");
+      setIsMobile(x.matches);
+    });
+  }, []);
   console.log(isMobile);
   return (
     <Box
@@ -131,7 +133,7 @@ const ScrollPagination = () => {
         />
         <Box
           sx={{
-            paddingTop: isMobile ? "0" : "170px",
+            paddingTop: isMobile ? "0" : "140px",
             textAlign: "left",
             paddingLeft: "10%",
           }}
@@ -243,7 +245,7 @@ const ScrollPagination = () => {
         />
         <Box
           sx={{
-            paddingTop: isMobile ? "0" : "170px",
+            paddingTop: isMobile ? "0" : "140px",
             textAlign: "left",
             paddingLeft: "10%",
           }}
@@ -362,7 +364,7 @@ const ScrollPagination = () => {
         />
         <Box
           sx={{
-            paddingTop: isMobile ? "0" : "170px",
+            paddingTop: isMobile ? "0" : "140px",
             textAlign: "left",
             paddingLeft: "10%",
           }}

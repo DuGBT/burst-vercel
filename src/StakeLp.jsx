@@ -356,7 +356,7 @@ const StakeLP = () => {
     stakeInputValue <= WblurAllowance
   );
   return (
-    <Box sx={{ paddingBottom: "200px" }}>
+    <Box sx={{ paddingBottom: "100px" }}>
       <Box marginTop={10} textAlign={"left"}>
         Stake Curve LP Tokens
       </Box>

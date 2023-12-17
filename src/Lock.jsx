@@ -258,25 +258,20 @@ const Lock = () => {
   const approved = wallet && allowance > 0 && lockValue <= allowance;
   const { lockCount = 0, lockEarnedValue = 0, lockedInfoRes } = contextValue;
   function calculateWeeksRemaining(timestamp) {
-    // 获取当前时间戳
     const now = Date.now();
 
-    // 计算时间差（毫秒）
     const timeDifference = timestamp - now;
 
-    // 如果时间差小于等于0，表示指定时间已经过去，返回0周
     if (timeDifference <= 0) {
       return 0;
     }
 
-    // 计算剩余的周数
     const weeksRemaining = Math.floor(
       timeDifference / (7 * 24 * 60 * 60 * 1000)
     );
 
     return weeksRemaining;
   }
-  console.log(contextValue);
   const unlockedBurst =
     Number(BigInt(contextValue?.lockedInfoRes?.unlockable || 0) / 10n ** 16n) /
       100 || 0;

@@ -18,6 +18,8 @@ import { getTokenPrice } from "./api";
 import { LockerAbi } from "./abi/burst-locker";
 import { tokenLockerAbi } from "./abi/token-locker";
 import Footer from "./Footer";
+import BurstIconBlack from "./assets/BURST_Icon_Black.png";
+
 import XIcon from "./assets/x.svg";
 import gitbookIcon from "./assets/gitbook.svg";
 import loadingGif from "./assets/Burst_loading.gif";
@@ -34,6 +36,7 @@ const StyledTab = styled(Tab)({
   },
   "&.MuiButtonBase-root": {
     opacity: "1",
+    minWidth: "60px",
     // color: "yellow",
   },
 });
@@ -57,10 +60,18 @@ function Layout({ children }) {
   const [tokenPrice, setTokenPrice] = useState();
   const [burstLockerContract, setBurstLockerContract] = useState();
   const [loading, setLoading] = useState(true);
+  const [isMobile, setIsMobile] = useState(false);
+
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
 
+  useEffect(() => {
+    window.addEventListener("resize", () => {
+      const x = window.matchMedia("(max-width: 700px)");
+      setIsMobile(x.matches);
+    });
+  }, []);
   useEffect(() => {
     setTimeout(() => {
       setLoading(false);
@@ -327,6 +338,9 @@ function Layout({ children }) {
             return sum + token.value;
           }, 0);
 
+          const burstBalanceInLockerRes =
+            await burstLockerContract.lockedBalances(address);
+
           const releasableBalanceRes =
             await burstLockerContract.releasableBalanceOf(address);
           const lockerBalanceRes = await burstLockerContract.balanceOf(address);
@@ -366,6 +380,7 @@ function Layout({ children }) {
             earnedLPValue,
             earnedWblurCount,
             earnedWblurValue,
+            burstBalanceInLockerRes,
           });
         } catch (error) {
           console.log(error);
@@ -406,88 +421,112 @@ function Layout({ children }) {
         <Box
           sx={{
             background: "#000",
-            height: 200,
-            p: 0,
             position: "relative",
           }}
         >
-          <Box sx={{ position: "absolute", top: "0", cursor: "pointer" }}>
-            <Link to="/">
-              <img src={BurstLogo} style={{ width: "300px" }} />
-            </Link>
-          </Box>
-          <YellowButton
-            sx={{
-              background: "yellow",
-              fontFamily: "Rajdhani Bold",
-              color: "#000",
-              position: "absolute",
-              right: "0",
-              top: "0",
-            }}
-            onClick={() => {
-              wallet ? disconnect(wallet) : connect();
-            }}
-          >
-            {wallet
-              ? `${wallet.accounts[0].address.slice(
-                  0,
-                  6
-                )}...${wallet.accounts[0].address.slice(-4)}`
-              : "Connect Wallet"}
-          </YellowButton>
-          <Stack width={"100%"} direction={"row"} justifyContent={"center"}>
-            <StyledTabs value={value} onChange={handleChange} centered>
-              <Link to={"/stake"}>
-                <StyledTab
-                  label="Stake"
-                  disableTouchRipple
-                  sx={{
-                    border: "none",
-                    fontWeight: "700",
-                    fontSize: "16px",
-                    textTransform: "none",
-                    color:
-                      window.location.pathname === "/stake"
-                        ? "yellow"
-                        : "#929292",
+          <Stack direction={"row"} sx={{ justifyContent: "space-between" }}>
+            <Box
+              sx={{
+                flex: "1 1 300px",
+                cursor: "pointer",
+                minWidth: isMobile ? "40px" : "146px",
+              }}
+            >
+              <Link to="/">
+                <img
+                  src={isMobile ? BurstIconBlack : BurstLogo}
+                  style={{
+                    maxWidth: isMobile ? "40px" : "300px",
+                    width: "100%",
                   }}
                 />
               </Link>
-              <Link to={"/claim"}>
-                <StyledTab
-                  label="Claim"
-                  disableTouchRipple
-                  sx={{
-                    border: "none",
-                    color:
-                      window.location.pathname === "/claim"
-                        ? "yellow"
-                        : "#929292",
+            </Box>
+            <Stack
+              sx={{ flex: "0 1 240px", marginRight: "1rem" }}
+              width={"100%"}
+              direction={"row"}
+              justifyContent={"center"}
+            >
+              <StyledTabs value={value} onChange={handleChange} centered>
+                <Link to={"/stake"}>
+                  <StyledTab
+                    label="Stake"
+                    disableTouchRipple
+                    sx={{
+                      border: "none",
+                      fontWeight: "700",
+                      fontSize: "16px",
+                      textTransform: "none",
+                      color:
+                        window.location.pathname === "/stake"
+                          ? "yellow"
+                          : "#929292",
+                      paddingRight: isMobile ? "0" : "12px",
+                    }}
+                  />
+                </Link>
+                <Link to={"/claim"}>
+                  <StyledTab
+                    label="Claim"
+                    disableTouchRipple
+                    sx={{
+                      border: "none",
+                      color:
+                        window.location.pathname === "/claim"
+                          ? "yellow"
+                          : "#929292",
 
-                    fontWeight: "700",
-                    fontSize: "16px",
-                    textTransform: "none",
-                  }}
-                />
-              </Link>
-              <Link to={"/lock"}>
-                <StyledTab
-                  label="Lock"
-                  disableTouchRipple
-                  sx={{
-                    border: "none",
-                    color:
-                      window.location.pathname === "/lock"
-                        ? "yellow"
-                        : "#929292",
-                    fontWeight: "700",
-                    fontSize: "16px",
-                    textTransform: "none",
-                  }}
-                />
-              </Link>
-            </StyledTabs>
+                      fontWeight: "700",
+                      fontSize: "16px",
+                      textTransform: "none",
+                      paddingRight: isMobile ? "0" : "12px",
+                    }}
+                  />
+                </Link>
+                <Link to={"/lock"}>
+                  <StyledTab
+                    label="Lock"
+                    disableTouchRipple
+                    sx={{
+                      border: "none",
+                      color:
+                        window.location.pathname === "/lock"
+                          ? "yellow"
+                          : "#929292",
+                      fontWeight: "700",
+                      fontSize: "16px",
+                      textTransform: "none",
+                      paddingRight: isMobile ? "0" : "12px",
+                    }}
+                  />
+                </Link>
+              </StyledTabs>
+            </Stack>
+            <Box sx={{ flex: "1 1 300px" }}>
+              <YellowButton
+                sx={{
+                  background: "yellow",
+                  fontFamily: "Rajdhani Bold",
+                  color: "#000",
+                  height: "36px",
+                  minWidth: "106px",
+                  // position: "absolute",
+                  // right: "0",
+                  // top: "0",
+                }}
+                onClick={() => {
+                  wallet ? disconnect(wallet) : connect();
+                }}
+              >
+                {wallet
+                  ? `${wallet.accounts[0].address.slice(
+                      0,
+                      6
+                    )}...${wallet.accounts[0].address.slice(-4)}`
+                  : "Connect Wallet"}
+              </YellowButton>
+            </Box>
           </Stack>
           <Stack
             // sx={{ marginTop: "40px" }}
@@ -557,6 +596,7 @@ function Layout({ children }) {
       <Box
         position={"relative"}
         // height={800}
+        paddingBottom={"100px"}
       >
         <Box
           position={"absolute"}
