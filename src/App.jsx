@@ -60,7 +60,9 @@ function Layout({ children }) {
   const [tokenPrice, setTokenPrice] = useState();
   const [burstLockerContract, setBurstLockerContract] = useState();
   const [loading, setLoading] = useState(true);
-  const [isMobile, setIsMobile] = useState(false);
+  const [isMobile, setIsMobile] = useState(
+    window.matchMedia("(max-width: 700px)").matches
+  );
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
@@ -71,6 +73,8 @@ function Layout({ children }) {
       const x = window.matchMedia("(max-width: 700px)");
       setIsMobile(x.matches);
     });
+    const x = window.matchMedia("(max-width: 700px)");
+    setIsMobile(x.matches);
   }, []);
   useEffect(() => {
     setTimeout(() => {
