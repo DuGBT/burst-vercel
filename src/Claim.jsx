@@ -675,13 +675,13 @@ const Claim = () => {
           </Stack>
         </AccordionSummary>
         <AccordionDetails>
-          {tokenLockerValue >= 0 && (
+          {tokenLockerValue > 0 && (
             <Box sx={{ width: "40%" }}>
               <Box textAlign={"left"} sx={{}}>
                 Unlocking Rewards
               </Box>
               {burstBalanceInLockerRes &&
-                burstBalanceInLockerRes.lockData.length >= 0 && (
+                burstBalanceInLockerRes.lockData.length > 0 && (
                   <Stack direction={"row"} sx={{ fontFamily: "Rajdhani" }}>
                     <Box sx={{ flex: "1 1 0px" }}>Amount</Box>
                     <Box sx={{ flex: "1 1 50px" }}> UnlockTime</Box>
