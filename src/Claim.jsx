@@ -241,7 +241,11 @@ const Claim = () => {
               }%`}
             />
             <FunctionButton
-              burstColor={earnedWblurValue ? "yellow" : "black"}
+              burstColor={
+                earnedWblurValue + stakedWblurExtraTotalValue > 0
+                  ? "yellow"
+                  : "black"
+              }
               sx={{
                 maxWidth: "120px",
                 flex: "1 1 0px",
@@ -539,7 +543,9 @@ const Claim = () => {
               }%`}
             />
             <FunctionButton
-              burstColor={earnedLPValue ? "yellow" : "black"}
+              burstColor={
+                earnedLPValue + stakedLPExtraTotalValue > 0 ? "yellow" : "black"
+              }
               sx={{
                 flex: "1 1 0px",
                 maxWidth: "120px",
@@ -691,7 +697,7 @@ const Claim = () => {
         <AccordionDetails>
           <Stack
             direction={"row"}
-            sx={{ justifyContent: tokenLockerValue > 0 ? "space-around" : "" }}
+            // sx={{ justifyContent: tokenLockerValue > 0 ? "space-around" : "" }}
             textAlign={"left"}
           >
             {tokenLockerValue > 0 && (
