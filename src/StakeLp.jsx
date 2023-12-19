@@ -299,7 +299,7 @@ const StakeLP = () => {
       const res2 = await wBlurErc20Contract.decimals();
       const transaction = await wBlurErc20Contract.approve(
         "0x3eEaE34A7Db2B5F04eFF48249EE640dc3F581a7f",
-        BigInt(stakeInputValue * 100) * 10n ** BigInt(res2 - 2)
+        BigInt(Math.round(stakeInputValue * 100)) * 10n ** BigInt(res2 - 2)
       );
       const receipt = await transaction.wait();
       if (receipt.status === 1) {
@@ -557,7 +557,7 @@ const StakeLP = () => {
                     const connectedContract = stakeContract.connect(signer);
 
                     const transaction = await connectedContract.stake(
-                      BigInt(stakeInputValue * 100) * 10n ** 16n
+                      BigInt(Math.round(stakeInputValue * 100)) * 10n ** 16n
                     );
                     const receipt = await transaction.wait();
 
@@ -653,7 +653,7 @@ const StakeLP = () => {
               onClick={async () => {
                 try {
                   const transaction = await stakeContract.withdraw(
-                    BigInt(unstakeValue * 100) * 10n ** 16n,
+                    BigInt(Math.round(unstakeValue * 100)) * 10n ** 16n,
                     true
                   );
                   const receipt = await transaction.wait();
@@ -689,7 +689,7 @@ const StakeLP = () => {
               onClick={async () => {
                 try {
                   const res = await stakeContract.withdraw(
-                    BigInt(unstakeValue * 100) * 10n ** 16n,
+                    BigInt(Math.round(unstakeValue * 100)) * 10n ** 16n,
                     true
                   );
                   console.log(res);

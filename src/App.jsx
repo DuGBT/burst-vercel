@@ -431,12 +431,13 @@ function Layout({ children }) {
           <Stack direction={"row"} sx={{ justifyContent: "space-between" }}>
             <Box
               sx={{
-                flex: "1 1 300px",
+                flex: "0 1 300px",
                 cursor: "pointer",
                 minWidth: isMobile ? "40px" : "146px",
+                maxWidth: "300px",
               }}
             >
-              <Link to="/">
+              <Link to="/" style={{ width: "100%" }}>
                 <img
                   src={isMobile ? BurstIconBlack : BurstLogo}
                   style={{
@@ -507,7 +508,14 @@ function Layout({ children }) {
                 </Link>
               </StyledTabs>
             </Stack>
-            <Box sx={{ flex: "1 1 300px" }}>
+            <Box
+              sx={{
+                flex: "0 1 300px",
+                display: "flex",
+                flexDirection: "row-reverse",
+                paddingRight: "1rem",
+              }}
+            >
               <YellowButton
                 sx={{
                   background: "yellow",
