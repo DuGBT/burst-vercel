@@ -15,7 +15,7 @@ import { getLockInfo, getClaimPoolInfo } from "./api";
 import { WblurStakeAbi } from "./abi/wblur-staking";
 import { LockerAbi } from "./abi/burst-locker";
 import { tokenLockerAbi } from "./abi/token-locker";
-
+import BHPIcon from "./assets/BHP_Yellow.png";
 import { MyContext } from "./Context";
 import * as ethers from "ethers";
 import burstIcon from "./assets/BURST_Icon_Black.png";
@@ -323,7 +323,11 @@ const Claim = () => {
                       <Box sx={{ width: "40px", textAlign: "left" }}>
                         <img
                           src={
-                            reward.symbol === "Burst" ? burstIcon : reward.icon
+                            reward.symbol === "Burst"
+                              ? burstIcon
+                              : reward.symbol === "BHP"
+                              ? BHPIcon
+                              : reward.icon
                           }
                           style={{ height: "24px" }}
                         ></img>
@@ -470,7 +474,11 @@ const Claim = () => {
                       <Box sx={{ width: "40px", textAlign: "left" }}>
                         <img
                           src={
-                            reward.symbol === "Burst" ? burstIcon : reward.icon
+                            reward.symbol === "Burst"
+                              ? burstIcon
+                              : reward.symbol === "BHP"
+                              ? BHPIcon
+                              : reward.icon
                           }
                           style={{ height: "24px" }}
                         ></img>
@@ -675,40 +683,62 @@ const Claim = () => {
           </Stack>
         </AccordionSummary>
         <AccordionDetails>
-          {tokenLockerValue > 0 && (
-            <Box sx={{ width: "40%" }}>
-              <Box textAlign={"left"} sx={{}}>
-                Unlocking Rewards
-              </Box>
-              {burstBalanceInLockerRes &&
-                burstBalanceInLockerRes.lockData.length > 0 && (
-                  <Stack direction={"row"} sx={{ fontFamily: "Rajdhani" }}>
-                    <Box sx={{ flex: "1 1 0px" }}>Amount</Box>
-                    <Box sx={{ flex: "1 1 50px" }}> UnlockTime</Box>
-                    <Box sx={{ flex: "1 1 0px" }}> Remaining</Box>
-                  </Stack>
-                )}
-              {burstBalanceInLockerRes &&
-                burstBalanceInLockerRes.lockData.length > 0 &&
-                burstBalanceInLockerRes.lockData.map((data) => {
-                  return (
-                    <Stack direction={"row"} sx={{ marginBottom: "20px" }}>
-                      <Box sx={{ flex: "1 1 0px" }}>
-                        {Number(BigInt(data.amount) / 10n ** 16n) / 100}
-                      </Box>
-                      <Box sx={{ flex: "1 1 50px" }}>
-                        {new Date(data.endTime * 1000).toLocaleString()}
-                      </Box>
-                      <Box sx={{ flex: "1 1 0px" }}>
-                        {` ${calculateWeeksRemaining(
-                          data.endTime * 1000
-                        )} Weeks`}
-                      </Box>
-                    </Stack>
-                  );
-                })}
+          <Stack
+            direction={"row"}
+            sx={{ justifyContent: tokenLockerValue > 0 ? "space-around" : "" }}
+            textAlign={"left"}
+          >
+            <Box>
+              <Box sx={{ marginBottom: "20px" }}>Claimable Rewards</Box>
+              <Stack direction={"row"}>
+                <Box sx={{ width: "40px", textAlign: "left" }}>
+                  <img src={burstIcon} style={{ height: "24px" }}></img>
+                </Box>
+                <Box sx={{ width: "60px", textAlign: "left" }}>{"Burst"}</Box>
+
+                <Box sx={{ textAlign: "left" }}>
+                  {`${releasableBalance || 0} ≈ $ ${
+                    releasableValue.toFixed(2) || 0
+                  }`}
+                </Box>
+              </Stack>
             </Box>
-          )}
+
+            {tokenLockerValue > 0 && (
+              <Box sx={{ width: "40%" }}>
+                <Box textAlign={"left"} sx={{ marginBottom: "20px" }}>
+                  Unlocking Rewards
+                </Box>
+                {burstBalanceInLockerRes &&
+                  burstBalanceInLockerRes.lockData.length > 0 && (
+                    <Stack direction={"row"} sx={{ fontFamily: "Rajdhani" }}>
+                      <Box sx={{ flex: "1 1 0px" }}>Amount</Box>
+                      <Box sx={{ flex: "1 1 50px" }}> UnlockTime</Box>
+                      <Box sx={{ flex: "1 1 0px" }}> Remaining</Box>
+                    </Stack>
+                  )}
+                {burstBalanceInLockerRes &&
+                  burstBalanceInLockerRes.lockData.length > 0 &&
+                  burstBalanceInLockerRes.lockData.map((data) => {
+                    return (
+                      <Stack direction={"row"} sx={{ marginBottom: "20px" }}>
+                        <Box sx={{ flex: "1 1 0px" }}>
+                          {Number(BigInt(data.amount) / 10n ** 16n) / 100}
+                        </Box>
+                        <Box sx={{ flex: "1 1 50px" }}>
+                          {new Date(data.endTime * 1000).toLocaleString()}
+                        </Box>
+                        <Box sx={{ flex: "1 1 0px" }}>
+                          {` ${calculateWeeksRemaining(
+                            data.endTime * 1000
+                          )} Weeks`}
+                        </Box>
+                      </Stack>
+                    );
+                  })}
+              </Box>
+            )}
+          </Stack>
         </AccordionDetails>
       </StyledAccordion>
     </Layout>

@@ -258,7 +258,7 @@ const Stake = () => {
 
       const transaction = await erc20Contract.approve(
         "0x4e74c4c76625d1A3f2f2285651A15580023762E6",
-        BigInt(value * 100) * 10n ** BigInt(res2 - 2)
+        BigInt(Math.round(Math.round(value * 100))) * 10n ** BigInt(res2 - 2)
       );
       const receipt = await transaction.wait();
 
@@ -294,7 +294,7 @@ const Stake = () => {
       const res2 = await wBlurErc20Contract.decimals();
       const transaction = await wBlurErc20Contract.approve(
         import.meta.env.VITE_WBLUR_STAKING,
-        BigInt(stakeInputValue * 100) * 10n ** BigInt(res2 - 2)
+        BigInt(Math.round(stakeInputValue * 100)) * 10n ** BigInt(res2 - 2)
       );
       const receipt = await transaction.wait();
 
@@ -666,7 +666,8 @@ const Stake = () => {
                     const connectedContract = Contract.connect(signer);
 
                     const transaction = await connectedContract.deposit(
-                      BigInt(convertAndStakeValue * 100) * 10n ** 16n,
+                      BigInt(Math.round(convertAndStakeValue * 100)) *
+                        10n ** 16n,
                       import.meta.env.VITE_WBLUR_STAKING
                     );
                     const receipt = await transaction.wait();
@@ -852,7 +853,7 @@ const Stake = () => {
                         const connectedContract = Contract.connect(signer);
 
                         const transaction = await connectedContract.deposit(
-                          BigInt(convertValue * 100) * 10n ** 16n,
+                          BigInt(Math.round(convertValue * 100)) * 10n ** 16n,
                           "0x0000000000000000000000000000000000000000"
                         );
                         const receipt = await transaction.wait();
@@ -1028,7 +1029,7 @@ const Stake = () => {
                         const connectedContract = stakeContract.connect(signer);
 
                         const transaction = await connectedContract.stake(
-                          BigInt(stakeInputValue * 100) * 10n ** 16n
+                          BigInt(Math.round(stakeInputValue * 100)) * 10n ** 16n
                         );
                         const receipt = await transaction.wait();
 
@@ -1114,7 +1115,7 @@ const Stake = () => {
               onClick={async () => {
                 try {
                   const transaction = await stakeContract.withdraw(
-                    BigInt(unstakeValue * 100) * 10n ** 16n,
+                    BigInt(Math.round(unstakeValue * 100)) * 10n ** 16n,
                     true
                   );
                   const receipt = await transaction.wait();
@@ -1151,7 +1152,7 @@ const Stake = () => {
               onClick={async () => {
                 try {
                   const res = await stakeContract.withdraw(
-                    BigInt(unstakeValue * 100) * 10n ** 16n,
+                    BigInt(Math.round(unstakeValue * 100)) * 10n ** 16n,
                     true
                   );
                   console.log(res);

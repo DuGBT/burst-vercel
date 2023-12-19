@@ -172,7 +172,8 @@ const Lock = () => {
 
       const transaction = await erc20Contract.approve(
         import.meta.env.VITE_BURST_LOCKER,
-        BigInt(lockValue * 100) * 10n ** BigInt(res2 - 2)
+        BigInt(Math.round(Math.round(lockValue * 100))) *
+          10n ** BigInt(res2 - 2)
       );
       const receipt = await transaction.wait();
       if (receipt.status === 1) {
@@ -238,7 +239,7 @@ const Lock = () => {
     try {
       const transaction = await lockContract.lock(
         wallet.accounts[0].address,
-        BigInt(lockValue * 100) * 10n ** 16n,
+        BigInt(Math.round(Math.round(lockValue * 100))) * 10n ** 16n,
         0
       );
       const receipt = await transaction.wait();
@@ -607,10 +608,20 @@ const Lock = () => {
             <Box sx={{ fontFamily: "Rajdhani Bold", marginBottom: "20px" }}>
               Your current Burst locks
             </Box>
-            <Box sx={{ fontFamily: "Rajdhani SemiBold", marginBottom: "20px" }}>
-              {lockCount > 0 && `current reward weight:${lockCount}`}
-              {unlockedBurst > 0 && `total unlocked weight:${unlockedBurst}`}
-            </Box>
+            {lockCount > 0 && (
+              <Box
+                sx={{ fontFamily: "Rajdhani SemiBold", marginBottom: "20px" }}
+              >
+                {`current reward amount : ${lockCount}`}
+              </Box>
+            )}
+            {unlockedBurst > 0 && (
+              <Box
+                sx={{ fontFamily: "Rajdhani SemiBold", marginBottom: "20px" }}
+              >
+                {`total unlocked amount : ${unlockedBurst}`}
+              </Box>
+            )}
             {lockedInfoRes && lockedInfoRes.lockData.length > 0 && (
               <Stack direction={"row"} sx={{ fontFamily: "Rajdhani" }}>
                 <Box sx={{ flex: "1 1 0px" }}>Amount</Box>
