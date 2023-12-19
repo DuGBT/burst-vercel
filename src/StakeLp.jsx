@@ -136,7 +136,6 @@ function TabPanel(props) {
 const StakeLP = () => {
   const [{ wallet, connecting }, connect, disconnect] = useConnectWallet();
   const [value, setValue] = useState(0);
-  const [convertAndStakeValue, setConvertAndStakevalueValue] = useState(0);
   const [WblurAllowance, setWBlurAllowance] = useState(0);
 
   const [stakeValue, setStakeValue] = useState(0);

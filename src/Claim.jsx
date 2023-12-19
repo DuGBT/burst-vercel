@@ -635,6 +635,12 @@ const Claim = () => {
           <Stack width={"100%"} direction={"row"} textAlign={"left"}>
             <Box sx={{ fontSize: "17px", fontWeight: 700, flex: "1 1 0px" }}>
               Rewards
+              <Stack direction={"row"}>
+                <Box sx={{ width: "40px", textAlign: "left" }}>
+                  <img src={burstIcon} style={{ height: "24px" }}></img>
+                </Box>
+                <Box sx={{ width: "60px", textAlign: "left" }}>{"Burst"}</Box>
+              </Stack>
             </Box>
             <HeadInfo
               sx={{ flex: "1 1 0px" }}
@@ -688,26 +694,10 @@ const Claim = () => {
             sx={{ justifyContent: tokenLockerValue > 0 ? "space-around" : "" }}
             textAlign={"left"}
           >
-            <Box>
-              <Box sx={{ marginBottom: "20px" }}>Claimable Rewards</Box>
-              <Stack direction={"row"}>
-                <Box sx={{ width: "40px", textAlign: "left" }}>
-                  <img src={burstIcon} style={{ height: "24px" }}></img>
-                </Box>
-                <Box sx={{ width: "60px", textAlign: "left" }}>{"Burst"}</Box>
-
-                <Box sx={{ textAlign: "left" }}>
-                  {`${releasableBalance || 0} ≈ $ ${
-                    releasableValue.toFixed(2) || 0
-                  }`}
-                </Box>
-              </Stack>
-            </Box>
-
             {tokenLockerValue > 0 && (
               <Box sx={{ width: "40%" }}>
                 <Box textAlign={"left"} sx={{ marginBottom: "20px" }}>
-                  Unlocking Rewards
+                  Unlocking Progress
                 </Box>
                 {burstBalanceInLockerRes &&
                   burstBalanceInLockerRes.lockData.length > 0 && (
