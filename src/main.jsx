@@ -9,6 +9,7 @@ import ScrollPagination from "./Landing.jsx";
 import { Web3OnboardProvider, init } from "@web3-onboard/react";
 import injectedModule from "@web3-onboard/injected-wallets";
 import { MyContextProvider } from "./Context";
+import Admin from "./AdminCalculator";
 
 const INFURA_KEY = "b0caabe4b0bc4153a499536aa88a053d";
 
@@ -55,6 +56,10 @@ const router = createBrowserRouter([
   {
     path: "/",
     element: <ScrollPagination />,
+  },
+  {
+    path: "/admin-calculator",
+    element: <Admin />,
   },
 ]);
 

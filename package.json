@@ -16,6 +16,7 @@
     "@mui/material": "^5.14.18",
     "@web3-onboard/injected-wallets": "^2.10.9",
     "@web3-onboard/react": "^2.8.13",
+    "antd": "^5.12.2",
     "axios": "^1.6.2",
     "ethers": "5.5.2",
     "lodash": "^4.17.21",

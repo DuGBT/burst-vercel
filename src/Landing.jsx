@@ -16,6 +16,7 @@ import XIcon from "./assets/x.svg";
 import gitbookIcon from "./assets/gitbook.svg";
 import BurstLogo from "./assets/BURST_Logo_Yellow.png";
 import Footer from "./Footer";
+import Audio from "./Audio";
 const YellowButton = styled(Button)({
   "&.MuiButton-root": { background: "yellow !important" },
 });
@@ -493,6 +494,7 @@ const ScrollPagination = () => {
           </Stack>
         </Box>
       </Box>
+      <Audio />
     </Box>
   );
 };

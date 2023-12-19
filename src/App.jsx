@@ -18,6 +18,7 @@ import { getTokenPrice } from "./api";
 import { LockerAbi } from "./abi/burst-locker";
 import { tokenLockerAbi } from "./abi/token-locker";
 import Footer from "./Footer";
+import Audio from "./Audio";
 import BurstIconBlack from "./assets/BURST_Icon_Black.png";
 
 import XIcon from "./assets/x.svg";
@@ -428,7 +429,10 @@ function Layout({ children }) {
             position: "relative",
           }}
         >
-          <Stack direction={"row"} sx={{ justifyContent: "space-between" }}>
+          <Stack
+            direction={"row"}
+            sx={{ justifyContent: "space-between", alignItems: "center" }}
+          >
             <Box
               sx={{
                 flex: "0 1 300px",
@@ -638,6 +642,7 @@ function Layout({ children }) {
         </Box>
       </Box>
       <Footer></Footer>
+      {/* <Audio /> */}
     </Box>
   );
 }

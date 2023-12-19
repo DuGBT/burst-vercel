@@ -30,3 +30,7 @@ export const getClaimPoolInfo = (params) => {
 export const getLPPoolInfo = (params) => {
   return axios.get(`${baseUrl}/burst/pool_list`);
 };
+
+export const getSupply = (params) => {
+  return axios.get(`${baseUrl}/burst/admin/total_supply`, { params });
+};
