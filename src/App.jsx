@@ -8,7 +8,7 @@ import Tab from "@mui/material/Tab";
 import Button from "@mui/material/Button";
 import { MyContext } from "./Context";
 import { styled } from "@mui/material";
-import { useConnectWallet } from "@web3-onboard/react";
+import { useConnectWallet, useAccountCenter } from "@web3-onboard/react";
 import { Link, useParams } from "react-router-dom";
 import BurstLogo from "./assets/BURST_Logo_Yellow.png";
 import * as ethers from "ethers";
@@ -47,6 +47,7 @@ const YellowButton = styled(Button)({
 });
 
 function Layout({ children }) {
+  const updateAccountCenter = useAccountCenter();
   const { contextValue, updateContextValue } = useContext(MyContext);
   const [value, setValue] = useState(0);
   const [{ wallet, connecting }, connect, disconnect] = useConnectWallet();
@@ -65,11 +66,18 @@ function Layout({ children }) {
     window.matchMedia("(max-width: 700px)").matches
   );
 
+  useEffect(() => {
+    const audioElement = document.querySelector("#audio");
+    audioElement.pause();
+  }, []);
+
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
 
   useEffect(() => {
+    updateAccountCenter({ enabled: false });
+
     window.addEventListener("resize", () => {
       const x = window.matchMedia("(max-width: 700px)");
       setIsMobile(x.matches);
@@ -415,7 +423,7 @@ function Layout({ children }) {
           transform: "translate(-50%,-50%)",
         }}
       >
-        <img src={loadingGif} />
+        <img style={{ width: "64px" }} src={loadingGif} />
       </Box>
     );
   }
@@ -456,6 +464,7 @@ function Layout({ children }) {
               width={"100%"}
               direction={"row"}
               justifyContent={"center"}
+              // alignItems={"center"}
             >
               <StyledTabs value={value} onChange={handleChange} centered>
                 <Link to={"/stake"}>

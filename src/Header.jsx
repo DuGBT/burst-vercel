@@ -57,41 +57,26 @@ function Header({ children }) {
   return (
     <Box sx={{ position: "absolute", width: "100%", zIndex: "1000", top: 0 }}>
       <Box className="header">
-        <Box
+        <Stack
+          direction={"row"}
           sx={{
             background: "transparent",
-            height: 200,
+            // height: 200,
             p: 0,
             position: "relative",
             zIndex: "1000",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
           }}
         >
-          <Box sx={{ position: "absolute", top: "0", cursor: "pointer" }}>
+          <Box sx={{ cursor: "pointer", flex: "0 1 300px" }}>
             <Link to={"/"}>
-              <img src={BurstLogo} style={{ width: "300px" }} />
+              <img src={BurstLogo} style={{ width: "100%" }} />
             </Link>
           </Box>
-          <YellowButton
-            sx={{
-              background: "yellow",
-              fontFamily: "Rajdhani Bold",
-              color: "#000",
-              position: "absolute",
-              right: "0",
-              top: "0",
-            }}
-            onClick={() => {
-              wallet ? disconnect(wallet) : connect();
-            }}
-          >
-            {wallet
-              ? `${wallet.accounts[0].address.slice(
-                  0,
-                  6
-                )}...${wallet.accounts[0].address.slice(-4)}`
-              : "Connect Wallet"}
-          </YellowButton>
-          <Stack width={"100%"} direction={"row"} justifyContent={"center"}>
+
+          <Stack direction={"row"} justifyContent={"center"}>
             <StyledTabs value={value} onChange={handleChange} centered>
               <Link to={"/stake"}>
                 <StyledTab
@@ -145,7 +130,33 @@ function Header({ children }) {
               </Link>
             </StyledTabs>
           </Stack>
-        </Box>
+          <Box
+            sx={{
+              flex: "0 1 300px",
+              display: "flex",
+              flexDirection: "row-reverse",
+              paddingRight: "1rem",
+            }}
+          >
+            <YellowButton
+              sx={{
+                background: "yellow",
+                fontFamily: "Rajdhani Bold",
+                color: "#000",
+              }}
+              onClick={() => {
+                wallet ? disconnect(wallet) : connect();
+              }}
+            >
+              {wallet
+                ? `${wallet.accounts[0].address.slice(
+                    0,
+                    6
+                  )}...${wallet.accounts[0].address.slice(-4)}`
+                : "Connect Wallet"}
+            </YellowButton>
+          </Box>
+        </Stack>
       </Box>
     </Box>
   );

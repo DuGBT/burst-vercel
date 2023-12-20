@@ -17,6 +17,8 @@ import gitbookIcon from "./assets/gitbook.svg";
 import BurstLogo from "./assets/BURST_Logo_Yellow.png";
 import Footer from "./Footer";
 import Audio from "./Audio";
+import { useConnectWallet, useAccountCenter } from "@web3-onboard/react";
+
 const YellowButton = styled(Button)({
   "&.MuiButton-root": { background: "yellow !important" },
 });
@@ -26,11 +28,14 @@ const ScrollPagination = () => {
   const [isMobile, setIsMobile] = useState(
     window.matchMedia("(max-width: 700px)").matches
   );
+  const updateAccountCenter = useAccountCenter();
+
   useEffect(() => {
     window.addEventListener("resize", () => {
       const x = window.matchMedia("(max-width: 700px)");
       setIsMobile(x.matches);
     });
+    updateAccountCenter({ enabled: false });
   }, []);
   console.log(isMobile);
   return (
@@ -474,25 +479,22 @@ const ScrollPagination = () => {
             vlBURST (vote-lock BURST) earns a portion of the platform blur
             points + $BURST
           </Box>
-          <Stack
-            sx={{
-              width: "100%",
-              justifyContent: "center",
-              marginTop: "100px",
-              marginBottom: "2rem",
-            }}
-            direction={"row"}
-          >
-            <img
-              src={XIcon}
-              style={{ width: "24px", marginRight: "20px", cursor: "pointer" }}
-            />
-            <img
-              src={gitbookIcon}
-              style={{ width: "24px", cursor: "pointer" }}
-            />
-          </Stack>
         </Box>
+        <Stack
+          sx={{
+            width: "100%",
+            justifyContent: "center",
+            marginTop: "50px",
+            paddingBottom: "2rem",
+          }}
+          direction={"row"}
+        >
+          <img
+            src={XIcon}
+            style={{ width: "24px", marginRight: "20px", cursor: "pointer" }}
+          />
+          <img src={gitbookIcon} style={{ width: "24px", cursor: "pointer" }} />
+        </Stack>
       </Box>
       <Audio />
     </Box>
