@@ -305,7 +305,6 @@ const StakeLP = () => {
       );
       const receipt = await transaction.wait();
       if (receipt.status === 1) {
-        console.log("Transaction mined. Block number:", receipt.blockNumber);
         checkApproveForStake();
       } else {
         console.error("Transaction failed. Error message:", receipt.statusText);
@@ -572,10 +571,6 @@ const StakeLP = () => {
                     const receipt = await transaction.wait();
 
                     if (receipt.status === 1) {
-                      console.log(
-                        "Transaction mined. Block number:",
-                        receipt.blockNumber
-                      );
                       getTotalDeposit();
                       getWblurBalance();
                       checkStakeBalance();
@@ -668,10 +663,6 @@ const StakeLP = () => {
                   );
                   const receipt = await transaction.wait();
                   if (receipt.status === 1) {
-                    console.log(
-                      "Transaction mined. Block number:",
-                      receipt.blockNumber
-                    );
                     getTotalDeposit();
                     getWblurBalance();
                     checkApproveForStake();
@@ -702,7 +693,6 @@ const StakeLP = () => {
                     BigInt(Math.round(unstakeValue * 100)) * 10n ** 16n,
                     true
                   );
-                  console.log(res);
                 } catch (error) {
                   console.log(error);
                 }

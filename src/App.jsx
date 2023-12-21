@@ -199,7 +199,6 @@ function Layout({ children }) {
               ] || 0;
 
           const lockedInfoRes = await lockContract.lockedBalances(address);
-          console.log(lockedInfoRes);
           const lockRes = await lockContract.lockedBalanceOf(address);
           const lockCount =
             Number(BigInt(lockedInfoRes.locked._hex) / 10n ** 16n) / 100;
@@ -315,7 +314,6 @@ function Layout({ children }) {
         const address = wallet.accounts[0].address;
         try {
           const stakedWblurRes = await stakeContract.earned(address);
-          console.log(stakedWblurRes);
           const earnedWblurCount =
             Number(BigInt(stakedWblurRes._hex) / 10n ** 16n) / 100;
           const earnedWblurValue =
@@ -328,7 +326,6 @@ function Layout({ children }) {
 
           const earnedLPCount =
             Number(BigInt(stakedLPRes._hex) / 10n ** 16n) / 100;
-          console.log(earnedLPCount, earnedWblurValue, "earn lp");
           const earnedLPValue =
             earnedLPCount *
               tokenPrice[
@@ -346,7 +343,6 @@ function Layout({ children }) {
                   tokenPrice[res[0].toLowerCase()] || 0,
             };
           });
-          console.log(lockRes, lockClaimableTokens);
           const lockEarnedValue = lockClaimableTokens.reduce((sum, token) => {
             return sum + token.value;
           }, 0);

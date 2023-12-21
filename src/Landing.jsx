@@ -37,7 +37,6 @@ const ScrollPagination = () => {
     });
     updateAccountCenter({ enabled: false });
   }, []);
-  console.log(isMobile);
   return (
     <Box
       id="landing"

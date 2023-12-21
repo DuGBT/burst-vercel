@@ -180,7 +180,6 @@ const Lock = () => {
       );
       const receipt = await transaction.wait();
       if (receipt.status === 1) {
-        console.log("Transaction mined. Block number:", receipt.blockNumber);
         checkApprove();
       } else {
         console.error("Transaction failed. Error message:", receipt.statusText);
@@ -195,7 +194,6 @@ const Lock = () => {
         wallet.accounts[0].address,
         import.meta.env.VITE_BURST_LOCKER
       );
-      console.log(Number(BigInt(res._hex) / 10n ** 16n) / 100);
       setAllowance(Number(BigInt(res._hex) / 10n ** 16n) / 100);
       if (res == 0) {
       }
@@ -248,7 +246,6 @@ const Lock = () => {
       const receipt = await transaction.wait();
 
       if (receipt.status === 1) {
-        console.log("Transaction mined. Block number:", receipt.blockNumber);
         checkApprove();
         getBalance();
         getTotalDeposit();
@@ -642,7 +639,6 @@ const Lock = () => {
             )}
             {lockedInfoRes &&
               lockedInfoRes.lockData.map((data) => {
-                console.log(data.unlockTime);
                 return (
                   <Stack direction={"row"} sx={{ marginBottom: "20px" }}>
                     <Box sx={{ flex: "1 1 0px" }}>
@@ -670,10 +666,6 @@ const Lock = () => {
                   );
                   const receipt = await transaction.wait();
                   if (receipt.status === 1) {
-                    console.log(
-                      "Transaction mined. Block number:",
-                      receipt.blockNumber
-                    );
                     checkApprove();
                     getBalance();
                     getTotalDeposit();
@@ -706,10 +698,6 @@ const Lock = () => {
                   );
                   const receipt = await transaction.wait();
                   if (receipt.status === 1) {
-                    console.log(
-                      "Transaction mined. Block number:",
-                      receipt.blockNumber
-                    );
                     checkApprove();
                     getBalance();
                     getTotalDeposit();

@@ -23,7 +23,6 @@ function Admin() {
         "0x4F101364378Ca48ec4bcB17D35aAfbD7ad93c022".toLowerCase()
       ]?.toFixed(4)
     : 0;
-  console.log(burstPrice, BHPPrice);
   const calculate = () => {
     const burstPrice =
       tokenPrice["0x0535a470f39DEc973C15D2Aa6E7f968235F6e1D4".toLowerCase()];
@@ -75,20 +74,38 @@ function Admin() {
     getData();
   }, [type]);
 
-  useEffect(() => {
-    async function getPrice() {
-      try {
-        const res = await getTokenPrice();
-        Object.keys(res).forEach((key) => {
-          res[key.toLowerCase()] = res[key];
-        });
-        setTokenPrice(res);
-      } catch (error) {
-        console.log(error);
-      }
+  let price;
+  if (tokenPrice) {
+    const LPPrice =
+      tokenPrice["0xEa542D518Ce4E6633Bbf697b089ecDEfe0A97dA6".toLowerCase()];
+    const wBlurPrice =
+      tokenPrice["0x72CebE61e70142b4B4720087aBb723182e4ca6e8".toLowerCase()];
+    let supplyValue;
+    if (type === "wBlurStake") {
+      price = wBlurPrice;
     }
-    getPrice();
-  }, []);
+    if (type === "LPStake") {
+      price = LPPrice;
+    }
+    if (type === "lock") {
+      price = burstPrice;
+    }
+  } else price = 0;
+  if (type === "wBlurStake")
+    useEffect(() => {
+      async function getPrice() {
+        try {
+          const res = await getTokenPrice();
+          Object.keys(res).forEach((key) => {
+            res[key.toLowerCase()] = res[key];
+          });
+          setTokenPrice(res);
+        } catch (error) {
+          console.log(error);
+        }
+      }
+      getPrice();
+    }, []);
 
   const handleChange = (e) => {
     setType(e);
@@ -114,7 +131,7 @@ function Admin() {
             { value: "lock", label: "Burst Lock" },
           ]}
         />
-        Supply: {data}
+        <span>{`Supply: ${data}    Price: ${price}`}</span>
       </div>
       <div>
         Burst Amount
