@@ -88,6 +88,9 @@ const GreyButton = styled(Button)({
     background: "rgba(146, 146, 146, 0.2)",
     width: "200px",
   },
+  "&.MuiButton-root.Mui-disabled": {
+    color: "rgba(255,255,255,0.6)",
+  },
 });
 
 const FunctionButton = (props) => {
