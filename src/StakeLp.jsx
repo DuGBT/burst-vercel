@@ -48,6 +48,9 @@ const GreyButton = styled(Button)({
     background: "rgba(146, 146, 146, 0.2)",
     width: "200px",
   },
+  "&.MuiButton-root.Mui-disabled": {
+    color: "rgba(255,255,255,0.6)",
+  },
 });
 const FunctionButton = (props) => {
   const { burstColor, children } = props;
@@ -470,7 +473,7 @@ const StakeLP = () => {
                     lineHeight: "20px",
                     textAlign: "center",
                     borderRadius: "50%",
-                    color: stakeApproved ? "#929292" : "#000",
+                    color: stakeApproved ? "#929292" : "rgba(255,255,255,0.6)",
                     background: !wallet ? "rgba(146, 146, 146, 0.2)" : "yellow",
                   }}
                 >
@@ -531,7 +534,7 @@ const StakeLP = () => {
                     lineHeight: "20px",
                     textAlign: "center",
                     borderRadius: "50%",
-                    color: stakeApproved ? "#929292" : "#000",
+                    color: stakeApproved ? "#929292" : "rgba(255,255,255,0.6)",
                     background: !stakeApproved
                       ? "rgba(146, 146, 146, 0.2)"
                       : "yellow",
