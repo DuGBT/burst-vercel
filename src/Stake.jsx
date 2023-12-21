@@ -266,7 +266,6 @@ const Stake = () => {
       const receipt = await transaction.wait();
 
       if (receipt.status === 1) {
-        console.log("Transaction mined. Block number:", receipt.blockNumber);
         checkApprove();
       } else {
         console.error("Transaction failed. Error message:", receipt.statusText);
@@ -302,7 +301,6 @@ const Stake = () => {
       const receipt = await transaction.wait();
 
       if (receipt.status === 1) {
-        console.log("Transaction mined. Block number:", receipt.blockNumber);
         checkApproveForStake();
       } else {
         console.error("Transaction failed. Error message:", receipt.statusText);
@@ -348,9 +346,7 @@ const Stake = () => {
     getStakeInfo();
   }, []);
 
-  const handleChange = (e) => {
-    // console.log(e.target);
-  };
+  const handleChange = (e) => {};
   const convertAndStakeApproved = !!(
     wallet &&
     blurAllowance > 0 &&
@@ -372,7 +368,6 @@ const Stake = () => {
     stakedWblurCount = 0,
     getTotalDeposit,
   } = contextValue;
-  console.log(contextValue);
   return (
     <Layout>
       <Box
@@ -682,10 +677,6 @@ const Stake = () => {
                     const receipt = await transaction.wait();
 
                     if (receipt.status === 1) {
-                      console.log(
-                        "Transaction mined. Block number:",
-                        receipt.blockNumber
-                      );
                       getTotalDeposit();
                       getBalance();
                       checkApprove();
@@ -872,10 +863,6 @@ const Stake = () => {
                         const receipt = await transaction.wait();
 
                         if (receipt.status === 1) {
-                          console.log(
-                            "Transaction mined. Block number:",
-                            receipt.blockNumber
-                          );
                           getTotalDeposit();
                           getBalance();
                           checkApprove();
@@ -1051,10 +1038,6 @@ const Stake = () => {
                         const receipt = await transaction.wait();
 
                         if (receipt.status === 1) {
-                          console.log(
-                            "Transaction mined. Block number:",
-                            receipt.blockNumber
-                          );
                           getTotalDeposit();
                           getWblurBalance();
                           checkStakeBalance();
@@ -1138,10 +1121,6 @@ const Stake = () => {
                   const receipt = await transaction.wait();
 
                   if (receipt.status === 1) {
-                    console.log(
-                      "Transaction mined. Block number:",
-                      receipt.blockNumber
-                    );
                     getTotalDeposit();
                     getBalance();
                     checkApprove();

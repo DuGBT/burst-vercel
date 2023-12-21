@@ -115,7 +115,7 @@ const Claim = () => {
   const [lockContract, setLockContract] = useState();
   const [stakeLPContract, setStakeLPContract] = useState();
   const [burstLockerContract, setBurstLockerContract] = useState();
-  const [poolInfo, setPoolInfo] = useState();
+  const [poolInfo, setPoolInfo] = useState([]);
   useEffect(() => {
     async function Connect() {
       if (wallet) {
@@ -200,8 +200,6 @@ const Claim = () => {
     burstBalanceInLockerRes,
   } = contextValue;
 
-  console.log(contextValue);
-
   return (
     <Layout>
       <StyledAccordion
@@ -262,10 +260,6 @@ const Claim = () => {
 
                   const receipt = await transaction.wait();
                   if (receipt.status === 1) {
-                    console.log(
-                      "Transaction mined. Block number:",
-                      receipt.blockNumber
-                    );
                     getTotalClaimable();
                   } else {
                     console.error(
@@ -284,7 +278,7 @@ const Claim = () => {
           </Stack>
         </AccordionSummary>
         <AccordionDetails>
-          {poolInfo && stakedWblurExtraRewardInfo && (
+          {poolInfo.length > 0 && (
             <Box>
               <Stack direction={"row"}>
                 <Box sx={{ width: "40px", textAlign: "left" }}>
@@ -313,18 +307,22 @@ const Claim = () => {
                   ) {
                     return <></>;
                   }
-                  const extraRewardInfo = stakedWblurExtraRewardInfo.find(
-                    (extraReward) => {
-                      if (
-                        extraReward?.tokenAddress?.toLowerCase() ===
-                        reward.addr.toLowerCase()
-                      )
-                        return true;
-                    }
-                  );
-                  const extraRewardValue =
-                    extraRewardInfo?.amount *
-                    tokenPrice[reward.addr.toLowerCase()];
+                  let extraRewardValue;
+                  let extraRewardInfo;
+                  if (stakedWblurExtraRewardInfo) {
+                    extraRewardInfo = stakedWblurExtraRewardInfo.find(
+                      (extraReward) => {
+                        if (
+                          extraReward?.tokenAddress?.toLowerCase() ===
+                          reward.addr.toLowerCase()
+                        )
+                          return true;
+                      }
+                    );
+                    extraRewardValue =
+                      (extraRewardInfo?.amount || 0) *
+                      tokenPrice[reward.addr.toLowerCase()];
+                  } else extraRewardValue = 0;
                   return (
                     <Stack direction={"row"}>
                       <Box sx={{ width: "40px", textAlign: "left" }}>
@@ -386,40 +384,6 @@ const Claim = () => {
                   : 0
               }%`}
             />
-            {/* <FunctionButton
-              burstColor={lockEarnedValue ? "yellow" : "black"}
-              sx={{
-                flex: "1 1 0px",
-                maxWidth: "120px",
-                marginX: "8px",
-                height: "41px",
-                color: "#000",
-              }}
-              onClick={async () => {
-                try {
-                  const transaction = await lockContract.withdrawExpiredLocksTo(
-                    wallet.accounts[0].address
-                  );
-                  const receipt = await transaction.wait();
-                  if (receipt.status === 1) {
-                    console.log(
-                      "Transaction mined. Block number:",
-                      receipt.blockNumber
-                    );
-                  } else {
-                    console.error(
-                      "Transaction failed. Error message:",
-                      receipt.statusText
-                    );
-                  }
-                } catch (error) {
-                  console.log(error);
-                }
-              }}
-              variant="contained"
-            >
-              Withdraw
-            </FunctionButton> */}
             <FunctionButton
               burstColor={lockEarnedValue ? "yellow" : "black"}
               sx={{
@@ -437,10 +401,6 @@ const Claim = () => {
 
                   const receipt = await transaction.wait();
                   if (receipt.status === 1) {
-                    console.log(
-                      "Transaction mined. Block number:",
-                      receipt.blockNumber
-                    );
                     getTotalClaimable();
                   } else {
                     console.error(
@@ -459,7 +419,7 @@ const Claim = () => {
           </Stack>
         </AccordionSummary>
         <AccordionDetails>
-          {poolInfo && lockClaimableTokens && (
+          {poolInfo.length > 0 && (
             <Box>
               {poolInfo
                 .find((pool) => {
@@ -470,12 +430,16 @@ const Claim = () => {
                     return pool;
                 })
                 .reward_list.map((reward) => {
-                  const rewardInfo = lockClaimableTokens.find((token) => {
-                    if (
-                      token.address.toLowerCase() === reward.addr.toLowerCase()
-                    )
-                      return true;
-                  });
+                  let rewardInfo;
+                  if (lockClaimableTokens) {
+                    rewardInfo = lockClaimableTokens.find((token) => {
+                      if (
+                        token.address.toLowerCase() ===
+                        reward.addr.toLowerCase()
+                      )
+                        return true;
+                    });
+                  }
                   return (
                     <Stack direction={"row"}>
                       <Box sx={{ width: "40px", textAlign: "left" }}>
@@ -564,10 +528,6 @@ const Claim = () => {
 
                   const receipt = await transaction.wait();
                   if (receipt.status === 1) {
-                    console.log(
-                      "Transaction mined. Block number:",
-                      receipt.blockNumber
-                    );
                     getTotalClaimable();
                   } else {
                     console.error(
@@ -586,7 +546,7 @@ const Claim = () => {
           </Stack>
         </AccordionSummary>
         <AccordionDetails>
-          {poolInfo && stakedLPExtraRewardInfo && (
+          {poolInfo && (
             <Box>
               <Stack direction={"row"}>
                 <Box sx={{ width: "40px", textAlign: "left" }}>
@@ -615,15 +575,18 @@ const Claim = () => {
                   ) {
                     return <></>;
                   }
-                  const extraRewardInfo = stakedLPExtraRewardInfo.find(
-                    (extraReward) => {
-                      if (
-                        extraReward?.tokenAddress?.toLowerCase() ===
-                        reward.addr.toLowerCase()
-                      )
-                        return true;
-                    }
-                  );
+                  let extraRewardInfo;
+                  if (stakedLPExtraRewardInfo) {
+                    extraRewardInfo = stakedLPExtraRewardInfo.find(
+                      (extraReward) => {
+                        if (
+                          extraReward?.tokenAddress?.toLowerCase() ===
+                          reward.addr.toLowerCase()
+                        )
+                          return true;
+                      }
+                    );
+                  }
                   return (
                     <Stack direction={"row"}>
                       <Box sx={{ marginRight: "10px" }}>{reward.symbol}</Box>
@@ -676,10 +639,6 @@ const Claim = () => {
 
                   const receipt = await transaction.wait();
                   if (receipt.status === 1) {
-                    console.log(
-                      "Transaction mined. Block number:",
-                      receipt.blockNumber
-                    );
                     getTotalClaimable();
                   } else {
                     console.error(

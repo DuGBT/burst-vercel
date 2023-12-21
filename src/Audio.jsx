@@ -32,7 +32,6 @@ const Audio = () => {
         alignItems: "center",
       }}
       onClick={() => {
-        console.log(audioElement.volume);
         audioElement.volume = 0.6;
         if (audioElement.currentTime === 0 || audioElement.ended) {
           audioElement.play();
