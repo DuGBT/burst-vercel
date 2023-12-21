@@ -473,7 +473,11 @@ const StakeLP = () => {
                     lineHeight: "20px",
                     textAlign: "center",
                     borderRadius: "50%",
-                    color: stakeApproved ? "#929292" : "rgba(255,255,255,0.6)",
+                    color: !wallet
+                      ? "rgba(255,255,255,0.6)"
+                      : stakeApproved
+                      ? "#929292"
+                      : "#000",
                     background: !wallet ? "rgba(146, 146, 146, 0.2)" : "yellow",
                   }}
                 >
@@ -534,7 +538,11 @@ const StakeLP = () => {
                     lineHeight: "20px",
                     textAlign: "center",
                     borderRadius: "50%",
-                    color: stakeApproved ? "#929292" : "rgba(255,255,255,0.6)",
+                    color: !wallet
+                      ? "rgba(255,255,255,0.6)"
+                      : stakeApproved
+                      ? "#929292"
+                      : "#000",
                     background: !stakeApproved
                       ? "rgba(146, 146, 146, 0.2)"
                       : "yellow",

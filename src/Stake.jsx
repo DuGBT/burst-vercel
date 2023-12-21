@@ -581,9 +581,11 @@ const Stake = () => {
                     lineHeight: "20px",
                     textAlign: "center",
                     borderRadius: "50%",
-                    color: convertApproved
+                    color: !wallet
+                      ? "rgba(255,255,255,0.6)"
+                      : convertApproved
                       ? "#929292"
-                      : "rgba(255,255,255,0.6)",
+                      : "#000",
                     background: !wallet ? "rgba(146, 146, 146, 0.2)" : "yellow",
                   }}
                 >

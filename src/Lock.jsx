@@ -464,7 +464,11 @@ const Lock = () => {
                     lineHeight: "20px",
                     textAlign: "center",
                     borderRadius: "50%",
-                    color: approved ? "#929292" : "rgba(255,255,255,0.6)",
+                    color: !wallet
+                      ? "rgba(255,255,255,0.6)"
+                      : approved
+                      ? "#929292"
+                      : "#000",
                     background: !wallet ? "rgba(146, 146, 146, 0.2)" : "yellow",
                   }}
                 >
@@ -523,7 +527,11 @@ const Lock = () => {
                     lineHeight: "20px",
                     textAlign: "center",
                     borderRadius: "50%",
-                    color: approved ? "#929292" : "rgba(255,255,255,0.6)",
+                    color: !wallet
+                      ? "rgba(255,255,255,0.6)"
+                      : approved
+                      ? "#929292"
+                      : "#000",
                     background: !approved
                       ? "rgba(146, 146, 146, 0.2)"
                       : "yellow",
