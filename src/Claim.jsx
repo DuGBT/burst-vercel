@@ -546,7 +546,7 @@ const Claim = () => {
           </Stack>
         </AccordionSummary>
         <AccordionDetails>
-          {poolInfo && (
+          {poolInfo.length > 0 && (
             <Box>
               <Stack direction={"row"}>
                 <Box sx={{ width: "40px", textAlign: "left" }}>
