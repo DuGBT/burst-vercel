@@ -118,6 +118,7 @@ const ScrollPagination = () => {
 
           height: "100vh",
           backgroundColor: "#000",
+          marginBottom: "1rem",
         }}
       >
         {!isMobile && (
@@ -130,7 +131,12 @@ const ScrollPagination = () => {
         )}
       </Box>
       <Box
-        sx={{ height: "100vh", backgroundColor: "#000", position: "relative" }}
+        sx={{
+          minHeight: "100vh",
+          backgroundColor: "#000",
+          position: "relative",
+          marginBottom: "1rem",
+        }}
       >
         <img
           style={{
@@ -380,7 +386,7 @@ const ScrollPagination = () => {
           <img style={{ width: "40px" }} src={BurstIconBlack} />
           <Box
             sx={{
-              width: "400px",
+              width: isMobile ? "100%" : "500px",
               wordBreak: "break-word",
               textTransform: "uppercase",
               fontFamily: "Rajdhani",
@@ -480,22 +486,8 @@ const ScrollPagination = () => {
             points + $BURST
           </Box>
         </Box>
-        {/* <Stack
-          sx={{
-            width: "100%",
-            justifyContent: "center",
-            marginTop: "50px",
-            paddingBottom: "2rem",
-          }}
-          direction={"row"}
-        >
-          <img
-            src={XIcon}
-            style={{ width: "24px", marginRight: "20px", cursor: "pointer" }}
-          />
-          <img src={gitbookIcon} style={{ width: "24px", cursor: "pointer" }} />
-        </Stack> */}
       </Box>
+
       <Box
         sx={{
           minHeight: "100vh",
