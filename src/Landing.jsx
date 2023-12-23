@@ -15,6 +15,14 @@ import { Link, useParams } from "react-router-dom";
 import XIcon from "./assets/x.svg";
 import gitbookIcon from "./assets/gitbook.svg";
 import BurstLogo from "./assets/BURST_Logo_Yellow.png";
+import firstImg from "./assets/fitst.svg";
+import secondImg from "./assets/second.svg";
+import thirdImg from "./assets/third.svg";
+import fourthImg from "./assets/fourth.svg";
+import sup1 from "./assets/sup1.png";
+import sup2 from "./assets/sup2.png";
+import question from "./assets/question.png";
+import mobileBg from "./assets/mobileBg.png";
 import Footer from "./Footer";
 import Audio from "./Audio";
 import { useConnectWallet, useAccountCenter } from "@web3-onboard/react";
@@ -42,11 +50,6 @@ const ScrollPagination = () => {
       id="landing"
       ref={containerRef}
       sx={{
-        // height: "100vh",
-
-        // overflowY: "auto",
-        // scrollBehavior: "smooth",
-        // touchAction: "pan-y",
         position: "relative",
       }}
     >
@@ -60,7 +63,7 @@ const ScrollPagination = () => {
       <Box
         sx={{
           position: "absolute",
-          top: 400,
+          top: isMobile ? 160 : 400,
           zIndex: "2",
           textAlign: "left",
           width: "100%",
@@ -115,19 +118,25 @@ const ScrollPagination = () => {
 
           height: "100vh",
           backgroundColor: "#000",
+          marginBottom: "1rem",
         }}
       >
-        <video
-          autoPlay
-          muted
-          loop
-          style={{ height: "100%", width: "100%", objectFit: "fill" }}
-        >
-          <source src={BurstVideo} type="video/mp4" />
-        </video>
+        {!isMobile && (
+          <video autoPlay muted loop style={{ height: "100%", width: "100%" }}>
+            <source src={BurstVideo} type="video/mp4" />
+          </video>
+        )}
+        {isMobile && (
+          <img src={mobileBg} style={{ height: "100%", width: "100%" }} />
+        )}
       </Box>
       <Box
-        sx={{ height: "100vh", backgroundColor: "#000", position: "relative" }}
+        sx={{
+          minHeight: "100vh",
+          backgroundColor: "#000",
+          position: "relative",
+          marginBottom: "1rem",
+        }}
       >
         <img
           style={{
@@ -329,8 +338,6 @@ const ScrollPagination = () => {
           </Box>
           <Box
             sx={{
-              // textAlign: "left",
-              // width: "620px",
               wordBreak: "break-word",
               fontFamily: "Rajdhani SemiBold",
               fontSize: "120px",
@@ -379,7 +386,7 @@ const ScrollPagination = () => {
           <img style={{ width: "40px" }} src={BurstIconBlack} />
           <Box
             sx={{
-              width: "400px",
+              width: isMobile ? "100%" : "500px",
               wordBreak: "break-word",
               textTransform: "uppercase",
               fontFamily: "Rajdhani",
@@ -479,22 +486,195 @@ const ScrollPagination = () => {
             points + $BURST
           </Box>
         </Box>
-        <Stack
+      </Box>
+
+      <Box
+        sx={{
+          minHeight: "100vh",
+          backgroundColor: "#000",
+          position: "relative",
+          textAlign: "right",
+        }}
+      >
+        <Box
+          sx={{
+            paddingTop: isMobile ? "0" : "140px",
+            paddingLeft: "10%",
+            paddingRight: "10%",
+          }}
+        >
+          <img style={{ width: "40px" }} src={BurstIconBlack} />
+        </Box>
+        <Box
           sx={{
             width: "100%",
-            justifyContent: "center",
-            marginTop: "50px",
-            paddingBottom: "2rem",
+            paddingRight: "10%",
+            wordBreak: "break-word",
+            textTransform: "uppercase",
+            fontFamily: "Rajdhani",
+            fontSize: "50px",
+            fontWeight: "500",
+            lineHeight: "40px",
+            textalign: "left",
           }}
-          direction={"row"}
         >
-          <img
-            src={XIcon}
-            style={{ width: "24px", marginRight: "20px", cursor: "pointer" }}
-          />
-          <img src={gitbookIcon} style={{ width: "24px", cursor: "pointer" }} />
+          <span
+            style={{
+              fontFamily: "Rajdhani SemiBold",
+              color: "rgba(252, 252, 3, 1)",
+            }}
+          >
+            {`How  `}
+          </span>
+          {`It Works `}
+        </Box>
+        <Stack
+          direction={isMobile ? "column" : "row"}
+          sx={{ flexWrap: isMobile ? "" : "wrap", padding: "0 10%" }}
+        >
+          <Box
+            sx={{
+              flex: "1 1 0px",
+              margin: "1rem",
+            }}
+          >
+            <Box
+              sx={{
+                width: "60px",
+                borderRadius: "6px 0 6px 0",
+                background: "rgba(252, 252, 3, 1)",
+                color: "#000",
+                textAlign: "center",
+                fontFamily: "Rajdhani Bold",
+              }}
+            >
+              STEP-1
+            </Box>
+            <Box sx={{ flex: "1 1 0px", textAlign: "left" }}>
+              <img src={firstImg} />
+            </Box>
+            <Box textAlign={"left"}>Deposit any amount of Blur to Burst</Box>
+          </Box>
+          <Box
+            sx={{
+              flex: "1 1 0px",
+              margin: "1rem",
+            }}
+          >
+            <Box
+              sx={{
+                width: "60px",
+                borderRadius: "6px 0 6px 0",
+                background: "rgba(252, 252, 3, 1)",
+                color: "#000",
+                textAlign: "center",
+                fontFamily: "Rajdhani Bold",
+              }}
+            >
+              STEP-2
+            </Box>
+            <Box sx={{ flex: "1 1 0px", textAlign: "left" }}>
+              <img src={secondImg} />
+            </Box>
+            <Box textAlign={"left"}>
+              Receive wBlur tokens in exchange for providing Blur
+            </Box>
+          </Box>
+          <Box
+            sx={{
+              flex: "1 1 0px",
+              margin: "1rem",
+            }}
+          >
+            <Box
+              sx={{
+                width: "60px",
+                borderRadius: "6px 0 6px 0",
+                background: "rgba(252, 252, 3, 1)",
+                color: "#000",
+                textAlign: "center",
+                fontFamily: "Rajdhani Bold",
+              }}
+            >
+              STEP-3
+            </Box>
+            <Box sx={{ flex: "1 1 0px", textAlign: "left" }}>
+              <img src={thirdImg} />
+            </Box>
+            <Box textAlign={"left"}>
+              Receive Burst governance token and BHP(Blur Holder Point) as
+              future airdrop redemption vouchers
+            </Box>
+          </Box>
+          <Box
+            sx={{
+              flex: "1 1 0px",
+              margin: "1rem",
+            }}
+          >
+            <Box
+              sx={{
+                width: "60px",
+                borderRadius: "6px 0 6px 0",
+                background: "rgba(252, 252, 3, 1)",
+                color: "#000",
+                textAlign: "center",
+                fontFamily: "Rajdhani Bold",
+              }}
+            >
+              STEP-4
+            </Box>
+            <Box sx={{ flex: "1 1 0px", textAlign: "left" }}>
+              <img src={fourthImg} />
+            </Box>
+            <Box textAlign={"left"}>Lock Burst to earn platform fees</Box>
+          </Box>
         </Stack>
+        <Box sx={{ textAlign: "left", padding: "0 10%" }}>
+          <img style={{ width: "40px" }} src={BurstIconBlack} />
+          <Stack
+            direction={isMobile ? "column" : "row"}
+            sx={{ justifyContent: "space-between" }}
+          >
+            <Box
+              sx={{
+                width: "300px",
+                wordBreak: "break-word",
+                textTransform: "uppercase",
+                fontFamily: "Rajdhani",
+                fontSize: "50px",
+                fontWeight: "500",
+                lineHeight: "40px",
+                textalign: "left",
+              }}
+            >
+              {`Supported By`}
+            </Box>
+            <Stack direction={"row"} sx={{ flexWrap: "wrap" }}>
+              <img style={{ margin: "6px", width: "80px" }} src={sup1} />
+              <img style={{ margin: "6px", width: "80px" }} src={sup2} />
+              <img style={{ margin: "6px", width: "80px" }} src={question} />
+              <img style={{ margin: "6px", width: "80px" }} src={question} />
+              <img style={{ margin: "6px", width: "80px" }} src={question} />
+            </Stack>
+          </Stack>
+        </Box>
       </Box>
+      <Stack
+        sx={{
+          width: "100%",
+          justifyContent: "center",
+          marginTop: "50px",
+          paddingBottom: "2rem",
+        }}
+        direction={"row"}
+      >
+        <img
+          src={XIcon}
+          style={{ width: "24px", marginRight: "20px", cursor: "pointer" }}
+        />
+        <img src={gitbookIcon} style={{ width: "24px", cursor: "pointer" }} />
+      </Stack>
       <Audio />
     </Box>
   );
