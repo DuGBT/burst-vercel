@@ -21,6 +21,7 @@ import thirdImg from "./assets/third.svg";
 import fourthImg from "./assets/fourth.svg";
 import sup1 from "./assets/sup1.png";
 import sup2 from "./assets/sup2.png";
+import sup3 from "./assets/sup3.jpg";
 import question from "./assets/question.png";
 import mobileBg from "./assets/mobileBg.png";
 import Footer from "./Footer";
@@ -653,7 +654,10 @@ const ScrollPagination = () => {
             <Stack direction={"row"} sx={{ flexWrap: "wrap" }}>
               <img style={{ margin: "6px", width: "80px" }} src={sup1} />
               <img style={{ margin: "6px", width: "80px" }} src={sup2} />
-              <img style={{ margin: "6px", width: "80px" }} src={question} />
+              <img
+                style={{ margin: "6px", width: "80px", borderRadius: "6px" }}
+                src={sup3}
+              />
               <img style={{ margin: "6px", width: "80px" }} src={question} />
               <img style={{ margin: "6px", width: "80px" }} src={question} />
             </Stack>
